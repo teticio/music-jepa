@@ -36,51 +36,63 @@ playlist:  [track_0, track_1, track_2, ...]
 
 ## Setup
 
+Dependencies are managed with [uv](https://github.com/astral-sh/uv):
+
 ```bash
-pip install -r requirements.txt
+make setup
 # On Linux, also: apt-get install ffmpeg  (for librosa MP3 loading)
 ```
+
+All commands below run inside the uv-managed environment via `uv run`. The
+`Makefile` wraps each step; you can also invoke them directly with
+`uv run python <script>`.
 
 ## Data pipeline
 
 ```bash
 # 1. Sample a subset of playlists and tracks from the full dataset
-python data/sample_data.py --n_playlists 2000
+make sample        # uv run python data/sample_data.py --n_playlists 2000
 
 # 2. Download 30-second MP3 previews (~350KB each) from Spotify CDN
-python data/download_previews.py
+make previews      # uv run python data/download_previews.py
 
 # 3. Compute mel spectrograms (96 mel-bins x 216 time-frames, first 5s)
-python data/make_spectrograms.py
+make spectrograms  # uv run python data/make_spectrograms.py
+
+# Or all three at once:
+make data
 ```
 
 ## Training
 
 Single GPU:
 ```bash
-python train.py
+make train1        # uv run python train.py --config configs/train.yaml
 ```
 
 Two GPUs (recommended — 2x RTX 4090):
 ```bash
-torchrun --nproc_per_node=2 train.py
+make train         # uv run torchrun --nproc_per_node=2 train.py
 ```
 
 Resume from checkpoint:
 ```bash
-python train.py --ckpt checkpoints/last.ckpt
+uv run python train.py --ckpt checkpoints/last.ckpt
 ```
 
-TensorBoard logs written to `logs/music_jepa/`.
+TensorBoard logs are written to `logs/music_jepa/`. Launch the UI with:
+```bash
+make tensorboard   # uv run tensorboard --logdir logs/
+```
 
 ## Evaluation
 
 ```bash
 # Extract embeddings for all tracks
-python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
+make embed         # uv run python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
 
-# Nearest-neighbour report for probe tracks + optional t-SNE
-python eval/visualize.py --embeddings embeddings.npy --tsne
+# Nearest-neighbour report + t-SNE
+make viz-nn        # uv run python eval/visualize.py --embeddings embeddings.npy --tsne
 ```
 
 **Success criterion:** nearest neighbours should be musically coherent (e.g. Nirvana

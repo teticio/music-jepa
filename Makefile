@@ -1,45 +1,48 @@
-PYTHON := .venv/bin/python
-UV     := uv
+UV := uv
 
-.PHONY: setup data train embed viz help
+.PHONY: setup data train embed viz tensorboard help
 
 help:
 	@echo "Music JEPA - step by step:"
-	@echo "  make setup       Create venv and install dependencies"
-	@echo "  make sample      Sample playlists/tracks subset"
-	@echo "  make previews    Download MP3 previews from Spotify CDN"
+	@echo "  make setup         Create venv and install dependencies"
+	@echo "  make sample        Sample playlists/tracks subset"
+	@echo "  make previews      Download MP3 previews from Spotify CDN"
 	@echo "  make spectrograms  Compute mel spectrogram PNGs"
-	@echo "  make data        All three data steps"
-	@echo "  make train       Train on 2x GPU (torchrun)"
-	@echo "  make train1      Train on 1x GPU"
-	@echo "  make embed       Extract embeddings from last checkpoint"
-	@echo "  make viz         Nearest-neighbour report + t-SNE"
+	@echo "  make data          All three data steps"
+	@echo "  make train         Train on 2x GPU (torchrun)"
+	@echo "  make train1        Train on 1x GPU"
+	@echo "  make embed         Extract embeddings from last checkpoint"
+	@echo "  make viz           Nearest-neighbour report + t-SNE"
+	@echo "  make tensorboard   Launch TensorBoard on logs/"
 
 setup:
 	$(UV) sync --extra eval
 
 sample:
-	$(PYTHON) data/sample_data.py --n_playlists 2000
+	$(UV) run python data/sample_data.py --n_playlists 2000
 
 previews:
-	$(PYTHON) data/download_previews.py --max_workers 32
+	$(UV) run python data/download_previews.py --max_workers 32
 
 spectrograms:
-	$(PYTHON) data/make_spectrograms.py
+	$(UV) run python data/make_spectrograms.py
 
 data: sample previews spectrograms
 
 train:
-	torchrun --nproc_per_node=2 train.py
+	$(UV) run torchrun --nproc_per_node=2 train.py
 
 train1:
-	$(PYTHON) train.py --config configs/train.yaml
+	$(UV) run python train.py --config configs/train.yaml
 
 embed:
-	$(PYTHON) eval/embed_tracks.py --ckpt checkpoints/last.ckpt
+	$(UV) run python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
 
 viz:
-	$(PYTHON) eval/explore.py --embeddings embeddings.npy
+	$(UV) run python eval/explore.py --embeddings embeddings.npy
 
 viz-nn:
-	$(PYTHON) eval/visualize.py --embeddings embeddings.npy --tsne
+	$(UV) run python eval/visualize.py --embeddings embeddings.npy --tsne
+
+tensorboard:
+	$(UV) run tensorboard --logdir logs/
