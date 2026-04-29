@@ -56,7 +56,13 @@ def make_spectrogram(mp3_file: str, previews_dir: str, spectrograms_dir: str) ->
         log_S = np.pad(log_S, ((0, 0), (0, SLICE_FRAMES - log_S.shape[1])))
 
     img = (np.flipud(log_S) * 255).astype(np.uint8)
-    Image.fromarray(img, mode="L").save(out_path)
+    tmp_path = f"{out_path}.tmp"
+    try:
+        Image.fromarray(img, mode="L").save(tmp_path, format="PNG")
+        os.replace(tmp_path, out_path)
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
 
 
 def main():

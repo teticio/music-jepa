@@ -16,15 +16,21 @@ from tqdm import tqdm
 
 
 def download_file(track_id: str, track_url: str, previews_dir: str) -> None:
+    final_path = os.path.join(previews_dir, f"{track_id}.mp3")
+    tmp_path = f"{final_path}.tmp"
     for _ in range(3):
         try:
             response = requests.get(track_url, stream=True, timeout=15)
             if response.status_code == 200:
-                with open(os.path.join(previews_dir, f"{track_id}.mp3"), "wb") as f:
+                with open(tmp_path, "wb") as f:
                     f.write(response.content)
+                os.replace(tmp_path, final_path)
                 return
         except requests.RequestException:
             pass
+        finally:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
     print(f"  Skipping {track_id}")
 
 
