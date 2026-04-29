@@ -15,7 +15,7 @@ venv/
 env/
 
 # Data directory (keep scripts)
-data/
+data/*
 !data/*.py
 
 # Data files

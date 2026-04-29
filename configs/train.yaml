@@ -1,7 +1,7 @@
 seed: 42
 
 data:
-  playlists_file: data/playlists_sample.csv
+  playlists_file: data/playlists_dedup.csv
   spectrograms_dir: data/spectrograms
   img_size: [96, 216]        # mel bins x time frames  (native Deej-AI format)
   patch_size: [8, 8]         # -> 12x27 = 324 patches per spectrogram
