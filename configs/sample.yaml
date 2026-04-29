@@ -1,7 +1,7 @@
 seed: 42
 
 data:
-  playlists_file: data/playlists_tiny.csv
+  playlists_file: data/playlists_sample.csv
   spectrograms_dir: data/spectrograms
   img_size: [96, 216]
   patch_size: [8, 8]

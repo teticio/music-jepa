@@ -49,23 +49,35 @@ All commands below run inside the uv-managed environment via `uv run`. The
 
 ## Data pipeline
 
+Full dataset (downloads previews for every track in `data/tracks_dedup.csv`
+and computes spectrograms for all of them):
+
 ```bash
-# 1. Sample a subset of playlists and tracks from the full dataset
-make sample        # uv run python data/sample_data.py --n_playlists 2000
-
-# 2. Download 30-second MP3 previews (~350KB each) from Spotify CDN
-make previews      # uv run python data/download_previews.py
-
-# 3. Compute mel spectrograms (96 mel-bins x 216 time-frames, first 5s)
-make spectrograms  # uv run python data/make_spectrograms.py
-
-# Or all three at once:
-make data
+make data          # = make previews + make spectrograms
 ```
+
+Or step by step:
+```bash
+# 1. Download 30-second MP3 previews (~350KB each) from Spotify CDN
+make previews      # uv run python data/download_previews.py --tracks_file data/tracks_dedup.csv
+
+# 2. Compute mel spectrograms (96 mel-bins x 216 time-frames, first 5s)
+make spectrograms  # uv run python data/make_spectrograms.py
+```
+
+Sample subset (a 2000-playlist slice — fast iteration / smoke testing):
+
+```bash
+make data-sample   # = sample → previews-sample → spectrograms
+```
+
+This writes `data/playlists_sample.csv` + `data/tracks_sample.csv` and only
+downloads previews for tracks in the sample. The matching training config is
+`configs/sample.yaml`.
 
 ## Training
 
-Single GPU:
+Single GPU on the full dataset:
 ```bash
 make train1        # uv run python train.py --config configs/train.yaml
 ```
@@ -73,6 +85,11 @@ make train1        # uv run python train.py --config configs/train.yaml
 Two GPUs (recommended — 2x RTX 4090):
 ```bash
 make train         # uv run torchrun --nproc_per_node=2 train.py
+```
+
+Quick run on the sample subset (CPU-friendly, ViT-Tiny):
+```bash
+uv run python train.py --config configs/sample.yaml
 ```
 
 Resume from checkpoint:
