@@ -1,0 +1,39 @@
+seed: 42
+
+data:
+  playlists_file: data/playlists_sample.csv
+  spectrograms_dir: data/spectrograms
+  img_size: [96, 216]        # mel bins x time frames  (native Deej-AI format)
+  patch_size: [8, 8]         # -> 12x27 = 324 patches per spectrogram
+  mask_ratio: 0.75           # fraction of target patch columns masked
+  batch_size: 256
+  num_workers: 8
+  augment: true
+
+model:
+  encoder:
+    embed_dim: 384            # ViT-Small
+    depth: 12
+    num_heads: 6
+    mlp_ratio: 4.0
+    dropout: 0.0
+  predictor:
+    predictor_dim: 192        # narrower than encoder (standard JEPA design)
+    depth: 4
+    num_heads: 6
+  ema_momentum: 0.996         # rises to 0.999 via cosine schedule during training
+
+training:
+  lr: 1.5e-4
+  weight_decay: 0.05
+  warmup_epochs: 10
+  max_epochs: 100
+  std_coef: 25.0              # VICReg variance coefficient
+  cov_coef: 1.0               # VICReg covariance coefficient
+
+# Lightning Trainer kwargs (passed directly)
+trainer:
+  accelerator: gpu
+  devices: 2
+  strategy: ddp_find_unused_parameters_false
+  gradient_clip_val: 1.0

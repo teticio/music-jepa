@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Data directory (keep scripts)
+data/
+!data/*.py
+
+# Data files
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Audio / spectrograms
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.png
+*.jpg
+*.jpeg
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Training outputs
+checkpoints/
+*.log
+logs/
+runs/
+outputs/
+wandb/
+lightning_logs/
+
+# Generated files
+explore.html
+
+# IDE
+.idea/
+.vscode/
+*.swp

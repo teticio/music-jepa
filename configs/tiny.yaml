@@ -1,0 +1,38 @@
+seed: 42
+
+data:
+  playlists_file: data/playlists_tiny.csv
+  spectrograms_dir: data/spectrograms
+  img_size: [96, 216]
+  patch_size: [8, 8]
+  mask_ratio: 0.75
+  batch_size: 32
+  num_workers: 4
+  augment: false
+
+model:
+  encoder:
+    embed_dim: 192            # ViT-Tiny for quick iteration
+    depth: 6
+    num_heads: 6
+    mlp_ratio: 4.0
+    dropout: 0.0
+  predictor:
+    predictor_dim: 96
+    depth: 2
+    num_heads: 6
+  ema_momentum: 0.996
+
+training:
+  lr: 1.5e-4
+  weight_decay: 0.05
+  warmup_epochs: 2
+  max_epochs: 10
+  std_coef: 25.0
+  cov_coef: 1.0
+
+# Lightning Trainer kwargs (passed directly)
+trainer:
+  accelerator: cpu
+  devices: 1
+  gradient_clip_val: 1.0
