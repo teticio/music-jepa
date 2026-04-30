@@ -63,3 +63,4 @@ explore.html
 .idea/
 .vscode/
 *.swp
+.claude/
