@@ -6,8 +6,8 @@ data:
   img_size: [96, 216]        # mel bins x time frames  (native Deej-AI format)
   patch_size: [8, 8]         # -> 12x27 = 324 patches per spectrogram
   mask_ratio: 0.75           # fraction of target patch columns masked
-  batch_size: 256
-  num_workers: 8
+  batch_size: 64
+  num_workers: 4
   augment: true
 
 model:
@@ -37,3 +37,4 @@ trainer:
   devices: 2
   strategy: ddp_find_unused_parameters_false
   gradient_clip_val: 1.0
+  accumulate_grad_batches: 4

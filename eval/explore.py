@@ -3,34 +3,23 @@ Interactive Music JEPA embedding explorer.
 
 - 2D t-SNE scatter plot in your browser
 - Hover: shows artist and title
-- Click: plays the 30-second MP3 preview
+- Click: plays the 30-second Spotify preview from the CDN
 
 Usage:
     python eval/explore.py --embeddings embeddings.npy
-    python eval/explore.py --embeddings embeddings.npy --n_points 5000 --port 8765
+    python eval/explore.py --embeddings embeddings.npy --export   # write HTML, don't open browser
 """
 import argparse
-import http.server
 import os
-import threading
 import webbrowser
 
 import numpy as np
 import pandas as pd
 from sklearn.manifold import TSNE
 from bokeh.models import ColumnDataSource, HoverTool, TapTool, CustomJS
-from bokeh.plotting import figure, save
+from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import file_html
-
-
-def serve_files(root: str, port: int):
-    """Serve repo root over HTTP so the browser can load local MP3s."""
-    handler = http.server.SimpleHTTPRequestHandler
-    handler.log_message = lambda *a: None  # silence request logs
-    httpd = http.server.HTTPServer(("localhost", port), handler)
-    os.chdir(root)
-    httpd.serve_forever()
 
 
 def load_embeddings(path: str):
@@ -46,11 +35,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--embeddings", default="embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
-    parser.add_argument("--previews_dir", default="data/previews")
     parser.add_argument("--out", default="explore.html")
     parser.add_argument("--n_points", type=int, default=5000)
-    parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--no_browser", action="store_true")
+    parser.add_argument(
+        "--export",
+        action="store_true",
+        help="Write the HTML and exit without opening a browser. The result is a "
+             "standalone file (audio is loaded from the Spotify CDN).",
+    )
     args = parser.parse_args()
 
     tracks_df = pd.read_csv(
@@ -64,7 +56,6 @@ def main():
     ids, vecs = load_embeddings(args.embeddings)
     print(f"  {len(ids):,} tracks in {vecs.shape[1]}D space")
 
-    # Subsample if needed
     if len(ids) > args.n_points:
         idx = np.random.choice(len(ids), args.n_points, replace=False)
         ids = [ids[i] for i in idx]
@@ -73,17 +64,17 @@ def main():
     print(f"Running t-SNE on {len(ids):,} tracks...")
     coords = TSNE(n_components=2, perplexity=min(30, len(ids) // 5), random_state=42).fit_transform(vecs)
 
-    # Build data source
-    artists, titles, has_preview = [], [], []
+    artists, titles, audio_urls = [], [], []
     for tid in ids:
         if tid in tracks_df.index:
             artists.append(str(tracks_df.loc[tid, "artist"]))
             titles.append(str(tracks_df.loc[tid, "title"]))
+            url = tracks_df.loc[tid, "url"]
         else:
             artists.append("Unknown")
             titles.append("Unknown")
-        mp3_path = os.path.join(args.previews_dir, f"{tid}.mp3")
-        has_preview.append(os.path.exists(mp3_path))
+            url = None
+        audio_urls.append(str(url) if isinstance(url, str) and url else "")
 
     source = ColumnDataSource(dict(
         x=coords[:, 0].tolist(),
@@ -91,10 +82,9 @@ def main():
         track_id=ids,
         artist=artists,
         title=titles,
-        has_preview=has_preview,
+        audio_url=audio_urls,
     ))
 
-    # Plot
     p = figure(
         width=1200,
         height=800,
@@ -106,18 +96,16 @@ def main():
     p.background_fill_color = "#1a1a2e"
     p.grid.grid_line_color = "#2a2a4e"
 
-    circles = p.circle(
+    circles = p.scatter(
         "x", "y",
         source=source,
         size=6,
         color="#e94560",
         alpha=0.6,
         line_color=None,
-        # Keep non-selected dots at full opacity — no dimming on click
         nonselection_fill_alpha=0.6,
         nonselection_fill_color="#e94560",
         nonselection_line_color=None,
-        # Selected dot turns white
         selection_fill_color="#ffffff",
         selection_fill_alpha=1.0,
         selection_line_color=None,
@@ -132,17 +120,15 @@ def main():
         ],
     ))
 
-    # Click-to-play: attach to source.selected so it fires after Bokeh updates indices
-    tap_callback = CustomJS(args={"source": source, "port": args.port}, code="""
+    tap_callback = CustomJS(args={"source": source}, code="""
         const indices = source.selected.indices;
         if (!indices.length) return;
         const idx = indices[0];
         const tid = source.data['track_id'][idx];
-        const has = source.data['has_preview'][idx];
+        const url = source.data['audio_url'][idx];
         const artist = source.data['artist'][idx];
         const title  = source.data['title'][idx];
-        if (!has) { console.log('No preview for', tid); return; }
-        const url = 'http://localhost:' + port + '/data/previews/' + tid + '.mp3';
+        if (!url) { console.log('No preview for', tid); return; }
         console.log('Playing:', artist, '-', title, url);
         if (window._jepa_audio) {
             window._jepa_audio.pause();
@@ -160,22 +146,8 @@ def main():
         f.write(html)
     print(f"Saved: {args.out}")
 
-    # Serve files so browser can fetch MP3s (bypasses file:// CORS restrictions)
-    repo_root = os.path.abspath(".")
-    server_thread = threading.Thread(
-        target=serve_files, args=(repo_root, args.port), daemon=True
-    )
-    server_thread.start()
-    print(f"Serving files at http://localhost:{args.port}/")
-
-    if not args.no_browser:
-        webbrowser.open(f"http://localhost:{args.port}/{args.out}")
-
-    print("Press Ctrl-C to stop.")
-    try:
-        server_thread.join()
-    except KeyboardInterrupt:
-        pass
+    if not args.export:
+        webbrowser.open(f"file://{os.path.abspath(args.out)}")
 
 
 if __name__ == "__main__":
