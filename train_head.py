@@ -35,8 +35,9 @@ def evaluate(head, loader, device, temperature):
         target = target.to(device)
         pred = head(context)
         loss = info_nce(pred, target, temperature)
+        mean_cosine = F.cosine_similarity(pred, target, dim=-1).mean()
         losses.append(float(loss.item()))
-        cosines.append(float(F.cosine_similarity(pred, target, dim=-1).mean().item()))
+        cosines.append(float(mean_cosine.item()))
     head.train()
     return sum(losses) / max(len(losses), 1), sum(cosines) / max(len(cosines), 1)
 
