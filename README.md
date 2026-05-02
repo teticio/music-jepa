@@ -117,6 +117,33 @@ neighbours are grunge/alt-rock, Daft Punk neighbours are electronic) without hav
 engineered any music features — the signal comes entirely from playlist co-occurrence
 and audio content.
 
+## Playlist infill head
+
+Once the JEPA encoder has produced `embeddings.npy`, train a small infill head
+that learns to fill missing playlist tracks in the frozen JEPA space:
+
+```bash
+make train-head    # uv run python train_head.py --config configs/head.yaml
+```
+
+The head sees a left anchor, a right anchor, and their interpolation point; it
+predicts the missing middle-track vector. Journey generation recursively fills
+the largest remaining gap, so a long path is built from local infill decisions
+rather than one greedy left-to-right walk.
+
+```bash
+# "Join the dots" between waypoint tracks over several generated steps
+uv run python eval/generate_playlist.py \
+  --head checkpoints/infill_head.pt \
+  --journey 3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq \
+  --between 20 --noise 0.05
+```
+
+The journey mode follows the original Deej-AI idea: interpolate through the
+continuous vector space between waypoint tracks, then snap each waypoint to a real
+catalogue track. The trained head learns the correction from pure interpolation
+to "what track would plausibly be missing here?"
+
 ## Architecture
 
 | Component        | Config              |

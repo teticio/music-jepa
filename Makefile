@@ -1,6 +1,6 @@
 UV := uv
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train train1 embed viz viz-nn tensorboard help
+.PHONY: setup data data-sample sample previews previews-sample spectrograms train train1 train-head embed journey viz viz-nn tensorboard help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -10,6 +10,8 @@ help:
 	@echo "  make train         Train on 2x GPU (torchrun)"
 	@echo "  make train1        Train on 1x GPU"
 	@echo "  make embed         Extract embeddings from last checkpoint"
+	@echo "  make train-head    Train infill head on missing playlist tracks"
+	@echo "  make journey       Fill a journey between waypoint track IDs"
 	@echo "  make viz           Nearest-neighbour report + t-SNE"
 	@echo "  make tensorboard   Launch TensorBoard on logs/"
 
@@ -46,6 +48,12 @@ train1:
 
 embed:
 	$(UV) run python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
+
+train-head:
+	$(UV) run python train_head.py --config configs/head.yaml
+
+journey:
+	$(UV) run python eval/generate_playlist.py --head checkpoints/infill_head.pt --journey $(JOURNEY)
 
 viz:
 	$(UV) run python eval/explore.py --embeddings embeddings.npy
