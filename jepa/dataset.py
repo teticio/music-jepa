@@ -40,10 +40,13 @@ class PlaylistDataset(Dataset):
         available = set(
             f[:-4] for f in os.listdir(spectrograms_dir) if f.endswith(".png")
         )
+        self.available_track_count = len(available)
 
         self.playlists: List[List[str]] = []
+        self.raw_playlist_count = 0
         with open(playlists_file) as f:
             for line in f:
+                self.raw_playlist_count += 1
                 tracks = [t.strip() for t in line.strip().split(",")]
                 tracks = [t for t in tracks if t in available]
                 if len(tracks) >= min_playlist_len:
