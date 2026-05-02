@@ -42,16 +42,14 @@ def load_track2vec(model_dir: str):
     ids = list(data.keys())
     vecs = normalize_vecs(np.stack([data[k] for k in ids]).astype("float32"))
     metadata = {}
-    metadata_dirs = [model_path, Path("../deej-ai.online-app/model")]
-    for metadata_dir in metadata_dirs:
-        tracks_path = metadata_dir / "spotify_tracks.p"
-        urls_path = metadata_dir / "spotify_urls.p"
-        if "tracks" not in metadata and tracks_path.exists():
-            with tracks_path.open("rb") as f:
-                metadata["tracks"] = pickle.load(f)
-        if "urls" not in metadata and urls_path.exists():
-            with urls_path.open("rb") as f:
-                metadata["urls"] = pickle.load(f)
+    tracks_path = model_path / "spotify_tracks.p"
+    urls_path = model_path / "spotify_urls.p"
+    if tracks_path.exists():
+        with tracks_path.open("rb") as f:
+            metadata["tracks"] = pickle.load(f)
+    if urls_path.exists():
+        with urls_path.open("rb") as f:
+            metadata["urls"] = pickle.load(f)
     return ids, vecs, metadata
 
 
@@ -115,11 +113,19 @@ def generate_continuation(
     size: int,
     max_history: int,
     noise: float,
+    drift: float,
     device: str,
 ) -> List[str]:
     playlist = list(seeds)
+    drift = min(max(drift, 0.0), 1.0)
     while len(playlist) < size:
-        query = predict_next(head, playlist, emb, max_history, device)
+        pred = predict_next(head, playlist, emb, max_history, device)
+        if drift > 0:
+            recent = playlist[-max_history:]
+            anchor = np.stack([emb[tid] for tid in recent]).mean(axis=0)
+            query = (1 - drift) * pred + drift * anchor
+        else:
+            query = pred
         candidates = rank_tracks(query, ids, vecs, exclude=playlist, top_k=100)
         playlist.append(choose(candidates, noise)[0])
     return playlist
@@ -537,13 +543,19 @@ def main():
     parser.add_argument("--head", default=None)
     parser.add_argument("--method", choices=["head", "embeddings", "track2vec"], default="head")
     parser.add_argument("--embeddings", default="embeddings.npy")
-    parser.add_argument("--track2vec_model_dir", default="data/deejai")
-    parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
+    parser.add_argument("--track2vec_model_dir", default="../deej-ai.online-app/model")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--seeds", nargs="*", default=None)
     parser.add_argument("--journey", nargs="+", default=None, help="Two or more waypoint track IDs")
     parser.add_argument("--size", type=int, default=20)
     parser.add_argument("--between", type=int, default=9)
     parser.add_argument("--noise", type=float, default=0.0)
+    parser.add_argument(
+        "--drift",
+        type=float,
+        default=0.0,
+        help="For continuation heads, blend head prediction toward recent embedding mean: 0=head, 1=embeddings.",
+    )
     parser.add_argument("--head_weight", type=float, default=0.35)
     parser.add_argument("--out_m3u", default=None)
     parser.add_argument("--out_html", default=None)
@@ -635,6 +647,7 @@ def main():
                 size=args.size,
                 max_history=max_history,
                 noise=args.noise,
+                drift=args.drift,
                 device=args.device,
             )
 

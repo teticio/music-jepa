@@ -3,7 +3,7 @@ Download 30-second Spotify MP3 preview clips for a set of tracks.
 
 Usage:
     python data/download_previews.py
-    python data/download_previews.py --tracks_file data/tracks_sample.csv --max_workers 16
+    python data/download_previews.py --tracks_file data/tracks_dedup.csv --max_workers 16
 """
 import argparse
 import concurrent.futures
@@ -36,7 +36,7 @@ def download_file(track_id: str, track_url: str, previews_dir: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--previews_dir", default="data/previews")
     parser.add_argument("--max_workers", type=int, default=min(32, (os.cpu_count() or 1) * 4))
     args = parser.parse_args()

@@ -23,14 +23,22 @@ the architecture doc move, update the doc in the same change.
 - Encoder training uses `torchrun`; GPU process count comes from
   `NPROC_PER_NODE` in local `.env`, defaulting to 2.
 - `make train` resumes from `$(CHECKPOINT_DIR)/last.ckpt` when it exists.
-- Make checkpoint paths use `CHECKPOINT_DIR`, defaulting to `checkpoints`.
-  Use `CHECKPOINT_DIR=checkpoints-sample` for the old sample artifacts.
+
+## Configuration / mode switching
+
+- `.env` (gitignored) overrides Makefile defaults. `.env.example` documents the
+  full and sample presets — copy it to `.env` to start.
+- The Make-level knobs are `CHECKPOINT_DIR`, `TRAIN_CONFIG`, `HEAD_CONT_CONFIG`,
+  `HEAD_INFIL_CONFIG`, `TRACKS_FILE`. Defaults target the full dataset. Switch
+  to the sample preset by uncommenting the sample block in `.env`.
+- Per-command override also works: `make train TRAIN_CONFIG=configs/sample.yaml`.
 
 ## Data Layout
 
-- Full dataset: `data/tracks_dedup.csv` and `data/playlists_dedup.csv`.
+- Full dataset: `data/tracks_dedup.csv` and `data/playlists_dedup.csv` (default).
 - Sample dataset: `data/tracks_sample.csv` and `data/playlists_sample.csv`.
-- Use `make data-sample` for iteration and smoke tests.
+- Use `make data-sample` to bootstrap the sample CSVs (`--n_playlists 2000`),
+  download their previews, and compute spectrograms in one shot.
 - Track/playlists CSVs have no header. Track CSV columns are
   `artist,title,url,count`.
 - `embeddings.npy` is a pickled dict-like NumPy file mapping track ID to vector.
@@ -38,8 +46,9 @@ the architecture doc move, update the doc in the same change.
 ## Playlist Workflows
 
 - Train heads with `make train-head-cont` and `make train-head-infil`.
-- Head configs currently use the sample playlist CSV so playlist rows align with
-  tracks that have previews, spectrograms, and embeddings.
+- Head configs default to the dedup playlist CSV. Sample variants live next to
+  them as `configs/head_*_sample.yaml` and are activated via `HEAD_CONT_CONFIG`
+  / `HEAD_INFIL_CONFIG` (see `.env.example`).
 - `make playlist SEEDS="..."` uses the continuation head and writes
   `outputs/playlist.html`.
 - `make journey JOURNEY="..."` uses the infill head and writes
@@ -47,7 +56,7 @@ the architecture doc move, update the doc in the same change.
 - Add `METHOD=embeddings` to `make playlist` or `make journey` to bypass heads
   and use the raw JEPA embedding baseline.
 - Add `METHOD=track2vec` to use Deej-AI's Track2Vec-only baseline from
-  `data/deejai/tracktovec.p`.
+  `../deej-ai.online-app/model/tracktovec.p`.
 - Generated playlist/journey HTML includes preview audio controls and a
   "Play all previews" button.
 - `make examples` writes head, embeddings, and Track2Vec examples under

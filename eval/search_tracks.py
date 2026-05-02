@@ -15,7 +15,7 @@ from jepa.playlist_head import load_tracks
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--query", required=True, help="Search text, matched against artist/title/id")
-    parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--embeddings", default="embeddings.npy")
     parser.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()

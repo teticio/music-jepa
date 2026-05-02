@@ -35,7 +35,7 @@ def load_embeddings(path: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--embeddings", default="embeddings.npy")
-    parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--out", default="outputs/explore.html")
     parser.add_argument("--n_points", type=int, default=5000)
     parser.add_argument(

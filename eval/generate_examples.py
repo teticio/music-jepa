@@ -9,8 +9,24 @@ import subprocess
 from pathlib import Path
 
 
+ELECTRONIC_SEEDS = [
+    "69kOkLUCkxIZYexIgSG8rq",
+]  # Daft Punk - Get Lucky
+
+HEAD_CONTINUATION_DRIFT_EXAMPLES = [
+    ("electronic_drift_0", ELECTRONIC_SEEDS, 0.0),
+    ("electronic_drift_35", ELECTRONIC_SEEDS, 0.35),
+    ("electronic_drift_70", ELECTRONIC_SEEDS, 0.70),
+]
+
+HEAD_CONTINUATION_NOISE_EXAMPLES = [
+    ("electronic_noise_0", ELECTRONIC_SEEDS, 0.0, 0.0),
+    ("electronic_noise_25", ELECTRONIC_SEEDS, 0.0, 0.25),
+    ("electronic_noise_50", ELECTRONIC_SEEDS, 0.0, 0.50),
+]
+
 CONTINUATION_EXAMPLES = [
-    ("electronic", ["69kOkLUCkxIZYexIgSG8rq"]),  # Daft Punk - Get Lucky
+    ("electronic", ELECTRONIC_SEEDS),
     ("rock", ["4CeeEOM32jQcH3eN9Q2dGj"]),  # Nirvana - Smells Like Teen Spirit
     ("reggae", ["75FYqcxt1YEAtqDLrOeIJn"]),  # Bob Marley - Three Little Birds
     ("jazz", ["6oVY50pmdXqLNVeK8bzomn"]),  # John Coltrane - My Favorite Things
@@ -173,6 +189,12 @@ def write_index(out_dir: Path) -> None:
     (out_dir / "index.html").write_text(html)
 
 
+def clean_generated_examples(out_dir: Path) -> None:
+    for pattern in ("playlist_*.html", "journey_*.html"):
+        for path in out_dir.glob(pattern):
+            path.unlink()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out_dir", default="outputs/examples")
@@ -182,6 +204,7 @@ def main():
     parser.add_argument("--device", default=None)
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -190,14 +213,23 @@ def main():
         write_index(out_dir)
         print(f"Wrote {out_dir / 'index.html'}")
         return
+    clean_generated_examples(out_dir)
 
-    base = ["uv", "run", "python", "eval/generate_playlist.py"]
+    base = ["uv", "run", "python", "eval/generate_playlist.py", "--tracks_file", args.tracks_file]
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)
     cont_head = checkpoint_dir / "continuation_head.pt"
     if cont_head.exists():
-        for name, seeds in CONTINUATION_EXAMPLES:
+        head_examples = [
+            (name, seeds, drift, args.noise)
+            for name, seeds, drift in HEAD_CONTINUATION_DRIFT_EXAMPLES
+        ] + HEAD_CONTINUATION_NOISE_EXAMPLES + [
+            (name, seeds, 0.0, args.noise)
+            for name, seeds in CONTINUATION_EXAMPLES
+            if name != "electronic"
+        ]
+        for name, seeds, drift, noise in head_examples:
             run(
                 base
                 + [
@@ -208,7 +240,9 @@ def main():
                     "--size",
                     str(args.size),
                     "--noise",
-                    str(args.noise),
+                    str(noise),
+                    "--drift",
+                    str(drift),
                     "--out_html",
                     str(out_dir / f"playlist_{name}.html"),
                 ]

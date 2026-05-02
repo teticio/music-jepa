@@ -535,12 +535,16 @@ epochs and use validation-loss early stopping (`early_stopping_patience` and
 overfitting.
 
 Only playlists with **10–30 tracks** are used for head training
-(`min_playlist_len` / `max_playlist_len` in the head configs). The current head
-configs use `data/playlists_sample.csv`, not `data/playlists_dedup.csv`, because
-the sample playlist set is aligned with the tracks that already have extracted
-embeddings. Using the full dedup playlist file before the full catalogue has
-embeddings would force the loader to drop many missing track IDs and train on
-chopped-up playlist fragments.
+(`min_playlist_len` / `max_playlist_len` in the head configs). The default head
+configs use `data/playlists_dedup.csv`, matching the encoder training set. For
+quick iteration on the sample subset there are parallel
+`configs/head_continuation_sample.yaml` and `configs/head_infil_sample.yaml`
+configs pointing at `data/playlists_sample.csv`; activate them via
+`HEAD_CONT_CONFIG` / `HEAD_INFIL_CONFIG` in `.env` (see `.env.example`).
+Pointing at the full dedup playlist file before the full catalogue has
+embeddings forces the loader to drop missing track IDs and train on chopped-up
+playlist fragments — only run head training after `make embed` covers the
+catalogue you point the head at.
 
 Short playlists lack context; very long playlists tend to be grab-bags with weak
 track-to-track coherence — noisier training signal than the JEPA encoder sees,
@@ -594,8 +598,9 @@ the nearest catalogue track. This is useful for judging whether a trained head
 is adding useful playlist structure beyond the raw JEPA space.
 
 `METHOD=track2vec` uses Deej-AI's `tracktovec.p` vectors from
-`data/deejai/tracktovec.p` as a collaborative Track2Vec baseline. It uses
-Track2Vec only — the old Deej-AI audio/Spotify embedding is not blended in.
+`../deej-ai.online-app/model/tracktovec.p` as a collaborative Track2Vec
+baseline. It uses Track2Vec only — the old Deej-AI audio/Spotify embedding is
+not blended in.
 
 Track IDs can be found locally with:
 

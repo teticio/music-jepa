@@ -2,10 +2,10 @@ seed: 42
 
 data:
   embeddings_file: embeddings.npy
-  playlists_file: data/playlists_dedup.csv
+  playlists_file: data/playlists_sample.csv
   # continuation: seed playlist -> next track
   # infill: left/right playlist anchors -> missing middle track
-  task: infill
+  task: continuation
   max_history: 3
   max_span: 32
   min_playlist_len: 10
@@ -17,8 +17,8 @@ data:
 model:
   hidden_dim: 1024
   dropout: 0.1
-  # For infill, residual around the interpolation vector. For continuation, use first.
-  residual_source: third
+  # Continuation predicts a residual around the most recent track embedding.
+  residual_source: first
 
 training:
   epochs: 100
@@ -28,4 +28,4 @@ training:
   grad_clip: 1.0
   early_stopping_patience: 8
   early_stopping_min_delta: 0.001
-  out: checkpoints/infill_head.pt
+  out: checkpoints/continuation_head.pt

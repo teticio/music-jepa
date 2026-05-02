@@ -47,6 +47,38 @@ All commands below run inside the uv-managed environment via `uv run`. The
 `Makefile` wraps each step; you can also invoke them directly with
 `uv run python <script>`.
 
+## Configuration
+
+The Makefile reads optional overrides from a local `.env` file (gitignored).
+Copy `.env.example` to `.env` and uncomment what you need:
+
+```bash
+cp .env.example .env
+```
+
+Defaults target the **full dataset**:
+
+| Variable           | Default                              | Purpose                                     |
+|--------------------|--------------------------------------|---------------------------------------------|
+| `CHECKPOINT_DIR`   | `checkpoints`                        | Where checkpoints are read/written          |
+| `TRAIN_CONFIG`     | `configs/train.yaml`                 | Encoder training + embedding extraction     |
+| `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml`     | Continuation-head training                  |
+| `HEAD_INFIL_CONFIG`| `configs/head_infil.yaml`            | Infill-head training                        |
+| `TRACKS_FILE`      | `data/tracks_dedup.csv`              | Track metadata for eval / playlist scripts  |
+| `NPROC_PER_NODE`   | `2`                                  | GPU process count for `torchrun`            |
+
+To switch to the sample preset, uncomment the sample block in `.env`:
+
+```bash
+CHECKPOINT_DIR=checkpoints-sample
+TRAIN_CONFIG=configs/sample.yaml
+HEAD_CONT_CONFIG=configs/head_continuation_sample.yaml
+HEAD_INFIL_CONFIG=configs/head_infil_sample.yaml
+TRACKS_FILE=data/tracks_sample.csv
+```
+
+You can also override per-command, e.g. `make train CHECKPOINT_DIR=checkpoints-foo`.
+
 ## Data pipeline
 
 Full dataset (downloads previews for every track in `data/tracks_dedup.csv`
@@ -72,33 +104,23 @@ make data-sample   # = sample → previews-sample → spectrograms
 ```
 
 This writes `data/playlists_sample.csv` + `data/tracks_sample.csv` and only
-downloads previews for tracks in the sample. The matching training config is
-`configs/sample.yaml`.
+downloads previews for tracks in the sample. To use the sample subset across
+all later targets (training, eval, playlists), point your `.env` at the sample
+preset described in the [Configuration](#configuration) section.
 
 ## Training
 
-Encoder training uses `torchrun`. The number of GPU worker processes comes from
-`NPROC_PER_NODE` in your local `.env` file, which is ignored by git:
+Encoder training uses `torchrun`. The Makefile passes `--config $(TRAIN_CONFIG)`
+through to `train.py`, so swapping training configs is a one-line `.env`
+override (or a per-command flag).
 
-```bash
-NPROC_PER_NODE=2
-```
-
-Checkpoint paths are controlled by `CHECKPOINT_DIR`, defaulting to
-`checkpoints`. For example, use `CHECKPOINT_DIR=checkpoints-sample` to keep
-using an older sample run while training a new full-run checkpoint directory.
-
-Train on the full dataset. If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train`
-resumes from it automatically:
+If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train` resumes from it
+automatically:
 
 ```bash
 make train
 make train CHECKPOINT_DIR=checkpoints-full
-```
-
-Quick run on the sample subset (CPU-friendly, ViT-Tiny):
-```bash
-uv run python train.py --config configs/sample.yaml
+make train TRAIN_CONFIG=configs/sample.yaml CHECKPOINT_DIR=checkpoints-sample
 ```
 
 Manual resume from a specific checkpoint:
@@ -136,28 +158,38 @@ and audio content.
 ## Playlist heads
 
 Once the JEPA encoder has produced `embeddings.npy`, train lightweight heads in
-the frozen JEPA space. The current head configs use `data/playlists_sample.csv`
-so training stays aligned with the tracks that already have previews,
-spectrograms, and embeddings.
+the frozen JEPA space. Head training uses `$(HEAD_CONT_CONFIG)` /
+`$(HEAD_INFIL_CONFIG)`, which default to the full-dataset configs
+(`configs/head_continuation.yaml` and `configs/head_infil.yaml`). Sample
+variants live alongside them with the `_sample.yaml` suffix and are picked up
+automatically when the sample preset is active in `.env`.
 
 ```bash
-make train-head-cont    # configs/head_continuation.yaml
-make train-head-infil   # configs/head_infil.yaml
-make train-head-cont CHECKPOINT_DIR=checkpoints-sample
+make train-head-cont
+make train-head-infil
+make train-head-cont HEAD_CONT_CONFIG=configs/head_continuation_sample.yaml \
+                     CHECKPOINT_DIR=checkpoints-sample
 ```
 
 The continuation head predicts the next track from seed history. Use it for
 open-ended playlist generation. `METHOD=head` is the default. Use
 `METHOD=embeddings` to compare against a raw JEPA nearest-neighbour baseline,
 or `METHOD=track2vec` to compare against Deej-AI's Track2Vec collaborative
-baseline from `data/deejai/tracktovec.p`:
+baseline from `../deej-ai.online-app/model/tracktovec.p`:
 
 ```bash
 make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make playlist DRIFT=0.35 SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make playlist METHOD=track2vec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make playlist CHECKPOINT_DIR=checkpoints-sample SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 ```
+
+For continuation heads, `DRIFT=0` uses the head prediction directly. Higher
+values blend that prediction toward the recent-history embedding mean; `DRIFT=1`
+is equivalent to asking the head to behave like the raw rolling-embedding
+continuation. Raw embeddings and Track2Vec continuations already use that
+rolling mean directly.
 
 The infill head sees a left anchor, a right anchor, and their interpolation
 point; it predicts the missing middle-track vector. Use it for waypoint
@@ -188,7 +220,9 @@ for example
 `playlist_classical_embeddings.html` and
 `journey_classical_jazz_funk_disco_house_techno_track2vec.html`. It also
 writes `outputs/examples/index.html`, which links to all generated example
-pages.
+pages. The head continuation gallery includes electronic examples at several
+drift and noise values, named like `playlist_electronic_drift_35.html` and
+`playlist_electronic_noise_25.html`.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
 continuous vector space between waypoint tracks, then snap each waypoint to a real

@@ -3,13 +3,13 @@ Visualise Music JEPA embeddings: t-SNE plot and nearest-neighbour report.
 
 Usage:
     # Nearest-neighbour search for specific tracks
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_sample.csv
+    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv
 
     # t-SNE plot (saved to tsne.png)
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_sample.csv --tsne
+    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv --tsne
 
     # Probe specific tracks by Spotify ID
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_sample.csv \
+    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv \
         --probes 3EYOJ48Et32uATr9ZmLnAo 4CeeEOM32jQcH3eN9Q2dGj
 """
 import argparse
@@ -65,7 +65,7 @@ def tsne_plot(ids, vecs, tracks_df, out_path="tsne.png", n_points=3000):
     sub_vecs = vecs[idx]
 
     print(f"Running t-SNE on {n} tracks...")
-    coords = TSNE(n_components=2, perplexity=30, random_state=42, n_iter=1000).fit_transform(sub_vecs)
+    coords = TSNE(n_components=2, perplexity=30, random_state=42, max_iter=1000).fit_transform(sub_vecs)
 
     fig, ax = plt.subplots(figsize=(14, 10))
     ax.scatter(coords[:, 0], coords[:, 1], s=3, alpha=0.4, linewidths=0)
@@ -79,7 +79,7 @@ def tsne_plot(ids, vecs, tracks_df, out_path="tsne.png", n_points=3000):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--embeddings", default="embeddings.npy")
-    parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
+    parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--probes", nargs="*", default=None)
     parser.add_argument("--top_k", type=int, default=10)
     parser.add_argument("--tsne", action="store_true")

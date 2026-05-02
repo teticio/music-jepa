@@ -2,7 +2,7 @@ seed: 42
 
 data:
   embeddings_file: embeddings.npy
-  playlists_file: data/playlists_dedup.csv
+  playlists_file: data/playlists_sample.csv
   # continuation: seed playlist -> next track
   # infill: left/right playlist anchors -> missing middle track
   task: infill
