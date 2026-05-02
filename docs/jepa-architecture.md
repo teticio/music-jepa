@@ -10,29 +10,28 @@ Code references point to the live source files; update them if the files move.
 ```
 TRAINING (one step)
 
- Playlist: [... track_N,    track_N+1 ...]
-                  │                │
-          context spec       target spec
-          (1, 96, 216)      (1, 96, 216)
-                  │                │
-    ┌─────────────┴──┐   ┌─────────┴──────────┐
-    │  Patch Embed   │   │    Patch Embed      │
-    │  8×8 patches   │   │    8×8 patches      │
-    │  → 324 × 384d  │   │    → 324 × 384d     │
-    └──────┬─────────┘   └──────┬──────────────┘
-           │ (B,324,384)        │
-    ┌──────┴─────────┐   ┌──────┴──────────────┐
-    │ Context ViT-S  │   │   Target ViT-S       │ ← EMA copy, no grad
-    │ 12L · 6H · 384d│   │   12L · 6H · 384d   │
-    └──────┬─────────┘   └──────┬──────────────┘
-           │                    │ gather M=240
-           │              (B, 240, 384) ─────────────┐
-    ┌──────┴─────────┐          │                    │
-    │   Predictor    │ ← positional query             │
-    │  4L · 6H · 192d│   tokens for 240 positions    │
-    └──────┬─────────┘                               │
-           │ (B, 240, 384) predicted                 │
-           └──────────────── MSE loss ───────────────┘
+ Playlist: [... track_N,      track_N+1 ...]
+                   │                 │
+           context spec        target spec
+           (1, 96, 216)       (1, 96, 216)
+                   │                 │
+        ┌──────────┴──────┐   ┌──────┴──────────┐
+        │   Patch Embed   │   │   Patch Embed   │
+        │  8×8 → 324×384d │   │  8×8 → 324×384d │
+        └──────────┬──────┘   └──────┬──────────┘
+                   │                 │
+        ┌──────────┴──────┐   ┌──────┴──────────┐
+        │  Context ViT-S  │   │  Target ViT-S   │ ← EMA copy, no grad
+        │  12L · 6H · 384d│   │  12L · 6H · 384d│
+        └──────────┬──────┘   └──────┬──────────┘
+             (B,324,384)             │ gather M=240
+                   │          (B,240,384) ──────────┐
+        ┌──────────┴──────┐         │               │
+        │    Predictor    │ ← positional queries    │
+        │  4L · 6H · 192d │   for 240 positions     │
+        └──────────┬──────┘                         │
+             (B,240,384)                            │
+                   └──────── MSE loss ──────────────┘
                                  +
                            VICReg loss
                       (on mean-pooled targets)
@@ -41,14 +40,15 @@ TRAINING (one step)
 INFERENCE (embedding extraction)
 
  spectrogram (1, 96, 216)
-           │
-    ┌──────┴─────────┐
-    │ Context ViT-S  │
-    └──────┬─────────┘
-           │ (B, 324, 384)
-      mean pool over 324 patches
-           │
-    track embedding (B, 384)  →  saved to embeddings.npy
+                │
+        ┌───────┴─────────┐
+        │  Context ViT-S  │
+        └───────┬─────────┘
+           (B, 324, 384)
+                │
+        mean pool over 324 patches
+                │
+        track embedding (B, 384)  →  embeddings.npy
 ```
 
 ---
@@ -442,71 +442,12 @@ head (as in BERT).
 
 ---
 
-## 10. Open questions and future directions
-
-### Using the full 30 seconds
-
-Currently only the first 5s of each 30s preview is used, giving one embedding
-per track. Three options for using more of the audio:
-
-All options below require changing the data pipeline to generate spectrograms for
-the **full 30 seconds** rather than just the first 5s. Currently
-`data/make_spectrograms.py` writes one 96×216 PNG per track (first 5s only);
-it would need to write six 96×216 PNGs per track (one per non-overlapping 5s
-window) or one 96×1296 PNG covering the full 30s.
-
-**Option A — random crop training, multi-window average inference.**
-During training, randomly crop a 5s window (the augmentation already does
-something like this). At inference, extract embeddings for all 6 non-overlapping
-5s windows and mean-pool them. No architecture change; captures more of the track
-at moderate extra cost. Does not weight distinctive moments over generic ones.
-
-**Option B — TF-IDF weighted aggregation.** Extension of A. For each track,
-extract 6 window embeddings. Then, borrowing from Deej-AI's MP3ToVec step,
-apply TF-IDF weighting across the catalogue:
-
-- **TF (term frequency):** within a track, count how many of that track's 6
-  windows are within epsilon cosine distance of each other. Windows that cluster
-  together dominate the track's sound and get upweighted.
-- **IDF (inverse document frequency):** across all tracks, count how many
-  distinct tracks contain a similar window vector. Vectors that appear in many
-  tracks are generic (common chord patterns, silence) and get downweighted.
-
-The final embedding is the TF-IDF weighted sum of the 6 window vectors. This
-upweights what is acoustically distinctive about the track and suppresses generic
-textures — the `epsilon` threshold controlling how coarsely "the same" is
-defined becomes a knob between global/genre character (large epsilon, more
-averaging) and local texture (small epsilon, more specificity).
-
-The Deej-AI implementation of this is in
-`/Users/teticio/ML/Deej-AI/train/calc_tfidf.py` and can be adapted directly.
-Main cost: the O(n²) pairwise distance computation across all window vectors in
-a batch — managed by processing in batches of ~1000 tracks.
-
-**Option C — hierarchical encoder.** Encode each 5s window to a single 384-d
-vector, then run a small second transformer over the 6 resulting vectors. The
-outer transformer integrates temporal structure across the full 30s. More
-expressive than A/B; requires a new training objective and meaningful additional
-work.
-
-**Option D — full 30s as one sequence.** All 6 windows as one 1944-token
-sequence through one big transformer. Maximally expressive but self-attention
-is O(n²): 1944 tokens is 36× more expensive than 324, likely prohibitive without
-efficient attention on current hardware.
-
-**Recommendation:** A is the cheapest entry point (inference-time change only,
-after extending the spectrogram pipeline). B adds meaningful signal with no
-architecture change. C is the right long-term answer if temporal track structure
-matters for the downstream use case.
-
----
-
-## 11. The playlist head (`playlist-head` branch)
+## 10. The playlist head
 
 Once the JEPA encoder is frozen and embeddings are extracted to `embeddings.npy`,
 a lightweight **playlist head** can be trained on top to generate playlists
 directly from the embedding space. Code lives in `jepa/playlist_head.py` and
-`train_head.py` on the `playlist-head` branch.
+`train_head.py`.
 
 ### Two tasks
 
@@ -533,40 +474,47 @@ the gap the missing track sits.
 CONTINUATION HEAD
 
  history: [track_1, ..., track_k]   (k ≤ max_history=3)
-           │  look up embeddings
-    ┌──────┴──────────────────────────────┐
-    │  [last | mean | drift]  (1152d)     │
-    └──────┬──────────────────────────────┘
-           │
-    ┌──────┴──────────────────────┐
-    │  PlaylistHead MLP           │  LayerNorm
-    │  1152 → 1024 → 1024 → 384  │  → Linear → GELU → Dropout (×2) → Linear
-    └──────┬──────────────────────┘
-           │ + residual (last track embedding)
-      L2 normalise
-           │
-    predicted next-track embedding (384d)
-           │
-    cosine search over catalogue → top-k → sample
+                    │
+              look up embeddings
+                    │
+         ┌──────────┴──────────────────┐
+         │  [last | mean | drift]      │  (1152d = 3 × 384d)
+         └──────────┬──────────────────┘
+                    │
+         ┌──────────┴──────────────────┐
+         │      PlaylistHead MLP       │
+         │  LayerNorm                  │
+         │  Linear(1152→1024) → GELU  │
+         │  Linear(1024→1024) → GELU  │
+         │  Linear(1024→384)           │
+         └──────────┬──────────────────┘
+                    │ + residual (last track embedding)
+               L2 normalise
+                    │
+         predicted next-track embedding (384d)
+                    │
+         cosine search over catalogue → top-k → sample
 
 
 INFILL HEAD
 
- left track ──────────── right track
-      │    alpha = position fraction    │
-   embed                            embed
-      └────────────┬──────────────────┘
-    ┌──────────────┴────────────────────┐
-    │  [left | right | interp]  (1152d) │
-    └──────┬────────────────────────────┘
-           │
-    ┌──────┴──────────────────────┐
-    │  PlaylistHead MLP           │  (same architecture)
-    └──────┬──────────────────────┘
-           │ + residual (interpolation vector)
-      L2 normalise
-           │
-    predicted missing-track embedding (384d)
+  left track                  right track
+      │                            │
+   embed                        embed     alpha = position fraction
+      │                            │
+      └──────────────┬─────────────┘
+                     │
+         ┌───────────┴─────────────────┐
+         │  [left | right | interp]    │  (1152d = 3 × 384d)
+         └───────────┬─────────────────┘
+                     │
+         ┌───────────┴─────────────────┐
+         │      PlaylistHead MLP       │  (same weights)
+         └───────────┬─────────────────┘
+                     │ + residual (interpolation vector)
+                L2 normalise
+                     │
+         predicted missing-track embedding (384d)
 ```
 
 ### Residual connection
@@ -611,7 +559,49 @@ introducing variety without losing coherence.
 
 ---
 
-## 12. Open question: creativity knob
+## 11. Future directions
+
+### Using the full 30 seconds
+
+Currently only the first 5s of each 30s preview is used, giving one embedding
+per track. All options below first require extending `data/make_spectrograms.py`
+to write six 96×216 PNGs per track (one per non-overlapping 5s window) rather
+than a single first-5s PNG.
+
+**Option A — multi-window average inference (no architecture change).**
+At inference, extract embeddings for all 6 windows and mean-pool them. Captures
+more of the track at moderate extra cost; does not weight distinctive moments
+over generic ones.
+
+**Option B — TF-IDF weighted aggregation.** Extension of A. Apply TF-IDF
+weighting across the 6 window embeddings per track:
+
+- **TF (term frequency):** within a track, count how many of its 6 windows are
+  within epsilon cosine distance of each other. Recurring windows dominate the
+  track's sound and are weighted up.
+- **IDF (inverse document frequency):** across all tracks, count how many tracks
+  contain a similar window vector. Generic vectors (common chord patterns,
+  silence) appear in many tracks and are weighted down.
+
+The final embedding is the TF-IDF weighted sum of the 6 window vectors. The
+`epsilon` threshold becomes a knob: large epsilon → more averaging → global/genre
+character; small epsilon → finer discrimination → local texture and feel. A
+reference implementation is in `/Users/teticio/ML/Deej-AI/train/calc_tfidf.py`.
+
+**Option C — hierarchical encoder.** Encode each 5s window to a 384-d vector,
+then run a small second transformer over the 6 resulting vectors to integrate
+temporal structure across the full 30s. More expressive than A/B; requires a
+new training objective.
+
+**Option D — full 30s as one sequence.** All 6 windows as one 1944-token
+sequence. Maximally expressive but self-attention is O(n²): 36× more expensive
+than 324 tokens, likely prohibitive without efficient attention variants.
+
+**Recommendation:** A is the cheapest entry point. B adds meaningful signal with
+no architecture change. C is the right long-term answer if temporal track
+structure matters.
+
+### Creativity knob (collaborative vs audio signal)
 
 Deej-AI's creativity knob interpolates between a **collaborative embedding**
 (Word2Vec on playlist track IDs — "fans of X also listen to Y") and an **audio
