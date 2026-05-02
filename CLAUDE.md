@@ -11,7 +11,11 @@ patch-level representation of track N+1 from track N, with an EMA target
 encoder and VICReg regularisation to prevent collapse.
 
 The README has the architecture diagram and is up to date — read it for
-conceptual orientation rather than re-deriving.
+conceptual orientation rather than re-deriving. For a deep walkthrough of every
+component with intuition and Q&A, see `docs/jepa-architecture.md`. If you move
+or rename any source file referenced there (jepa/vit.py, jepa/model.py,
+jepa/loss.py, jepa/dataset.py, configs/train.yaml), update the line references
+in that doc.
 
 ## Tooling
 
