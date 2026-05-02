@@ -437,7 +437,7 @@ head (as in BERT).
 
 > **Note:** the target encoder typically produces slightly better embeddings
 > because EMA smoothing acts as ensembling over many past model states. Switching
-> `embed_tracks.py` to use `model.target_encoder` instead of `model.encoder` is
+> `eval/embed_tracks.py` to use `model.target_encoder` instead of `model.encoder` is
 > a one-line change worth trying.
 
 ---
@@ -473,48 +473,48 @@ the gap the missing track sits.
 ```
 CONTINUATION HEAD
 
- history: [track_1, ..., track_k]   (k ≤ max_history=3)
-                    │
-              look up embeddings
-                    │
-         ┌──────────┴──────────────────┐
-         │  [last | mean | drift]      │  (1152d = 3 × 384d)
-         └──────────┬──────────────────┘
-                    │
-         ┌──────────┴──────────────────┐
-         │      PlaylistHead MLP       │
-         │  LayerNorm                  │
-         │  Linear(1152→1024) → GELU  │
-         │  Linear(1024→1024) → GELU  │
-         │  Linear(1024→384)           │
-         └──────────┬──────────────────┘
-                    │ + residual (last track embedding)
-               L2 normalise
-                    │
-         predicted next-track embedding (384d)
-                    │
-         cosine search over catalogue → top-k → sample
+  history: [track_1, ..., track_k]   (k ≤ max_history)
+                      │
+            look up JEPA embeddings
+                      │
+          ┌───────────┴───────────────┐
+          │  [last | mean | drift]    │  (1152d = 3 × 384d)
+          └───────────┬───────────────┘
+                      │
+          ┌───────────┴───────────────┐
+          │    PlaylistHead MLP       │
+          │  LayerNorm                │
+          │  1152 → 1024 → GELU       │
+          │  1024 → 1024 → GELU       │
+          │  1024 → 384               │
+          └───────────┬───────────────┘
+                      │  + residual (last embedding)
+                 L2 normalise
+                      │
+          predicted next-track embedding (384d)
+                      │
+          cosine search → top-k → sample
 
 
 INFILL HEAD
 
-  left track                  right track
-      │                            │
-   embed                        embed     alpha = position fraction
-      │                            │
-      └──────────────┬─────────────┘
-                     │
-         ┌───────────┴─────────────────┐
-         │  [left | right | interp]    │  (1152d = 3 × 384d)
-         └───────────┬─────────────────┘
-                     │
-         ┌───────────┴─────────────────┐
-         │      PlaylistHead MLP       │  (same weights)
-         └───────────┬─────────────────┘
-                     │ + residual (interpolation vector)
-                L2 normalise
-                     │
-         predicted missing-track embedding (384d)
+  left track              right track
+       │                       │
+    embed                   embed      (alpha = position fraction)
+       │                       │
+       └──────────┬────────────┘
+                  │
+          ┌───────┴───────────────────┐
+          │  [left | right | interp]  │  (1152d = 3 × 384d)
+          └───────┬───────────────────┘
+                  │
+          ┌───────┴───────────────────┐
+          │    PlaylistHead MLP       │  (same weights)
+          └───────┬───────────────────┘
+                  │  + residual (interpolation vector)
+             L2 normalise
+                  │
+          predicted missing-track embedding (384d)
 ```
 
 ### Residual connection
@@ -586,7 +586,7 @@ weighting across the 6 window embeddings per track:
 The final embedding is the TF-IDF weighted sum of the 6 window vectors. The
 `epsilon` threshold becomes a knob: large epsilon → more averaging → global/genre
 character; small epsilon → finer discrimination → local texture and feel. A
-reference implementation is in `/Users/teticio/ML/Deej-AI/train/calc_tfidf.py`.
+reference implementation is in `train/calc_tfidf.py` in the Deej-AI repo.
 
 **Option C — hierarchical encoder.** Encode each 5s window to a 384-d vector,
 then run a small second transformer over the 6 resulting vectors to integrate
