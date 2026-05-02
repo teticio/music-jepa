@@ -453,9 +453,9 @@ directly from the embedding space. Code lives in `jepa/playlist_head.py` and
 
 **Continuation** — given a seed history of tracks, predict the next track's
 embedding. **Infill** — given a left anchor and a right anchor, predict a
-missing track that sits between them. The task is set in `configs/head.yaml`
-and controls how training examples are constructed and how the context vector
-is built.
+missing track that sits between them. The task is set in
+`configs/head_continuation.yaml` or `configs/head_infil.yaml` and controls how
+training examples are constructed and how the context vector is built.
 
 ### Context representation
 
@@ -529,14 +529,54 @@ a much easier task than predicting the target from scratch.
 
 Loss is **InfoNCE**: the predicted embedding must be closer to the true
 next/missing track than to all other tracks in the batch. Temperature 0.07.
-Optimiser: AdamW with cosine LR decay over 20 epochs.
+Optimiser: AdamW with cosine LR decay. Head configs currently allow up to 100
+epochs and use validation-loss early stopping (`early_stopping_patience` and
+`early_stopping_min_delta`) so longer runs can stop once the head starts
+overfitting.
 
 Only playlists with **10–30 tracks** are used for head training
-(`min_playlist_len` / `max_playlist_len` in `configs/head.yaml`). Short
-playlists lack context; very long playlists tend to be grab-bags with weak
+(`min_playlist_len` / `max_playlist_len` in the head configs). The current head
+configs use `data/playlists_sample.csv`, not `data/playlists_dedup.csv`, because
+the sample playlist set is aligned with the tracks that already have extracted
+embeddings. Using the full dedup playlist file before the full catalogue has
+embeddings would force the loader to drop many missing track IDs and train on
+chopped-up playlist fragments.
+
+Short playlists lack context; very long playlists tend to be grab-bags with weak
 track-to-track coherence — noisier training signal than the JEPA encoder sees,
 because InfoNCE false positives (a "next track" that doesn't really follow
 musically) actively train the head in the wrong direction.
+
+Make targets:
+
+```
+make train-head-cont    # continuation head, writes checkpoints/continuation_head.pt
+make train-head-infil   # infill head, writes checkpoints/infill_head.pt
+```
+
+`train_head.py` is plain PyTorch. If multiple CUDA GPUs are visible it wraps the
+head with `torch.nn.DataParallel`; the saved checkpoints are unwrapped so
+`load_head` can read them normally.
+
+### Playlist generation (`eval/generate_playlist.py`)
+
+There are two generation modes matching the two heads:
+
+```
+make playlist SEEDS="TRACK_ID [TRACK_ID ...]"
+make journey JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
+```
+
+`make playlist` uses `checkpoints/continuation_head.pt` and `--seeds` to keep
+adding next tracks. `make journey` uses `checkpoints/infill_head.pt` and
+`--journey` to fill between waypoint IDs. Output includes each track ID,
+artist/title, and the MP3 preview URL when it is present in the track metadata.
+
+Track IDs can be found locally with:
+
+```
+make search QUERY="artist or title"
+```
 
 ### Journey generation (`eval/generate_playlist.py`)
 

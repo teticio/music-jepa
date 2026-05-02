@@ -200,6 +200,7 @@ def rank_tracks(
 
 
 def save_head(path: str, head: PlaylistHead, cfg: dict) -> None:
+    head = head.module if isinstance(head, nn.DataParallel) else head
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     tmp = path + ".tmp"
     torch.save(

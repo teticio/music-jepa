@@ -2,7 +2,7 @@
 Train a lightweight playlist-generation head on frozen JEPA embeddings.
 
 Example:
-    uv run python train_head.py --config configs/head.yaml
+    uv run python train_head.py --config configs/head_infil.yaml
 """
 import argparse
 import math
@@ -43,7 +43,7 @@ def evaluate(head, loader, device, temperature):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/head.yaml")
+    parser.add_argument("--config", default="configs/head_infil.yaml")
     args = parser.parse_args()
 
     with open(args.config) as f:
@@ -92,6 +92,11 @@ def main():
         dropout=cfg["model"].get("dropout", 0.1),
         residual_source=cfg["model"].get("residual_source", "first"),
     ).to(device)
+    if device.startswith("cuda") and torch.cuda.device_count() > 1:
+        device_ids = list(range(torch.cuda.device_count()))
+        head = torch.nn.DataParallel(head, device_ids=device_ids)
+        gpu_names = ", ".join(torch.cuda.get_device_name(i) for i in device_ids)
+        print(f"Using {len(device_ids)} GPUs: {gpu_names}")
 
     opt = torch.optim.AdamW(
         head.parameters(),
@@ -102,6 +107,9 @@ def main():
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
     temperature = cfg["training"].get("temperature", 0.07)
     best_val = math.inf
+    epochs_without_improvement = 0
+    patience = cfg["training"].get("early_stopping_patience")
+    min_delta = cfg["training"].get("early_stopping_min_delta", 0.0)
 
     print(
         f"Task: {cfg['data'].get('task', 'continuation')}  |  "
@@ -131,10 +139,19 @@ def main():
             f"epoch={epoch:03d} train_loss={sum(train_losses) / len(train_losses):.4f} "
             f"val_loss={val_loss:.4f} val_cos={val_cos:.4f}"
         )
-        if val_loss < best_val:
+        if val_loss < best_val - min_delta:
             best_val = val_loss
+            epochs_without_improvement = 0
             save_head(cfg["training"]["out"], head, cfg)
             print(f"saved {cfg['training']['out']}")
+        else:
+            epochs_without_improvement += 1
+            if patience is not None and epochs_without_improvement >= patience:
+                print(
+                    f"early stopping after {epoch} epochs "
+                    f"(best_val={best_val:.4f}, patience={patience})"
+                )
+                break
 
     last_path = os.path.splitext(cfg["training"]["out"])[0] + "_last.pt"
     save_head(last_path, head, cfg)

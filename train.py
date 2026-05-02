@@ -5,7 +5,7 @@ Single GPU:
     python train.py
 
 Multi-GPU (DDP):
-    torchrun --nproc_per_node=2 train.py
+    torchrun --nproc_per_node=$NPROC_PER_NODE train.py
 
 Resume from checkpoint:
     python train.py --ckpt checkpoints/last.ckpt
@@ -55,6 +55,8 @@ def main():
     ]
 
     trainer_cfg = cfg.get("trainer", {})
+    if "NPROC_PER_NODE" in os.environ:
+        trainer_cfg["devices"] = int(os.environ["NPROC_PER_NODE"])
     trainer = L.Trainer(
         max_epochs=cfg["training"]["max_epochs"],
         callbacks=callbacks,

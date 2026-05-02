@@ -11,6 +11,7 @@ Usage:
 """
 import argparse
 import os
+from pathlib import Path
 import webbrowser
 
 import numpy as np
@@ -35,7 +36,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--embeddings", default="embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
-    parser.add_argument("--out", default="explore.html")
+    parser.add_argument("--out", default="outputs/explore.html")
     parser.add_argument("--n_points", type=int, default=5000)
     parser.add_argument(
         "--export",
@@ -142,6 +143,7 @@ def main():
     p.add_tools(TapTool())
 
     html = file_html(p, CDN, "Music JEPA Explorer")
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as f:
         f.write(html)
     print(f"Saved: {args.out}")

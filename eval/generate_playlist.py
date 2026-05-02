@@ -10,6 +10,8 @@ Journey / "join the dots":
         --journey START_ID END_ID --between 9
 """
 import argparse
+from html import escape
+from pathlib import Path
 import random
 from typing import List, Optional
 
@@ -180,11 +182,157 @@ def generate_journey(
 
 
 def write_m3u(path: str, playlist: List[str], urls: List[Optional[str]]) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         f.write("#EXTM3U\n")
         for tid, url in zip(playlist, urls):
             f.write(f"#EXTINF:-1,{tid}\n")
             f.write(f"{url or tid}\n")
+
+
+def write_html(
+    path: str,
+    playlist: List[str],
+    urls: List[Optional[str]],
+    tracks_df,
+    highlighted: set[str],
+) -> None:
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for i, (tid, url) in enumerate(zip(playlist, urls), 1):
+        if tid in tracks_df.index:
+            row = tracks_df.loc[tid]
+            artist = str(row["artist"])
+            title = str(row["title"])
+        else:
+            artist = "Unknown artist"
+            title = tid
+        marker = " seed" if tid in highlighted else ""
+        badge = "<span class=\"badge\">seed</span>" if tid in highlighted else ""
+        player = (
+            f"<audio controls preload=\"none\" src=\"{escape(url)}\"></audio>"
+            if url
+            else "<span class=\"missing\">no preview</span>"
+        )
+        rows.append(
+            "\n".join(
+                [
+                    f"<tr class=\"track{marker}\">",
+                    f"  <td class=\"idx\">{i:02d}</td>",
+                    f"  <td><div class=\"title\">{escape(title)} {badge}</div>"
+                    f"<div class=\"artist\">{escape(artist)}</div>"
+                    f"<code>{escape(tid)}</code></td>",
+                    f"  <td>{player}</td>",
+                    "</tr>",
+                ]
+            )
+        )
+
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated playlist</title>
+  <style>
+    :root {{
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }}
+    body {{
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }}
+    main {{
+      max-width: 1120px;
+      margin: 0 auto;
+    }}
+    h1 {{
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }}
+    th, td {{
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }}
+    th {{
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }}
+    tr.seed {{
+      background: #20281f;
+    }}
+    .idx {{
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }}
+    .title {{
+      font-weight: 650;
+      line-height: 1.35;
+    }}
+    .artist {{
+      color: #b9bec8;
+      margin-top: 2px;
+    }}
+    code {{
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }}
+    audio {{
+      width: 260px;
+      max-width: 100%;
+    }}
+    .badge {{
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }}
+    .missing {{
+      color: #8f96a3;
+      font-size: 13px;
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Generated playlist</h1>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        {''.join(rows)}
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
+"""
+    Path(path).write_text(html)
 
 
 def main():
@@ -199,6 +347,7 @@ def main():
     parser.add_argument("--noise", type=float, default=0.0)
     parser.add_argument("--head_weight", type=float, default=0.35)
     parser.add_argument("--out_m3u", default=None)
+    parser.add_argument("--out_html", default=None)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
@@ -263,13 +412,20 @@ def main():
     urls = []
     for i, tid in enumerate(playlist, 1):
         marker = "*" if (args.journey and tid in set(args.journey)) or (args.seeds and tid in args.seeds) else " "
-        print(f"{i:02d}.{marker} {describe_track(tid, tracks_df)}")
         url = tracks_df.loc[tid, "url"] if tid in tracks_df.index else None
-        urls.append(url if isinstance(url, str) else None)
+        url = url if isinstance(url, str) else None
+        urls.append(url)
+        suffix = f"  {url}" if url else ""
+        print(f"{i:02d}.{marker} {describe_track(tid, tracks_df)}{suffix}")
 
     if args.out_m3u:
         write_m3u(args.out_m3u, playlist, urls)
         print(f"wrote {args.out_m3u}")
+
+    if args.out_html:
+        highlighted = set(args.journey or args.seeds or [])
+        write_html(args.out_html, playlist, urls, tracks_df, highlighted)
+        print(f"wrote {args.out_html}")
 
 
 if __name__ == "__main__":

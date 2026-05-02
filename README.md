@@ -77,14 +77,18 @@ downloads previews for tracks in the sample. The matching training config is
 
 ## Training
 
-Single GPU on the full dataset:
+Encoder training uses `torchrun`. The number of GPU worker processes comes from
+`NPROC_PER_NODE` in your local `.env` file, which is ignored by git:
+
 ```bash
-make train1        # uv run python train.py --config configs/train.yaml
+NPROC_PER_NODE=2
 ```
 
-Two GPUs (recommended — 2x RTX 4090):
+Train on the full dataset. If `checkpoints/last.ckpt` exists, `make train`
+resumes from it automatically:
+
 ```bash
-make train         # uv run torchrun --nproc_per_node=2 train.py
+make train
 ```
 
 Quick run on the sample subset (CPU-friendly, ViT-Tiny):
@@ -92,7 +96,7 @@ Quick run on the sample subset (CPU-friendly, ViT-Tiny):
 uv run python train.py --config configs/sample.yaml
 ```
 
-Resume from checkpoint:
+Manual resume from a specific checkpoint:
 ```bash
 uv run python train.py --ckpt checkpoints/last.ckpt
 ```
@@ -108,8 +112,14 @@ make tensorboard   # uv run tensorboard --logdir logs/
 # Extract embeddings for all tracks
 make embed         # uv run python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
 
+# Search local track metadata for IDs and preview URLs
+make search QUERY="daft punk"
+
 # Nearest-neighbour report + t-SNE
 make viz-nn        # uv run python eval/visualize.py --embeddings embeddings.npy --tsne
+
+# Interactive embedding explorer
+make viz           # writes outputs/explore.html
 ```
 
 **Success criterion:** nearest neighbours should be musically coherent (e.g. Nirvana
@@ -117,27 +127,40 @@ neighbours are grunge/alt-rock, Daft Punk neighbours are electronic) without hav
 engineered any music features — the signal comes entirely from playlist co-occurrence
 and audio content.
 
-## Playlist infill head
+## Playlist heads
 
-Once the JEPA encoder has produced `embeddings.npy`, train a small infill head
-that learns to fill missing playlist tracks in the frozen JEPA space:
+Once the JEPA encoder has produced `embeddings.npy`, train lightweight heads in
+the frozen JEPA space. The current head configs use `data/playlists_sample.csv`
+so training stays aligned with the tracks that already have previews,
+spectrograms, and embeddings.
 
 ```bash
-make train-head    # uv run python train_head.py --config configs/head.yaml
+make train-head-cont    # configs/head_continuation.yaml
+make train-head-infil   # configs/head_infil.yaml
 ```
 
-The head sees a left anchor, a right anchor, and their interpolation point; it
-predicts the missing middle-track vector. Journey generation recursively fills
-the largest remaining gap, so a long path is built from local infill decisions
-rather than one greedy left-to-right walk.
+The continuation head predicts the next track from seed history. Use it for
+open-ended playlist generation:
+
+```bash
+make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+```
+
+The infill head sees a left anchor, a right anchor, and their interpolation
+point; it predicts the missing middle-track vector. Use it for waypoint
+journeys:
 
 ```bash
 # "Join the dots" between waypoint tracks over several generated steps
-uv run python eval/generate_playlist.py \
-  --head checkpoints/infill_head.pt \
-  --journey 3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq \
-  --between 20 --noise 0.05
+make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
+
+Generated playlist output includes track IDs, artist/title, and the MP3 preview
+URL when present. `make playlist` writes `outputs/playlist.html`,
+`make journey` writes `outputs/journey.html`, and `make viz` writes
+`outputs/explore.html`; all HTML outputs live under `outputs/`. The playlist
+and journey pages include browser audio controls. Add `--out_m3u path/to/file.m3u` when calling
+`eval/generate_playlist.py` directly to write a playable M3U file.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
 continuous vector space between waypoint tracks, then snap each waypoint to a real
