@@ -84,11 +84,16 @@ Encoder training uses `torchrun`. The number of GPU worker processes comes from
 NPROC_PER_NODE=2
 ```
 
-Train on the full dataset. If `checkpoints/last.ckpt` exists, `make train`
+Checkpoint paths are controlled by `CHECKPOINT_DIR`, defaulting to
+`checkpoints`. For example, use `CHECKPOINT_DIR=checkpoints-sample` to keep
+using an older sample run while training a new full-run checkpoint directory.
+
+Train on the full dataset. If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train`
 resumes from it automatically:
 
 ```bash
 make train
+make train CHECKPOINT_DIR=checkpoints-full
 ```
 
 Quick run on the sample subset (CPU-friendly, ViT-Tiny):
@@ -109,8 +114,9 @@ make tensorboard   # uv run tensorboard --logdir logs/
 ## Evaluation
 
 ```bash
-# Extract embeddings for all tracks
-make embed         # uv run python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
+# Extract embeddings for all tracks from $(CHECKPOINT_DIR)/last.ckpt
+make embed
+make embed CHECKPOINT_DIR=checkpoints-sample
 
 # Search local track metadata for IDs and preview URLs
 make search QUERY="daft punk"
@@ -137,6 +143,7 @@ spectrograms, and embeddings.
 ```bash
 make train-head-cont    # configs/head_continuation.yaml
 make train-head-infil   # configs/head_infil.yaml
+make train-head-cont CHECKPOINT_DIR=checkpoints-sample
 ```
 
 The continuation head predicts the next track from seed history. Use it for
@@ -149,6 +156,7 @@ baseline from `data/deejai/tracktovec.p`:
 make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make playlist METHOD=track2vec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
+make playlist CHECKPOINT_DIR=checkpoints-sample SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 ```
 
 The infill head sees a left anchor, a right anchor, and their interpolation
@@ -161,6 +169,7 @@ waypoint embeddings, then snap each step to the nearest real track:
 make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make journey METHOD=embeddings JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make journey METHOD=track2vec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make journey CHECKPOINT_DIR=checkpoints-sample JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
 
 Generated playlist output includes track IDs, artist/title, and MP3 preview
@@ -177,7 +186,9 @@ baseline pages to `outputs/examples/`. Raw JEPA baselines use the
 `_embeddings.html` suffix, and Track2Vec baselines use `_track2vec.html`,
 for example
 `playlist_classical_embeddings.html` and
-`journey_classical_jazz_funk_disco_house_techno_track2vec.html`.
+`journey_classical_jazz_funk_disco_house_techno_track2vec.html`. It also
+writes `outputs/examples/index.html`, which links to all generated example
+pages.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
 continuous vector space between waypoint tracks, then snap each waypoint to a real

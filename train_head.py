@@ -44,10 +44,13 @@ def evaluate(head, loader, device, temperature):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/head_infil.yaml")
+    parser.add_argument("--out", default=None, help="Override checkpoint output path")
     args = parser.parse_args()
 
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
+    if args.out:
+        cfg["training"]["out"] = args.out
 
     device = cfg["training"].get("device", "cuda" if torch.cuda.is_available() else "cpu")
     torch.manual_seed(cfg.get("seed", 42))

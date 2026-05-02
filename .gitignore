@@ -49,7 +49,7 @@ data/*
 Thumbs.db
 
 # Training outputs
-checkpoints/
+checkpoints*/
 *.log
 logs/
 runs/

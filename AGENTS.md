@@ -22,7 +22,9 @@ the architecture doc move, update the doc in the same change.
 - `uv sync --extra eval` installs evaluation and visualization dependencies.
 - Encoder training uses `torchrun`; GPU process count comes from
   `NPROC_PER_NODE` in local `.env`, defaulting to 2.
-- `make train` resumes from `checkpoints/last.ckpt` when it exists.
+- `make train` resumes from `$(CHECKPOINT_DIR)/last.ckpt` when it exists.
+- Make checkpoint paths use `CHECKPOINT_DIR`, defaulting to `checkpoints`.
+  Use `CHECKPOINT_DIR=checkpoints-sample` for the old sample artifacts.
 
 ## Data Layout
 
@@ -48,8 +50,8 @@ the architecture doc move, update the doc in the same change.
   `data/deejai/tracktovec.p`.
 - Generated playlist/journey HTML includes preview audio controls and a
   "Play all previews" button.
-- `make examples` writes head-based examples and embeddings-only baselines under
-  `outputs/examples/`.
+- `make examples` writes head, embeddings, and Track2Vec examples under
+  `outputs/examples/`, plus `outputs/examples/index.html`.
 - `make search QUERY="artist or title"` searches local track metadata for IDs.
 
 ## Outputs And Gitignore

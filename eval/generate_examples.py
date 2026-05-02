@@ -4,6 +4,7 @@ Generate a small gallery of continuation playlists and infill journeys.
 Examples are written as standalone HTML files under outputs/examples/.
 """
 import argparse
+from html import escape
 import subprocess
 from pathlib import Path
 
@@ -52,6 +53,126 @@ def run(cmd: list[str]) -> None:
     subprocess.run(cmd, check=True)
 
 
+def title_for(path: Path) -> str:
+    name = path.stem
+    if name.startswith("playlist_"):
+        name = name.removeprefix("playlist_")
+        kind = "Playlist"
+    elif name.startswith("journey_"):
+        name = name.removeprefix("journey_")
+        kind = "Journey"
+    else:
+        kind = "Example"
+
+    method = "head"
+    for suffix in ["_embeddings", "_track2vec"]:
+        if name.endswith(suffix):
+            name = name[: -len(suffix)]
+            method = suffix.removeprefix("_")
+            break
+
+    label = name.replace("_", " ").title()
+    return f"{kind}: {label} ({method})"
+
+
+def write_index(out_dir: Path) -> None:
+    html_files = sorted(
+        path for path in out_dir.glob("*.html") if path.name != "index.html"
+    )
+    groups = [
+        ("Playlists", [path for path in html_files if path.name.startswith("playlist_")]),
+        ("Journeys", [path for path in html_files if path.name.startswith("journey_")]),
+        ("Other", [
+            path
+            for path in html_files
+            if not path.name.startswith(("playlist_", "journey_"))
+        ]),
+    ]
+    sections = []
+    for heading, files in groups:
+        if not files:
+            continue
+        links = "\n".join(
+            f'        <li><a href="{escape(path.name)}">{escape(title_for(path))}</a></li>'
+            for path in files
+        )
+        sections.append(
+            "\n".join(
+                [
+                    f"    <section>",
+                    f"      <h2>{escape(heading)}</h2>",
+                    f"      <ul>",
+                    links,
+                    f"      </ul>",
+                    f"    </section>",
+                ]
+            )
+        )
+
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated examples</title>
+  <style>
+    :root {{
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }}
+    body {{
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }}
+    main {{
+      max-width: 900px;
+      margin: 0 auto;
+    }}
+    h1 {{
+      margin: 0 0 24px;
+      font-size: 28px;
+    }}
+    h2 {{
+      margin: 28px 0 12px;
+      font-size: 18px;
+      color: #d7dbe4;
+    }}
+    ul {{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 1px solid #2b2f38;
+      background: #181a1f;
+    }}
+    li + li {{
+      border-top: 1px solid #2b2f38;
+    }}
+    a {{
+      display: block;
+      padding: 12px 14px;
+      color: #8fb3ff;
+      text-decoration: none;
+    }}
+    a:hover {{
+      background: #20232a;
+      text-decoration: underline;
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Generated examples</h1>
+{chr(10).join(sections)}
+  </main>
+</body>
+</html>
+"""
+    (out_dir / "index.html").write_text(html)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out_dir", default="outputs/examples")
@@ -59,15 +180,22 @@ def main():
     parser.add_argument("--between", type=int, default=9)
     parser.add_argument("--noise", type=float, default=0.0)
     parser.add_argument("--device", default=None)
+    parser.add_argument("--index_only", action="store_true")
+    parser.add_argument("--checkpoint_dir", default="checkpoints")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if args.index_only:
+        write_index(out_dir)
+        print(f"Wrote {out_dir / 'index.html'}")
+        return
 
     base = ["uv", "run", "python", "eval/generate_playlist.py"]
     device_args = ["--device", args.device] if args.device else []
 
-    cont_head = Path("checkpoints/continuation_head.pt")
+    checkpoint_dir = Path(args.checkpoint_dir)
+    cont_head = checkpoint_dir / "continuation_head.pt"
     if cont_head.exists():
         for name, seeds in CONTINUATION_EXAMPLES:
             run(
@@ -124,7 +252,7 @@ def main():
             ]
         )
 
-    infill_head = Path("checkpoints/infill_head.pt")
+    infill_head = checkpoint_dir / "infill_head.pt"
     if infill_head.exists():
         for name, waypoints, between_override in JOURNEY_EXAMPLES:
             between = between_override or args.between
@@ -184,7 +312,9 @@ def main():
             ]
         )
 
+    write_index(out_dir)
     print(f"Wrote examples to {out_dir}")
+    print(f"Wrote {out_dir / 'index.html'}")
 
 
 if __name__ == "__main__":

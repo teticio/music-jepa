@@ -26,6 +26,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/train.yaml")
     parser.add_argument("--ckpt", default=None, help="Resume from checkpoint")
+    parser.add_argument("--checkpoint_dir", default="checkpoints", help="Directory for saved checkpoints")
     args = parser.parse_args()
 
     with open(args.config) as f:
@@ -44,7 +45,7 @@ def main():
 
     callbacks = [
         ModelCheckpoint(
-            dirpath="checkpoints",
+            dirpath=args.checkpoint_dir,
             filename="jepa-{epoch:03d}-{val/loss:.4f}",
             monitor="val/loss",
             mode="min",

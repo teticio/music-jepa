@@ -550,9 +550,14 @@ musically) actively train the head in the wrong direction.
 Make targets:
 
 ```
-make train-head-cont    # continuation head, writes checkpoints/continuation_head.pt
-make train-head-infil   # infill head, writes checkpoints/infill_head.pt
+make train-head-cont    # continuation head, writes $(CHECKPOINT_DIR)/continuation_head.pt
+make train-head-infil   # infill head, writes $(CHECKPOINT_DIR)/infill_head.pt
 ```
+
+All Make targets that read or write checkpoint artifacts use
+`CHECKPOINT_DIR`, defaulting to `checkpoints`. For example,
+`CHECKPOINT_DIR=checkpoints-sample make playlist ...` uses
+`checkpoints-sample/continuation_head.pt`.
 
 `train_head.py` is plain PyTorch. If multiple CUDA GPUs are visible it wraps the
 head with `torch.nn.DataParallel`; the saved checkpoints are unwrapped so
@@ -567,8 +572,8 @@ make playlist SEEDS="TRACK_ID [TRACK_ID ...]"
 make journey JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
 ```
 
-`make playlist` uses `checkpoints/continuation_head.pt` and `--seeds` to keep
-adding next tracks. `make journey` uses `checkpoints/infill_head.pt` and
+`make playlist` uses `$(CHECKPOINT_DIR)/continuation_head.pt` and `--seeds` to keep
+adding next tracks. `make journey` uses `$(CHECKPOINT_DIR)/infill_head.pt` and
 `--journey` to fill between waypoint IDs. Both targets write HTML under
 `outputs/` with each track ID, artist/title, per-track audio controls, and a
 top-level "Play all previews" button that chains available 30-second previews.
@@ -606,7 +611,8 @@ make examples
 
 This writes head-based playlist and journey pages to `outputs/examples/`, plus
 matching raw-JEPA baselines with an `_embeddings.html` suffix and Deej-AI
-Track2Vec baselines with a `_track2vec.html` suffix.
+Track2Vec baselines with a `_track2vec.html` suffix. It also writes
+`outputs/examples/index.html`, which links to all generated pages.
 
 ### Journey generation (`eval/generate_playlist.py`)
 
