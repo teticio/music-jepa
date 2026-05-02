@@ -4,11 +4,12 @@ NPROC_PER_NODE ?= 2
 
 TRACKS_FILE ?= data/tracks_sample.csv
 LIMIT ?= 20
+METHOD ?= head
 OUT_HTML ?= outputs/playlist.html
 JOURNEY_HTML ?= outputs/journey.html
 EXPLORE_HTML ?= outputs/explore.html
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train train-head-infil train-head-cont embed journey playlist search viz viz-nn tensorboard help
+.PHONY: setup data data-sample sample previews previews-sample spectrograms train train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -21,6 +22,7 @@ help:
 	@echo "  make train-head-cont   Train continuation head for next-track prediction"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
+	@echo "  make examples          Generate example playlist/journey HTML gallery"
 	@echo "  make search            Search tracks: QUERY=\"artist or title\""
 	@echo "  make viz               Nearest-neighbour report + t-SNE"
 	@echo "  make tensorboard       Launch TensorBoard on logs/"
@@ -67,10 +69,13 @@ train-head-cont:
 	$(UV) run python train_head.py --config configs/head_continuation.yaml
 
 journey:
-	$(UV) run python eval/generate_playlist.py --head checkpoints/infill_head.pt --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head checkpoints/infill_head.pt --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
 
 playlist:
-	$(UV) run python eval/generate_playlist.py --head checkpoints/continuation_head.pt --seeds $(or $(SEEDS),$(JOURNEY)) --out_html $(OUT_HTML)
+	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head checkpoints/continuation_head.pt --seeds $(or $(SEEDS),$(JOURNEY)) --out_html $(OUT_HTML)
+
+examples:
+	$(UV) run python eval/generate_examples.py
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --tracks_file $(TRACKS_FILE) --limit $(LIMIT)

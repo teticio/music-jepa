@@ -1,6 +1,7 @@
-# CLAUDE.md
+# AGENTS.md
 
-Notes for Claude when working in this repo. Keep it short and current.
+Notes for Codex and other coding agents working in this repo. Keep it short and
+current.
 
 ## What This Project Is
 

@@ -560,7 +560,7 @@ head with `torch.nn.DataParallel`; the saved checkpoints are unwrapped so
 
 ### Playlist generation (`eval/generate_playlist.py`)
 
-There are two generation modes matching the two heads:
+There are two head-backed generation modes:
 
 ```
 make playlist SEEDS="TRACK_ID [TRACK_ID ...]"
@@ -569,14 +569,44 @@ make journey JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
 
 `make playlist` uses `checkpoints/continuation_head.pt` and `--seeds` to keep
 adding next tracks. `make journey` uses `checkpoints/infill_head.pt` and
-`--journey` to fill between waypoint IDs. Output includes each track ID,
-artist/title, and the MP3 preview URL when it is present in the track metadata.
+`--journey` to fill between waypoint IDs. Both targets write HTML under
+`outputs/` with each track ID, artist/title, per-track audio controls, and a
+top-level "Play all previews" button that chains available 30-second previews.
+
+Both workflows also have head-free baselines:
+
+```
+make playlist METHOD=embeddings SEEDS="TRACK_ID [TRACK_ID ...]"
+make journey METHOD=embeddings JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
+make playlist METHOD=track2vec SEEDS="TRACK_ID [TRACK_ID ...]"
+make journey METHOD=track2vec JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
+```
+
+For continuation, the embeddings baseline averages recent seed/history
+embeddings and retrieves nearest unused neighbours. For journeys, it linearly
+interpolates between waypoint embeddings and snaps each interpolation point to
+the nearest catalogue track. This is useful for judging whether a trained head
+is adding useful playlist structure beyond the raw JEPA space.
+
+`METHOD=track2vec` uses Deej-AI's `tracktovec.p` vectors from
+`data/deejai/tracktovec.p` as a collaborative Track2Vec baseline. It uses
+Track2Vec only — the old Deej-AI audio/Spotify embedding is not blended in.
 
 Track IDs can be found locally with:
 
 ```
 make search QUERY="artist or title"
 ```
+
+Example galleries can be regenerated with:
+
+```
+make examples
+```
+
+This writes head-based playlist and journey pages to `outputs/examples/`, plus
+matching raw-JEPA baselines with an `_embeddings.html` suffix and Deej-AI
+Track2Vec baselines with a `_track2vec.html` suffix.
 
 ### Journey generation (`eval/generate_playlist.py`)
 

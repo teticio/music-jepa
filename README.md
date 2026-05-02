@@ -140,27 +140,44 @@ make train-head-infil   # configs/head_infil.yaml
 ```
 
 The continuation head predicts the next track from seed history. Use it for
-open-ended playlist generation:
+open-ended playlist generation. `METHOD=head` is the default. Use
+`METHOD=embeddings` to compare against a raw JEPA nearest-neighbour baseline,
+or `METHOD=track2vec` to compare against Deej-AI's Track2Vec collaborative
+baseline from `data/deejai/tracktovec.p`:
 
 ```bash
 make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
+make playlist METHOD=track2vec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 ```
 
 The infill head sees a left anchor, a right anchor, and their interpolation
 point; it predicts the missing middle-track vector. Use it for waypoint
-journeys:
+journeys. The embeddings and Deej-AI baselines linearly interpolate between
+waypoint embeddings, then snap each step to the nearest real track:
 
 ```bash
 # "Join the dots" between waypoint tracks over several generated steps
 make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make journey METHOD=embeddings JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make journey METHOD=track2vec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
 
-Generated playlist output includes track IDs, artist/title, and the MP3 preview
-URL when present. `make playlist` writes `outputs/playlist.html`,
+Generated playlist output includes track IDs, artist/title, and MP3 preview
+links when present. `make playlist` writes `outputs/playlist.html`,
 `make journey` writes `outputs/journey.html`, and `make viz` writes
 `outputs/explore.html`; all HTML outputs live under `outputs/`. The playlist
-and journey pages include browser audio controls. Add `--out_m3u path/to/file.m3u` when calling
+and journey pages include per-track browser audio controls plus a top-level
+“Play all previews” button that chains available 30-second previews after one
+user click. Add `--out_m3u path/to/file.m3u` when calling
 `eval/generate_playlist.py` directly to write a playable M3U file.
+
+For quick comparisons, `make examples` writes head-based examples and
+baseline pages to `outputs/examples/`. Raw JEPA baselines use the
+`_embeddings.html` suffix, and Track2Vec baselines use `_track2vec.html`,
+for example
+`playlist_classical_embeddings.html` and
+`journey_classical_jazz_funk_disco_house_techno_track2vec.html`.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
 continuous vector space between waypoint tracks, then snap each waypoint to a real

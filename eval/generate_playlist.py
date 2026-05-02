@@ -11,6 +11,8 @@ Journey / "join the dots":
 """
 import argparse
 from html import escape
+import json
+import pickle
 from pathlib import Path
 import random
 from typing import List, Optional
@@ -27,6 +29,57 @@ from jepa.playlist_head import (
     make_context,
     rank_tracks,
 )
+
+
+def normalize_vecs(vecs: np.ndarray) -> np.ndarray:
+    return vecs / np.maximum(np.linalg.norm(vecs, axis=1, keepdims=True), 1e-8)
+
+
+def load_track2vec(model_dir: str):
+    model_path = Path(model_dir)
+    with (model_path / "tracktovec.p").open("rb") as f:
+        data = pickle.load(f)
+    ids = list(data.keys())
+    vecs = normalize_vecs(np.stack([data[k] for k in ids]).astype("float32"))
+    metadata = {}
+    metadata_dirs = [model_path, Path("../deej-ai.online-app/model")]
+    for metadata_dir in metadata_dirs:
+        tracks_path = metadata_dir / "spotify_tracks.p"
+        urls_path = metadata_dir / "spotify_urls.p"
+        if "tracks" not in metadata and tracks_path.exists():
+            with tracks_path.open("rb") as f:
+                metadata["tracks"] = pickle.load(f)
+        if "urls" not in metadata and urls_path.exists():
+            with urls_path.open("rb") as f:
+                metadata["urls"] = pickle.load(f)
+    return ids, vecs, metadata
+
+
+def describe_generated_track(track_id: str, tracks_df, metadata: Optional[dict] = None) -> str:
+    if tracks_df is not None and track_id in tracks_df.index:
+        return describe_track(track_id, tracks_df)
+    track_name = (metadata or {}).get("tracks", {}).get(track_id)
+    if track_name:
+        return f"{track_name} [{track_id}]"
+    return track_id
+
+
+def get_generated_track_info(track_id: str, tracks_df, metadata: Optional[dict] = None):
+    if tracks_df is not None and track_id in tracks_df.index:
+        row = tracks_df.loc[track_id]
+        artist = str(row["artist"])
+        title = str(row["title"])
+        url = row["url"] if isinstance(row["url"], str) else None
+        return artist, title, url
+
+    metadata = metadata or {}
+    track_name = metadata.get("tracks", {}).get(track_id)
+    url = metadata.get("urls", {}).get(track_id)
+    url = url if isinstance(url, str) else None
+    if track_name:
+        artist, sep, title = track_name.partition(" - ")
+        return artist, title if sep else track_name, url
+    return "Unknown artist", track_id, url
 
 
 def choose(candidates, noise: float):
@@ -181,6 +234,53 @@ def generate_journey(
     return playlist
 
 
+def generate_embedding_continuation(
+    seeds: List[str],
+    emb,
+    ids,
+    vecs,
+    size: int,
+    max_history: int,
+    noise: float,
+) -> List[str]:
+    playlist = list(seeds)
+    while len(playlist) < size:
+        recent = playlist[-max_history:]
+        query = np.stack([emb[tid] for tid in recent]).mean(axis=0)
+        candidates = rank_tracks(query, ids, vecs, exclude=playlist, top_k=100)
+        playlist.append(choose(candidates, noise)[0])
+    return playlist
+
+
+def generate_embedding_journey(
+    waypoints: List[str],
+    emb,
+    ids,
+    vecs,
+    between: int,
+    noise: float,
+) -> List[str]:
+    playlist = []
+    used = set()
+    for start, end in zip(waypoints, waypoints[1:]):
+        if not playlist:
+            playlist.append(start)
+            used.add(start)
+        start_vec = emb[start]
+        end_vec = emb[end]
+        for i in range(between):
+            alpha = (i + 1) / (between + 1)
+            query = (1 - alpha) * start_vec + alpha * end_vec
+            candidates = rank_tracks(query, ids, vecs, exclude=used | {end}, top_k=100)
+            tid, _ = choose(candidates, noise)
+            playlist.append(tid)
+            used.add(tid)
+        if end not in used:
+            playlist.append(end)
+            used.add(end)
+    return playlist
+
+
 def write_m3u(path: str, playlist: List[str], urls: List[Optional[str]]) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
@@ -196,17 +296,13 @@ def write_html(
     urls: List[Optional[str]],
     tracks_df,
     highlighted: set[str],
+    metadata: Optional[dict] = None,
 ) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     rows = []
+    playable_urls = [url for url in urls if url]
     for i, (tid, url) in enumerate(zip(playlist, urls), 1):
-        if tid in tracks_df.index:
-            row = tracks_df.loc[tid]
-            artist = str(row["artist"])
-            title = str(row["title"])
-        else:
-            artist = "Unknown artist"
-            title = tid
+        artist, title, _ = get_generated_track_info(tid, tracks_df, metadata)
         marker = " seed" if tid in highlighted else ""
         badge = "<span class=\"badge\">seed</span>" if tid in highlighted else ""
         player = (
@@ -254,6 +350,30 @@ def write_html(
       margin: 0 0 20px;
       font-size: 28px;
       font-weight: 700;
+    }}
+    .toolbar {{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 18px;
+    }}
+    button {{
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }}
+    button:disabled {{
+      cursor: not-allowed;
+      opacity: 0.55;
+    }}
+    .status {{
+      color: #b9bec8;
+      font-size: 14px;
     }}
     table {{
       width: 100%;
@@ -320,6 +440,12 @@ def write_html(
 <body>
   <main>
     <h1>Generated playlist</h1>
+    <div class="toolbar">
+      <button id="play-all" type="button">Play all previews</button>
+      <button id="next-preview" type="button" disabled>Next</button>
+      <button id="stop-all" type="button" disabled>Stop</button>
+      <span class="status" id="play-status">{len(playable_urls)} previews available</span>
+    </div>
     <table>
       <thead>
         <tr><th>#</th><th>Track</th><th>Preview</th></tr>
@@ -329,6 +455,77 @@ def write_html(
       </tbody>
     </table>
   </main>
+  <script>
+    const previewUrls = {json.dumps(playable_urls)};
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {{
+      statusEl.textContent = text;
+    }}
+
+    function stopCurrent() {{
+      stopRequested = true;
+      if (currentAudio) {{
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }}
+      if (currentResolve) {{
+        currentResolve();
+        currentResolve = null;
+      }}
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      setStatus(`${{previewUrls.length}} previews available`);
+    }}
+
+    function nextPreview() {{
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {{
+        currentResolve();
+        currentResolve = null;
+      }}
+    }}
+
+    async function playAll() {{
+      if (!previewUrls.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      for (let i = 0; i < previewUrls.length; i += 1) {{
+        if (stopRequested) break;
+        setStatus(`Playing preview ${{i + 1}} of ${{previewUrls.length}}`);
+        currentAudio = new Audio(previewUrls[i]);
+        await new Promise((resolve) => {{
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, {{ once: true }});
+          currentAudio.addEventListener('error', resolve, {{ once: true }});
+          currentAudio.play().catch(resolve);
+        }});
+        currentResolve = null;
+      }}
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      if (!stopRequested) setStatus('Finished');
+    }}
+
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
 </body>
 </html>
 """
@@ -337,8 +534,10 @@ def write_html(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--head", required=True)
+    parser.add_argument("--head", default=None)
+    parser.add_argument("--method", choices=["head", "embeddings", "track2vec"], default="head")
     parser.add_argument("--embeddings", default="embeddings.npy")
+    parser.add_argument("--track2vec_model_dir", default="data/deejai")
     parser.add_argument("--tracks_file", default="data/tracks_sample.csv")
     parser.add_argument("--seeds", nargs="*", default=None)
     parser.add_argument("--journey", nargs="+", default=None, help="Two or more waypoint track IDs")
@@ -357,12 +556,22 @@ def main():
     random.seed(42)
     np.random.seed(42)
 
-    ids, vecs = load_embeddings(args.embeddings)
-    emb = {tid: vec for tid, vec in zip(ids, vecs)}
     tracks_df = load_tracks(args.tracks_file)
-    head, cfg = load_head(args.head, device=args.device)
-    task = cfg.get("data", {}).get("task", "continuation")
-    max_history = cfg.get("data", {}).get("max_history", 3)
+    metadata = {}
+    if args.method == "track2vec":
+        ids, vecs, metadata = load_track2vec(args.track2vec_model_dir)
+    else:
+        ids, vecs = load_embeddings(args.embeddings)
+    emb = {tid: vec for tid, vec in zip(ids, vecs)}
+    head = None
+    task = "continuation"
+    max_history = 3
+    if args.method == "head":
+        if not args.head:
+            raise SystemExit("Pass --head when using --method head")
+        head, cfg = load_head(args.head, device=args.device)
+        task = cfg.get("data", {}).get("task", "continuation")
+        max_history = cfg.get("data", {}).get("max_history", 3)
 
     requested = args.journey if args.journey else args.seeds
     missing = [tid for tid in requested if tid not in emb]
@@ -370,7 +579,16 @@ def main():
         raise SystemExit(f"Missing embeddings for: {', '.join(missing)}")
 
     if args.journey:
-        if task == "infill":
+        if args.method in {"embeddings", "track2vec"}:
+            playlist = generate_embedding_journey(
+                args.journey,
+                emb,
+                ids,
+                vecs,
+                between=args.between,
+                noise=args.noise,
+            )
+        elif task == "infill":
             playlist = generate_infill_journey(
                 head,
                 args.journey,
@@ -395,28 +613,38 @@ def main():
                 device=args.device,
             )
     else:
-        if task == "infill":
+        if args.method in {"embeddings", "track2vec"}:
+            playlist = generate_embedding_continuation(
+                args.seeds,
+                emb,
+                ids,
+                vecs,
+                size=args.size,
+                max_history=max_history,
+                noise=args.noise,
+            )
+        elif task == "infill":
             raise SystemExit("This checkpoint is trained for --journey infilling. Use a continuation head for --seeds.")
-        playlist = generate_continuation(
-            head,
-            args.seeds,
-            emb,
-            ids,
-            vecs,
-            size=args.size,
-            max_history=max_history,
-            noise=args.noise,
-            device=args.device,
-        )
+        else:
+            playlist = generate_continuation(
+                head,
+                args.seeds,
+                emb,
+                ids,
+                vecs,
+                size=args.size,
+                max_history=max_history,
+                noise=args.noise,
+                device=args.device,
+            )
 
     urls = []
     for i, tid in enumerate(playlist, 1):
         marker = "*" if (args.journey and tid in set(args.journey)) or (args.seeds and tid in args.seeds) else " "
-        url = tracks_df.loc[tid, "url"] if tid in tracks_df.index else None
-        url = url if isinstance(url, str) else None
+        _, _, url = get_generated_track_info(tid, tracks_df, metadata)
         urls.append(url)
         suffix = f"  {url}" if url else ""
-        print(f"{i:02d}.{marker} {describe_track(tid, tracks_df)}{suffix}")
+        print(f"{i:02d}.{marker} {describe_generated_track(tid, tracks_df, metadata)}{suffix}")
 
     if args.out_m3u:
         write_m3u(args.out_m3u, playlist, urls)
@@ -424,7 +652,7 @@ def main():
 
     if args.out_html:
         highlighted = set(args.journey or args.seeds or [])
-        write_html(args.out_html, playlist, urls, tracks_df, highlighted)
+        write_html(args.out_html, playlist, urls, tracks_df, highlighted, metadata)
         print(f"wrote {args.out_html}")
 
 
