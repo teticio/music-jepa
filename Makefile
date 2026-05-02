@@ -16,14 +16,14 @@ OUT_HTML ?= outputs/playlist.html
 JOURNEY_HTML ?= outputs/journey.html
 EXPLORE_HTML ?= outputs/explore.html
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard help
+.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard help
 
 help:
 	@echo "Music JEPA - step by step:"
 	@echo "  make setup             Create venv and install dependencies"
 	@echo "  make data              Download previews + spectrograms for TRACKS_FILE"
 	@echo "  make data-sample       Bootstrap a 2000-playlist sample subset"
-	@echo "  make train             Train encoder, resume CHECKPOINT_DIR/last.ckpt if present"
+	@echo "  make train-encoder     Train encoder, resume CHECKPOINT_DIR/last.ckpt if present"
 	@echo "  make embed             Extract embeddings from last checkpoint"
 	@echo "  make train-head-infil  Train infill head on missing playlist tracks"
 	@echo "  make train-head-cont   Train continuation head for next-track prediction"
@@ -66,11 +66,11 @@ data-sample: sample previews-sample spectrograms
 
 # Training / eval ------------------------------------------------------------
 
-train:
+train-encoder:
 	@if [ -f $(CHECKPOINT_DIR)/last.ckpt ]; then \
-		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) --ckpt $(CHECKPOINT_DIR)/last.ckpt; \
+		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) --ckpt $(CHECKPOINT_DIR)/last.ckpt; \
 	else \
-		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR); \
+		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR); \
 	fi
 
 embed:

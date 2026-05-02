@@ -2,13 +2,13 @@
 Music JEPA training entry point.
 
 Single GPU:
-    python train.py
+    python train_encoder.py
 
 Multi-GPU (DDP):
-    torchrun --nproc_per_node=$NPROC_PER_NODE train.py
+    torchrun --nproc_per_node=$NPROC_PER_NODE train_encoder.py
 
 Resume from checkpoint:
-    python train.py --ckpt checkpoints/last.ckpt
+    python train_encoder.py --ckpt checkpoints/last.ckpt
 """
 import argparse
 import os
@@ -32,7 +32,7 @@ def summarize_split(split):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/train.yaml")
+    parser.add_argument("--config", default="configs/encoder.yaml")
     parser.add_argument("--ckpt", default=None, help="Resume from checkpoint")
     parser.add_argument("--checkpoint_dir", default="checkpoints", help="Directory for saved checkpoints")
     args = parser.parse_args()

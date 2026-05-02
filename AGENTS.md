@@ -22,7 +22,7 @@ the architecture doc move, update the doc in the same change.
 - `uv sync --extra eval` installs evaluation and visualization dependencies.
 - Encoder training uses `torchrun`; GPU process count comes from
   `NPROC_PER_NODE` in local `.env`, defaulting to 2.
-- `make train` resumes from `$(CHECKPOINT_DIR)/last.ckpt` when it exists.
+- `make train-encoder` resumes from `$(CHECKPOINT_DIR)/last.ckpt` when it exists.
 
 ## Configuration / mode switching
 
@@ -31,7 +31,7 @@ the architecture doc move, update the doc in the same change.
 - The Make-level knobs are `CHECKPOINT_DIR`, `TRAIN_CONFIG`, `HEAD_CONT_CONFIG`,
   `HEAD_INFIL_CONFIG`, `TRACKS_FILE`. Defaults target the full dataset. Switch
   to the sample preset by uncommenting the sample block in `.env`.
-- Per-command override also works: `make train TRAIN_CONFIG=configs/sample.yaml`.
+- Per-command override also works: `make train-encoder TRAIN_CONFIG=configs/encoder.yaml`.
 
 ## Data Layout
 
@@ -82,7 +82,7 @@ Do not try to commit `data/`, `checkpoints/`, `logs/`, `outputs/`,
 ```bash
 make setup
 make data-sample
-make train
+make train-encoder
 make embed
 make train-head-cont
 make train-head-infil

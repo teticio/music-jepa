@@ -71,13 +71,13 @@ To switch to the sample preset, uncomment the sample block in `.env`:
 
 ```bash
 CHECKPOINT_DIR=checkpoints-sample
-TRAIN_CONFIG=configs/sample.yaml
+TRAIN_CONFIG=configs/encoder_sample.yaml
 HEAD_CONT_CONFIG=configs/head_continuation_sample.yaml
 HEAD_INFIL_CONFIG=configs/head_infil_sample.yaml
 TRACKS_FILE=data/tracks_sample.csv
 ```
 
-You can also override per-command, e.g. `make train CHECKPOINT_DIR=checkpoints-foo`.
+You can also override per-command, e.g. `make train-encoder CHECKPOINT_DIR=checkpoints-foo`.
 
 ## Data pipeline
 
@@ -111,21 +111,21 @@ preset described in the [Configuration](#configuration) section.
 ## Training
 
 Encoder training uses `torchrun`. The Makefile passes `--config $(TRAIN_CONFIG)`
-through to `train.py`, so swapping training configs is a one-line `.env`
+through to `train_encoder.py`, so swapping training configs is a one-line `.env`
 override (or a per-command flag).
 
-If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train` resumes from it
+If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train-encoder` resumes from it
 automatically:
 
 ```bash
-make train
-make train CHECKPOINT_DIR=checkpoints-full
-make train TRAIN_CONFIG=configs/sample.yaml CHECKPOINT_DIR=checkpoints-sample
+make train-encoder
+make train-encoder CHECKPOINT_DIR=checkpoints-full
+make train-encoder TRAIN_CONFIG=configs/encoder_sample.yaml CHECKPOINT_DIR=checkpoints-sample
 ```
 
 Manual resume from a specific checkpoint:
 ```bash
-uv run python train.py --ckpt checkpoints/last.ckpt
+uv run python train_encoder.py --ckpt checkpoints/last.ckpt
 ```
 
 TensorBoard logs are written to `logs/music_jepa/`. Launch the UI with:

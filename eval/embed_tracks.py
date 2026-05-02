@@ -71,7 +71,7 @@ def embed_all(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--ckpt", required=True, help="Path to Lightning checkpoint")
-    parser.add_argument("--config", default="configs/train.yaml")
+    parser.add_argument("--config", default="configs/encoder.yaml")
     parser.add_argument("--spectrograms_dir", default="data/spectrograms")
     parser.add_argument("--out", default="embeddings.npy", help="Output .npy file")
     parser.add_argument("--batch_size", type=int, default=128)

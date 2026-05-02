@@ -316,7 +316,7 @@ was specifically designed to be less batch-size-sensitive than contrastive
 methods (which need hundreds of negatives).
 
 The full training config uses `accumulate_grad_batches: 4`
-([configs/train.yaml](../configs/train.yaml)) with batch_size=64 on 2 GPUs,
+([configs/train.yaml](../configs/encoder.yaml)) with batch_size=64 on 2 GPUs,
 giving an effective batch of 64 × 2 × 4 = 512 for the MSE loss. However,
 gradient accumulation does **not** help VICReg's statistics — variance and
 covariance are computed within each forward pass on the local 64-sample batch.
