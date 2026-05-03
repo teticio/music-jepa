@@ -12,6 +12,7 @@ Resume from checkpoint:
 """
 import argparse
 import os
+from datetime import timedelta
 
 import yaml
 import lightning as L
@@ -64,6 +65,7 @@ def main():
         f"{train_loader.dataset.available_track_count:,} tracks with spectrograms"
     )
 
+    ckpt_hours = cfg.get("checkpointing", {}).get("every_n_hours", 2)
     callbacks = [
         ModelCheckpoint(
             dirpath=args.checkpoint_dir,
@@ -72,6 +74,7 @@ def main():
             mode="min",
             save_last=True,
             save_top_k=3,
+            train_time_interval=timedelta(hours=ckpt_hours) if ckpt_hours else None,
         ),
         LearningRateMonitor(logging_interval="step"),
     ]

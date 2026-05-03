@@ -34,6 +34,9 @@ training:
                               # Set to "target" for diagnostic-only behaviour
                               # (no gradient — equivalent to MSE-only training).
 
+checkpointing:
+  every_n_hours: 2              # update last.ckpt mid-epoch (epochs are long)
+
 # Lightning Trainer kwargs (passed directly)
 trainer:
   accelerator: gpu
