@@ -473,7 +473,7 @@ Continuation:  [last embedding | mean of history | drift (last − first)]
 Infill:        [left embedding | right embedding | linear interpolation at alpha]
 ```
 
-`drift` encodes the direction the playlist is moving in embedding space.
+`mean` encodes the current musical zone; `drift` encodes the direction the playlist is moving through it.
 `alpha = (target_idx − left_idx) / (right_idx − left_idx)` encodes where in
 the gap the missing track sits.
 
@@ -516,7 +516,7 @@ INFILL HEAD
           └───────┬───────────────────┘
                   │
           ┌───────┴───────────────────┐
-          │    PlaylistHead MLP       │  (same weights)
+          │    PlaylistHead MLP       │  (same architecture, separate weights)
           └───────┬───────────────────┘
                   │  + residual (interpolation vector)
              L2 normalise
