@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playlist: Reggae (track2vec)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed {
+      background: #20281f;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    audio {
+      width: 260px;
+      max-width: 100%;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Playlist: Reggae (track2vec)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed">
+  <td class="idx">01</td>
+  <td><div class="title">Three Little Birds <span class="badge">seed</span></div><div class="artist">Bob Marley &amp; The Wailers</div><code>75FYqcxt1YEAtqDLrOeIJn</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/30af46efcab458c3535755bc384cef034e2519b1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-2" class="track">
+  <td class="idx">02</td>
+  <td><div class="title">One Love / People Get Ready - Medley </div><div class="artist">Bob Marley &amp; The Wailers</div><code>6SR0dDuXH2vtgBfMLrivKV</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a5e96c9baef07a93da5ad8f27f6c829531eadcc7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-3" class="track">
+  <td class="idx">03</td>
+  <td><div class="title">Buffalo Soldier </div><div class="artist">Bob Marley &amp; The Wailers</div><code>7BfW1eoDh27W69nxsmRicb</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1a616757a6f557437e5e15079645d0b9f7e79188?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-4" class="track">
+  <td class="idx">04</td>
+  <td><div class="title">One Love </div><div class="artist">Bob Marley &amp; The Wailers</div><code>5ktLiFRny1waEnVkZNUa03</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c1be85897a96a0e530a2cc812bad94095744ce5e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-5" class="track">
+  <td class="idx">05</td>
+  <td><div class="title">Coming In From The Cold - 12&quot; Single </div><div class="artist">Bob Marley &amp; The Wailers</div><code>7vf7kWYt0ECLAoQshCD4q6</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ca0db1baec5fad034b489a2e04cbd0c28b43062a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-6" class="track">
+  <td class="idx">06</td>
+  <td><div class="title">Jamming - US Version </div><div class="artist">Bob Marley &amp; The Wailers</div><code>6XRVx8N99dG7ORZFRVNCB1</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/df73fadea14c8cc26074d39712b84d7712cb001f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-7" class="track">
+  <td class="idx">07</td>
+  <td><div class="title">Satisfy My Soul - B Is For Bob Mix </div><div class="artist">Bob Marley &amp; The Wailers</div><code>7GrAR6lGlWIMFeWmoy4b32</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2e31d1607e6255edf85a2cad01317a0e7addd65d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-8" class="track">
+  <td class="idx">08</td>
+  <td><div class="title">Small Axe - B Is Version </div><div class="artist">Bob Marley &amp; The Wailers</div><code>1wiWYjD3Op1yFoWuZR1CXH</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c7bb5493038f34966e1d729b34c472fafe56dc3a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-9" class="track">
+  <td class="idx">09</td>
+  <td><div class="title">Bend Down Low - B Is Version </div><div class="artist">Bob Marley &amp; The Wailers</div><code>30rlTtRH4J0IcOd11P5DDE</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/56078626a5019f672838bf1a0420ff5460909ce4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-10" class="track">
+  <td class="idx">10</td>
+  <td><div class="title">DYKL (Don&#x27;t You Kill Love) </div><div class="artist">Ziggy Marley</div><code>1LxFM59ZQWjjhlD943ou8N</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f81d01374776c5a1ea8f0b4b157a29632f72554d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-11" class="track">
+  <td class="idx">11</td>
+  <td><div class="title">My Jamaican Collie </div><div class="artist">Max Romeo</div><code>1xfqbzemnEoI58gzxlgbhg</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/9d83142f7031e2cb46413d3f5924b7050ad6e06e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-12" class="track">
+  <td class="idx">12</td>
+  <td><div class="title">Dancehall Style </div><div class="artist">Lone Ranger</div><code>3mYeM38CkI8l87bp0TjHQW</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f71795ee46f3896ae5730de030ca51a2987dc786?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-13" class="track">
+  <td class="idx">13</td>
+  <td><div class="title">Kaya </div><div class="artist">Ronnie Davis</div><code>4qQIogchZwdyM5WqlQoY2N</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b1d6059f69f23ab664eb957acf33885034d4ec03?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-14" class="track">
+  <td class="idx">14</td>
+  <td><div class="title">I Man a African </div><div class="artist">Max Romeo</div><code>325LfYpPe2Yqd4nCL4ZxfS</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1601db397a279b662c8f21aea0d250f3b5e48176?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-15" class="track">
+  <td class="idx">15</td>
+  <td><div class="title">Tell I A Lie </div><div class="artist">Hugh Mundell</div><code>1yu6DbS3pDhIalNUfHzbZX</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c4bb35e38c4ce3e1fe5cafa76376d9d2d85a79bf?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-16" class="track">
+  <td class="idx">16</td>
+  <td><div class="title">One Step Forward - Single Edit </div><div class="artist">Max Romeo</div><code>4aCjIAS36IffVcNkgbqwWI</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bc810d8e8852ab9a3a58fa63ef512e1479f2b9dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-17" class="track">
+  <td class="idx">17</td>
+  <td><div class="title">Morphing Dub </div><div class="artist">Jah Shaka &amp; Mad Professor</div><code>3Qt1DxtcwDpiIkwBcbPwim</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d8c242a34a852c7e04f8fbf539a8103cae3aab73?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-18" class="track">
+  <td class="idx">18</td>
+  <td><div class="title">We Got To Be Together </div><div class="artist">Wailing Souls</div><code>0A0fGErvAxzfcam5PbloL7</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/4bbb27a65cc56c66d72402e18c31d06bf9a1fd14?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-19" class="track">
+  <td class="idx">19</td>
+  <td><div class="title">Run Run </div><div class="artist">Prince Far I</div><code>3BMPMws5VKsaoyo0HHq8CI</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e8767465532a0761eadad226b08a991d2e254552?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-20" class="track">
+  <td class="idx">20</td>
+  <td><div class="title">Dreadlocks The Time Is Now - 1990 Digital Remaster </div><div class="artist">The Gladiators</div><code>5HIr9EyCMr8Gwqcd1rYgcq</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/563c405a697446e80a47878ea1e18f0241cb507f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/30af46efcab458c3535755bc384cef034e2519b1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/a5e96c9baef07a93da5ad8f27f6c829531eadcc7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/1a616757a6f557437e5e15079645d0b9f7e79188?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/c1be85897a96a0e530a2cc812bad94095744ce5e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/ca0db1baec5fad034b489a2e04cbd0c28b43062a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/df73fadea14c8cc26074d39712b84d7712cb001f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/2e31d1607e6255edf85a2cad01317a0e7addd65d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/c7bb5493038f34966e1d729b34c472fafe56dc3a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/56078626a5019f672838bf1a0420ff5460909ce4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/f81d01374776c5a1ea8f0b4b157a29632f72554d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/9d83142f7031e2cb46413d3f5924b7050ad6e06e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/f71795ee46f3896ae5730de030ca51a2987dc786?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/b1d6059f69f23ab664eb957acf33885034d4ec03?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/1601db397a279b662c8f21aea0d250f3b5e48176?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/c4bb35e38c4ce3e1fe5cafa76376d9d2d85a79bf?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/bc810d8e8852ab9a3a58fa63ef512e1479f2b9dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/d8c242a34a852c7e04f8fbf539a8103cae3aab73?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/4bbb27a65cc56c66d72402e18c31d06bf9a1fd14?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/e8767465532a0761eadad226b08a991d2e254552?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/563c405a697446e80a47878ea1e18f0241cb507f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(rowId) {
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function stopCurrent() {
+      stopRequested = true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      setStatus(`${previewItems.length} previews available`);
+    }
+
+    function nextPreview() {
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+    }
+
+    async function playAll() {
+      if (!previewItems.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {
+        if (stopRequested) break;
+        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
+        await new Promise((resolve) => {
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, { once: true });
+          currentAudio.addEventListener('error', resolve, { once: true });
+          currentAudio.play().catch(resolve);
+        });
+        currentResolve = null;
+      }
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      if (!stopRequested) setStatus('Finished');
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.addEventListener('play', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+        setPlaying(audio.closest('tr').id);
+      });
+      audio.addEventListener('pause', () => {
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      });
+      audio.addEventListener('ended', () => {
+        audio.closest('tr').classList.remove('playing');
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
+</body>
+</html>

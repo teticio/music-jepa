@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journey: Classical To Techno (track2vec)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed {
+      background: #20281f;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    audio {
+      width: 260px;
+      max-width: 100%;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Journey: Classical To Techno (track2vec)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">11 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed">
+  <td class="idx">01</td>
+  <td><div class="title">Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio <span class="badge">seed</span></div><div class="artist">Ludwig van Beethoven</div><code>3E14w5yvAuK1YHnfi2zpdl</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ca00649ff423e7c4f45ff7bf19f29aa3d64b4308?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-2" class="track">
+  <td class="idx">02</td>
+  <td><div class="title">Carmen Suite No. 1: 5. Les toréadors </div><div class="artist">Georges Bizet</div><code>6Z34YgqCJkdrliDmbcaJgy</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d54ecb51e0d94d905da6d9e30c35835b5484f895?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-3" class="track">
+  <td class="idx">03</td>
+  <td><div class="title">Rondo Alla Turca </div><div class="artist">Wolfgang Amadeus Mozart</div><code>3qQuI8y02GiOPKWsqv3vFa</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/da60f2c1cb0f6bdd548677c3a1a1542379564410?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-4" class="track">
+  <td class="idx">04</td>
+  <td><div class="title">Prokofiev: Romeo and Juliet, Op. 64, Act 1, Scene 2: Dance of the Knights </div><div class="artist">Sergei Prokofiev</div><code>4YLVOi2UXj5KLJfphy89nA</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1898d691b0162e775513a9ca0ac1a8a55d487702?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-5" class="track">
+  <td class="idx">05</td>
+  <td><div class="title">Die Walkure, Act III: Ride of the Valkyries </div><div class="artist">Richard Wagner</div><code>2e8MxBgVWMSQmxb2zcuCoq</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8e90bf4fb5b19efd16c267f1423a8feb7e590627?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-6" class="track">
+  <td class="idx">06</td>
+  <td><div class="title">Drink Up Me Hearties Yo Ho </div><div class="artist">Hans Zimmer</div><code>0HewdQ1l9bckQXPfIO3CYH</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/9ef3a8d07e19f0ebb5de4a0e4c672992b2f064ff?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-7" class="track">
+  <td class="idx">07</td>
+  <td><div class="title">Strobe - Radio Edit </div><div class="artist">deadmau5</div><code>6c9EGVj5CaOeoKd9ecMW1U</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8ffd14ef296d2e61b544f4f052e091bbaf397e11?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-8" class="track">
+  <td class="idx">08</td>
+  <td><div class="title">Some Chords </div><div class="artist">deadmau5</div><code>7q3aKYrhCbTnxdRZ6xmkC6</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/59ca6523b85cbf240d58a6e74ce1abc748d221f2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-9" class="track">
+  <td class="idx">09</td>
+  <td><div class="title">Animal Rights </div><div class="artist">deadmau5 + Wolfgang Gartner</div><code>2sduRP2wX0dG7waoyGPOGf</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/4c68e43b94220e02711d095202d4819e30e2a31c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-10" class="track">
+  <td class="idx">10</td>
+  <td><div class="title">Ghosts &#x27;N&#x27; Stuff - Radio Edit </div><div class="artist">deadmau5</div><code>5b2ACxzxhGeLPDr500fQzy</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/cb44dd1a76cd35ed89ce8fa66a48af65a73fa4dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-11" class="track seed">
+  <td class="idx">11</td>
+  <td><div class="title">Ghosts &#x27;n&#x27; Stuff <span class="badge">seed</span></div><div class="artist">deadmau5</div><code>4ua0IepBEISCWwF8dTJvcU</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/838488ae617325ad1a02b7969fafef46ce6f018f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/ca00649ff423e7c4f45ff7bf19f29aa3d64b4308?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/d54ecb51e0d94d905da6d9e30c35835b5484f895?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/da60f2c1cb0f6bdd548677c3a1a1542379564410?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/1898d691b0162e775513a9ca0ac1a8a55d487702?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/8e90bf4fb5b19efd16c267f1423a8feb7e590627?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/9ef3a8d07e19f0ebb5de4a0e4c672992b2f064ff?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/8ffd14ef296d2e61b544f4f052e091bbaf397e11?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/59ca6523b85cbf240d58a6e74ce1abc748d221f2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/4c68e43b94220e02711d095202d4819e30e2a31c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/cb44dd1a76cd35ed89ce8fa66a48af65a73fa4dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/838488ae617325ad1a02b7969fafef46ce6f018f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}];
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(rowId) {
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function stopCurrent() {
+      stopRequested = true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      setStatus(`${previewItems.length} previews available`);
+    }
+
+    function nextPreview() {
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+    }
+
+    async function playAll() {
+      if (!previewItems.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {
+        if (stopRequested) break;
+        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
+        await new Promise((resolve) => {
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, { once: true });
+          currentAudio.addEventListener('error', resolve, { once: true });
+          currentAudio.play().catch(resolve);
+        });
+        currentResolve = null;
+      }
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      if (!stopRequested) setStatus('Finished');
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.addEventListener('play', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+        setPlaying(audio.closest('tr').id);
+      });
+      audio.addEventListener('pause', () => {
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      });
+      audio.addEventListener('ended', () => {
+        audio.closest('tr').classList.remove('playing');
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
+</body>
+</html>

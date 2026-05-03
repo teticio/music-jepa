@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playlist: Rock (embeddings)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed {
+      background: #20281f;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    audio {
+      width: 260px;
+      max-width: 100%;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Playlist: Rock (embeddings)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed">
+  <td class="idx">01</td>
+  <td><div class="title">Smells Like Teen Spirit <span class="badge">seed</span></div><div class="artist">Nirvana</div><code>4CeeEOM32jQcH3eN9Q2dGj</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-2" class="track">
+  <td class="idx">02</td>
+  <td><div class="title">Bigger Than Kiss </div><div class="artist">Teenage Bottlerocket</div><code>4EAql3BjJv4GtJZnQb5juh</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ee2d3598f0539350383d2396db63fd9072d9a65c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-3" class="track">
+  <td class="idx">03</td>
+  <td><div class="title">FML </div><div class="artist">Godsmack</div><code>0eBhdkzFaK06HFPo9AVgmG</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/35342c10310289e653fb326fe5923430eda3c0ec?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-4" class="track">
+  <td class="idx">04</td>
+  <td><div class="title">Tell Me A Lie </div><div class="artist">The Fratellis</div><code>6xlu9OhvAvDOZBbvDmIYWT</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a7a0b69b8e43e8c58669677d8bd088ef383c3a17?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-5" class="track">
+  <td class="idx">05</td>
+  <td><div class="title">I Slept With Someone In Fall Out Boy And All I Got Was This Stupid Song Written About Me </div><div class="artist">Fall Out Boy</div><code>79oQb66jALYYKX1hn4qs4p</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1b663767263c1281f9f4476d90c0ac038fe62f9f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-6" class="track">
+  <td class="idx">06</td>
+  <td><div class="title">The Boys of Summer </div><div class="artist">The Ataris</div><code>5BmagRD7Thki6O1zZwbxBy</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d2c1625d1512f0fb0e8d1e6cbdaaafeb404820d2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-7" class="track">
+  <td class="idx">07</td>
+  <td><div class="title">Thriller </div><div class="artist">Fall Out Boy</div><code>07kBp5VuebubsozpQd3nyK</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/681595bc7d22c58ca465e7993be12014a418bb39?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-8" class="track">
+  <td class="idx">08</td>
+  <td><div class="title">Overcome </div><div class="artist">As I Lay Dying</div><code>4uX9aXMqpy8Lu3DVa359Pw</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a6d437f900b58008c335fde7e437b114e52ea4a3?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-9" class="track">
+  <td class="idx">09</td>
+  <td><div class="title">Sick, Sick, Sick </div><div class="artist">Bayside</div><code>0p3YVGafB1214KOw5AokGv</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/21f5da7486176acd12ebe91857fa3b04229cb578?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-10" class="track">
+  <td class="idx">10</td>
+  <td><div class="title">Someone Like You </div><div class="artist">Ice Nine Kills</div><code>4aKOM2dmLTB5U5qsFhb8u4</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/526a0f019de37dfd4195b455af26fc1d2242eb33?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-11" class="track">
+  <td class="idx">11</td>
+  <td><div class="title">Burial Bridge </div><div class="artist">The Sorrow</div><code>5Fb8M46ZT94ke19k76MXqb</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bc29203ab1756517014cad4cc5c247b304cdc716?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-12" class="track">
+  <td class="idx">12</td>
+  <td><div class="title">Bring Me Home </div><div class="artist">Millencolin</div><code>3LZEfNShP0RjbHyd9vXQ2m</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a817f0a77a8058f2aba7efcd0f338befa75466f5?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-13" class="track">
+  <td class="idx">13</td>
+  <td><div class="title">Sense &amp; Sensibility </div><div class="artist">Millencolin</div><code>0UaOzDAzZPiPfXP2AbIrpf</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ed6f4933ad190a67409e18fb4cfff8419d643010?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-14" class="track">
+  <td class="idx">14</td>
+  <td><div class="title">True Brew </div><div class="artist">Millencolin</div><code>2Yj1mVu6ONbiz4zaxDq4PH</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/91b0d0a38aa9153b42cfa86d718a21769fc51645?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-15" class="track">
+  <td class="idx">15</td>
+  <td><div class="title">Hurry Up &amp; Die </div><div class="artist">Turbonegro</div><code>0D3z53TFvmEuopiIoXnIcl</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8ecf3c143c39447d0f1b17cba9a3c990c9afde30?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-16" class="track">
+  <td class="idx">16</td>
+  <td><div class="title">Have Faith In Me </div><div class="artist">A Day To Remember</div><code>4IX6QvjOI62tyHigVsTUlv</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/71d8da885004d14d0c6e171cf20db88a4f8c9fef?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-17" class="track">
+  <td class="idx">17</td>
+  <td><div class="title">Ignorance </div><div class="artist">Paramore</div><code>5ZdrNnYV5VZWds4WXKf8kf</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/87faa996ad4d7c39d9f939811a3186c36c5d9deb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-18" class="track">
+  <td class="idx">18</td>
+  <td><div class="title">Worthless Case </div><div class="artist">Like Pacific</div><code>6L2ot1HuOrozVuM1I9prS0</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/12fdee03ba4c6812680f2636b5e9187874b4bb6d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-19" class="track">
+  <td class="idx">19</td>
+  <td><div class="title">Stop When the Red Lights Flash </div><div class="artist">Green Day</div><code>4fTZOgz6rTfdoGIVB8icmf</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8de8e97c22a0006ed551799c003eb6738211e295?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-20" class="track">
+  <td class="idx">20</td>
+  <td><div class="title">Looking Up </div><div class="artist">Paramore</div><code>2vfYs0MWqvIjLhWFoYkPSZ</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/15ffa5903050915ce0a45cffbdeb0fda6f673ee5?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/ee2d3598f0539350383d2396db63fd9072d9a65c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/35342c10310289e653fb326fe5923430eda3c0ec?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/a7a0b69b8e43e8c58669677d8bd088ef383c3a17?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/1b663767263c1281f9f4476d90c0ac038fe62f9f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/d2c1625d1512f0fb0e8d1e6cbdaaafeb404820d2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/681595bc7d22c58ca465e7993be12014a418bb39?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/a6d437f900b58008c335fde7e437b114e52ea4a3?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/21f5da7486176acd12ebe91857fa3b04229cb578?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/526a0f019de37dfd4195b455af26fc1d2242eb33?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/bc29203ab1756517014cad4cc5c247b304cdc716?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/a817f0a77a8058f2aba7efcd0f338befa75466f5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/ed6f4933ad190a67409e18fb4cfff8419d643010?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/91b0d0a38aa9153b42cfa86d718a21769fc51645?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/8ecf3c143c39447d0f1b17cba9a3c990c9afde30?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/71d8da885004d14d0c6e171cf20db88a4f8c9fef?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/87faa996ad4d7c39d9f939811a3186c36c5d9deb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/12fdee03ba4c6812680f2636b5e9187874b4bb6d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/8de8e97c22a0006ed551799c003eb6738211e295?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/15ffa5903050915ce0a45cffbdeb0fda6f673ee5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(rowId) {
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function stopCurrent() {
+      stopRequested = true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      setStatus(`${previewItems.length} previews available`);
+    }
+
+    function nextPreview() {
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+    }
+
+    async function playAll() {
+      if (!previewItems.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {
+        if (stopRequested) break;
+        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
+        await new Promise((resolve) => {
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, { once: true });
+          currentAudio.addEventListener('error', resolve, { once: true });
+          currentAudio.play().catch(resolve);
+        });
+        currentResolve = null;
+      }
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      if (!stopRequested) setStatus('Finished');
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.addEventListener('play', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+        setPlaying(audio.closest('tr').id);
+      });
+      audio.addEventListener('pause', () => {
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      });
+      audio.addEventListener('ended', () => {
+        audio.closest('tr').classList.remove('playing');
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
+</body>
+</html>

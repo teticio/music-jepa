@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playlist: Electronic Drift 0 (head)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed {
+      background: #20281f;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    audio {
+      width: 260px;
+      max-width: 100%;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Playlist: Electronic Drift 0 (head)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed">
+  <td class="idx">01</td>
+  <td><div class="title">Get Lucky (feat. Pharrell Williams and Nile Rodgers) <span class="badge">seed</span></div><div class="artist">Daft Punk</div><code>69kOkLUCkxIZYexIgSG8rq</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/6de52dda0d37a0646987856c3b9f7da075d965b4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-2" class="track">
+  <td class="idx">02</td>
+  <td><div class="title">Get Lucky (Radio Edit) [feat. Pharrell Williams and Nile Rodgers] </div><div class="artist">Daft Punk</div><code>2Foc5Q5nqNiosCNqttzHof</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/9b7eaf7fb5cab29251df52e9a4f46fad14e29aa1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-3" class="track">
+  <td class="idx">03</td>
+  <td><div class="title">Bobeira </div><div class="artist">Edson Frederico</div><code>7ED2864nexnRieEPm5nnjI</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2e19178bb1b005b684b47f10456d2812436e3232?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-4" class="track">
+  <td class="idx">04</td>
+  <td><div class="title">Soul Makossa [Original Mix] </div><div class="artist">Shovell</div><code>6Uo3EtnfXoS3wujIUpc3yQ</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d8b6c54ed158b825a582af92d359e6d1083f610b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-5" class="track">
+  <td class="idx">05</td>
+  <td><div class="title">Ke Star - Remix </div><div class="artist">Focalistic</div><code>7b3991NnMDhwZRq7C2Cpgc</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f375f52f2f9c931b21bd6b172e5e1134bba28f96?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-6" class="track">
+  <td class="idx">06</td>
+  <td><div class="title">How Long </div><div class="artist">Soul II Soul</div><code>3QP9rNtge2GGnlNdMhiIAN</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/71ef40daa8dc9e018c3e4ceab7655b35b4fc25dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-7" class="track">
+  <td class="idx">07</td>
+  <td><div class="title">Closer Than Close - Mentor Original Radio Edit </div><div class="artist">Rosie Gaines</div><code>16pww8bqjeYClGmsbd0AXK</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2d17c7057ff345d04c765556cfbfc5a248d7955b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-8" class="track">
+  <td class="idx">08</td>
+  <td><div class="title">Missing - Todd Terry Remix / Radio Edit </div><div class="artist">Everything But The Girl</div><code>1IsvXZXAV9EBC4hBKW6yDN</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5abd3b6efde2dcb1022498188f5a97795e679c06?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-9" class="track">
+  <td class="idx">09</td>
+  <td><div class="title">Good Life </div><div class="artist">Inner City</div><code>5sJiLlgQKBL81QCTOkoLB5</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5a918efb51710313c2a28608c7e77299997dcf98?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-10" class="track">
+  <td class="idx">10</td>
+  <td><div class="title">Big Fun - Original 12&#x27;&#x27; Mix </div><div class="artist">Inner City</div><code>5dbJwqmEzubeVZqikU8YgB</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/46036f9c39c0abd72027d1e826b516825ac43f63?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-11" class="track">
+  <td class="idx">11</td>
+  <td><div class="title">Big Fun </div><div class="artist">Inner City</div><code>4PyhlL1vrSvPlhYLdphszr</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/49ee5a9cdb3cf582bf87415ced79df3992700704?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-12" class="track">
+  <td class="idx">12</td>
+  <td><div class="title">Silent Morning </div><div class="artist">Noel</div><code>21brTVDh5Y3B3mA4z5yyaU</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/6e34de58fd0cff2d67413db80359d1c9a10e23bb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-13" class="track">
+  <td class="idx">13</td>
+  <td><div class="title">A Love Bizarre </div><div class="artist">Sheila E.</div><code>5R6ol4f8WCUCWNrB7Ymf99</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c57f5bb3012653357d4295c927ae8f770cde2382?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-14" class="track">
+  <td class="idx">14</td>
+  <td><div class="title">The Power </div><div class="artist">SNAP!</div><code>0nQLxiNGbbUoSGrxksETLm</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/68527ede58daa4b9a4ae7e57ff1c90903e1a4b24?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-15" class="track">
+  <td class="idx">15</td>
+  <td><div class="title">Can&#x27;t Fake the Feeling </div><div class="artist">Geraldine Hunt</div><code>3WtL910PEMIjJkkpM4xMKU</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3f09cc23d6eb9e60ab6121e66e49fc37ecfd07c7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-16" class="track">
+  <td class="idx">16</td>
+  <td><div class="title">Super Duper Love Parts 1&amp;2 </div><div class="artist">Sugar Billy</div><code>6j1oaWfhM3YarGkLG7NYtC</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e0bdfca47406973d5ba52f240be57ee58bbf77df?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-17" class="track">
+  <td class="idx">17</td>
+  <td><div class="title">Keep the Fire Burning </div><div class="artist">Gwen McCrae</div><code>4rS4K30qVDExdjeU4feF4c</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2bf46225dab3228c16050cabcac8561203de84d2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-18" class="track">
+  <td class="idx">18</td>
+  <td><div class="title">Falling In Love </div><div class="artist">Surface</div><code>2q2xdlJHJIx7MdeWkle3iJ</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ee8678762d953265187335730a3f402fa00b5b92?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-19" class="track">
+  <td class="idx">19</td>
+  <td><div class="title">Hold Tight - Full Length Album Mix </div><div class="artist">Change</div><code>17SXfIfV9f494UVrPQBYi0</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/6aaf18feb461b2b176b7ec89bc56c4a3f9287059?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-20" class="track">
+  <td class="idx">20</td>
+  <td><div class="title">Don&#x27;t You Want Me </div><div class="artist">Jody Watley</div><code>7r4ZN8F22eBQeN0aMqwzgN</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/285e66d677ab68bb64ee8aec60e29b41f678191c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/6de52dda0d37a0646987856c3b9f7da075d965b4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/9b7eaf7fb5cab29251df52e9a4f46fad14e29aa1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/2e19178bb1b005b684b47f10456d2812436e3232?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/d8b6c54ed158b825a582af92d359e6d1083f610b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/f375f52f2f9c931b21bd6b172e5e1134bba28f96?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/71ef40daa8dc9e018c3e4ceab7655b35b4fc25dd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/2d17c7057ff345d04c765556cfbfc5a248d7955b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/5abd3b6efde2dcb1022498188f5a97795e679c06?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/5a918efb51710313c2a28608c7e77299997dcf98?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/46036f9c39c0abd72027d1e826b516825ac43f63?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/49ee5a9cdb3cf582bf87415ced79df3992700704?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/6e34de58fd0cff2d67413db80359d1c9a10e23bb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/c57f5bb3012653357d4295c927ae8f770cde2382?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/68527ede58daa4b9a4ae7e57ff1c90903e1a4b24?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/3f09cc23d6eb9e60ab6121e66e49fc37ecfd07c7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/e0bdfca47406973d5ba52f240be57ee58bbf77df?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/2bf46225dab3228c16050cabcac8561203de84d2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/ee8678762d953265187335730a3f402fa00b5b92?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/6aaf18feb461b2b176b7ec89bc56c4a3f9287059?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/285e66d677ab68bb64ee8aec60e29b41f678191c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(rowId) {
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function stopCurrent() {
+      stopRequested = true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      setStatus(`${previewItems.length} previews available`);
+    }
+
+    function nextPreview() {
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+    }
+
+    async function playAll() {
+      if (!previewItems.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {
+        if (stopRequested) break;
+        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
+        await new Promise((resolve) => {
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, { once: true });
+          currentAudio.addEventListener('error', resolve, { once: true });
+          currentAudio.play().catch(resolve);
+        });
+        currentResolve = null;
+      }
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      if (!stopRequested) setStatus('Finished');
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.addEventListener('play', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+        setPlaying(audio.closest('tr').id);
+      });
+      audio.addEventListener('pause', () => {
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      });
+      audio.addEventListener('ended', () => {
+        audio.closest('tr').classList.remove('playing');
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
+</body>
+</html>

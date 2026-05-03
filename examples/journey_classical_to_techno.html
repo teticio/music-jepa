@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journey: Classical To Techno (head)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed {
+      background: #20281f;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    audio {
+      width: 260px;
+      max-width: 100%;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Journey: Classical To Techno (head)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">11 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed">
+  <td class="idx">01</td>
+  <td><div class="title">Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio <span class="badge">seed</span></div><div class="artist">Ludwig van Beethoven</div><code>3E14w5yvAuK1YHnfi2zpdl</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ca00649ff423e7c4f45ff7bf19f29aa3d64b4308?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-2" class="track">
+  <td class="idx">02</td>
+  <td><div class="title">Cello Concerto in E Minor, Op. 85: II. Lento - Allegro molto </div><div class="artist">Edward Elgar</div><code>2aKYzl8HsCFyhmjto3SUZ5</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/de7394c852a6e73f9c8d1eff9def82b25f183d23?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-3" class="track">
+  <td class="idx">03</td>
+  <td><div class="title">Serenade No. 13 in G Major, K. 525, &quot;Eine Kleine Nachtmusik&quot;: Allegro </div><div class="artist">London Philharmonic Orchestra</div><code>7m69T4JHHnmNPhXLQEc3ES</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5e972faa66dadda9729c351b4fccd21e6eea46ad?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-4" class="track">
+  <td class="idx">04</td>
+  <td><div class="title">Vivaldi: The Four Seasons, Violin Concerto in G Minor, Op. 8 No. 2, RV 315 &quot;Summer&quot;: III. Presto </div><div class="artist">Antonio Vivaldi</div><code>5N82c9RY2k4VeAel1pl5bJ</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a1e2ebe01e858457e9025b8ab5300d23d2122cf1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-5" class="track">
+  <td class="idx">05</td>
+  <td><div class="title">Sinfonie Nr. 3 c-Moll, Op. 78, &quot;Orgelsinfonie&quot;: 2. Maestoso - Allegro - Più allegro - Molto allegro - Pesante (Ein Schweinchen names Babe): II. Maestoso - Allegro - Piu allegro - Molto allegro - Pesante </div><div class="artist">Camille Saint-Saëns</div><code>2jFvkiqyIQpakqkAMY0DM4</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/68f65d03083f5519383b369b00bc530788523ba4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-6" class="track">
+  <td class="idx">06</td>
+  <td><div class="title">Waltz from Swan Lake </div><div class="artist">Pyotr Ilyich Tchaikovsky</div><code>5beNoIPZrO3AmLqC3eq1zJ</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/7590dcfff4e444465c36e4a7ee30236e62539c12?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-7" class="track">
+  <td class="idx">07</td>
+  <td><div class="title">Tchaikovsky: Swan Lake, Op. 20, Act II: No. 10, Scene. Moderato </div><div class="artist">Pyotr Ilyich Tchaikovsky</div><code>2xizRhme7pYeITbH1NLLGt</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a1fbfa63beffdd711a0e4689b5fe1cd77c771fc1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-8" class="track">
+  <td class="idx">08</td>
+  <td><div class="title">HANDEL&#x27;S MESSIAH/OVERTURE </div><div class="artist">George Frideric Handel</div><code>26PxoutY6dSYjCW4kKtfCh</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d38510ce9a5a1aa84dba47970da95c598fe0988b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-9" class="track">
+  <td class="idx">09</td>
+  <td><div class="title">Orchestral Suite No. 3 in D Major, BWV 1068: II. Air </div><div class="artist">Johann Sebastian Bach</div><code>0x3ZUQRbKl0kkAJmxePzFl</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/75e5b23ec7681e6f142bed27e14332692bac945c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-10" class="track">
+  <td class="idx">10</td>
+  <td><div class="title">Abyss </div><div class="artist">Fransoafran</div><code>1MC1iCHrb6XEuOr1jTBK2u</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c4796c87ae767866c2ad9516f995ee1b721950e1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr><tr id="track-11" class="track seed">
+  <td class="idx">11</td>
+  <td><div class="title">Ghosts &#x27;n&#x27; Stuff <span class="badge">seed</span></div><div class="artist">deadmau5</div><code>4ua0IepBEISCWwF8dTJvcU</code></td>
+  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/838488ae617325ad1a02b7969fafef46ce6f018f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/ca00649ff423e7c4f45ff7bf19f29aa3d64b4308?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/de7394c852a6e73f9c8d1eff9def82b25f183d23?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/5e972faa66dadda9729c351b4fccd21e6eea46ad?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/a1e2ebe01e858457e9025b8ab5300d23d2122cf1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/68f65d03083f5519383b369b00bc530788523ba4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/7590dcfff4e444465c36e4a7ee30236e62539c12?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/a1fbfa63beffdd711a0e4689b5fe1cd77c771fc1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/d38510ce9a5a1aa84dba47970da95c598fe0988b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/75e5b23ec7681e6f142bed27e14332692bac945c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/c4796c87ae767866c2ad9516f995ee1b721950e1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/838488ae617325ad1a02b7969fafef46ce6f018f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}];
+    const playButton = document.getElementById('play-all');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentResolve = null;
+    let stopRequested = false;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(rowId) {
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function stopCurrent() {
+      stopRequested = true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      setStatus(`${previewItems.length} previews available`);
+    }
+
+    function nextPreview() {
+      if (!currentAudio) return;
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      if (currentResolve) {
+        currentResolve();
+        currentResolve = null;
+      }
+    }
+
+    async function playAll() {
+      if (!previewItems.length) return;
+      stopRequested = false;
+      playButton.disabled = true;
+      nextButton.disabled = false;
+      stopButton.disabled = false;
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {
+        if (stopRequested) break;
+        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
+        await new Promise((resolve) => {
+          currentResolve = resolve;
+          currentAudio.addEventListener('ended', resolve, { once: true });
+          currentAudio.addEventListener('error', resolve, { once: true });
+          currentAudio.play().catch(resolve);
+        });
+        currentResolve = null;
+      }
+      currentAudio = null;
+      playButton.disabled = false;
+      nextButton.disabled = true;
+      stopButton.disabled = true;
+      clearPlaying();
+      if (!stopRequested) setStatus('Finished');
+    }
+
+    document.querySelectorAll('audio').forEach((audio) => {
+      audio.addEventListener('play', () => {
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+        setPlaying(audio.closest('tr').id);
+      });
+      audio.addEventListener('pause', () => {
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      });
+      audio.addEventListener('ended', () => {
+        audio.closest('tr').classList.remove('playing');
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+  </script>
+</body>
+</html>
