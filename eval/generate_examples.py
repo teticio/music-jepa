@@ -2,6 +2,7 @@
 Generate a small gallery of continuation playlists and infill journeys.
 
 Examples are written as standalone HTML files under outputs/examples/.
+Each playlist/journey is run at head_weight 0, 0.5, 1.0 and with Mp3ToVec.
 """
 import argparse
 from html import escape
@@ -9,28 +10,12 @@ import subprocess
 from pathlib import Path
 
 
-ELECTRONIC_SEEDS = [
-    "69kOkLUCkxIZYexIgSG8rq",
-]  # Daft Punk - Get Lucky
-
-HEAD_CONTINUATION_DRIFT_EXAMPLES = [
-    ("electronic_drift_0", ELECTRONIC_SEEDS, 0.0),
-    ("electronic_drift_35", ELECTRONIC_SEEDS, 0.35),
-    ("electronic_drift_70", ELECTRONIC_SEEDS, 0.70),
-]
-
-HEAD_CONTINUATION_NOISE_EXAMPLES = [
-    ("electronic_noise_0", ELECTRONIC_SEEDS, 0.0, 0.0),
-    ("electronic_noise_25", ELECTRONIC_SEEDS, 0.0, 0.25),
-    ("electronic_noise_50", ELECTRONIC_SEEDS, 0.0, 0.50),
-]
-
 CONTINUATION_EXAMPLES = [
-    ("electronic", ELECTRONIC_SEEDS),
-    ("rock", ["4CeeEOM32jQcH3eN9Q2dGj"]),  # Nirvana - Smells Like Teen Spirit
-    ("reggae", ["75FYqcxt1YEAtqDLrOeIJn"]),  # Bob Marley - Three Little Birds
-    ("jazz", ["6oVY50pmdXqLNVeK8bzomn"]),  # John Coltrane - My Favorite Things
-    ("classical", ["3oHSL6pt9LpNrQZuQGu9wL"]),  # Mozart - Requiem: Lacrimosa
+    ("electronic", ["69kOkLUCkxIZYexIgSG8rq"]),   # Daft Punk - Get Lucky
+    ("rock",       ["4CeeEOM32jQcH3eN9Q2dGj"]),   # Nirvana - Smells Like Teen Spirit
+    ("reggae",     ["75FYqcxt1YEAtqDLrOeIJn"]),   # Bob Marley - Three Little Birds
+    ("jazz",       ["6oVY50pmdXqLNVeK8bzomn"]),   # John Coltrane - My Favorite Things
+    ("classical",  ["3oHSL6pt9LpNrQZuQGu9wL"]),   # Mozart - Requiem: Lacrimosa
 ]
 
 JOURNEY_EXAMPLES = [
@@ -63,6 +48,8 @@ JOURNEY_EXAMPLES = [
     ),  # Vivaldi -> Miles Davis -> James Brown -> Donna Summer -> Inner City -> Underworld
 ]
 
+HEAD_WEIGHTS = [0.0, 0.5, 1.0]
+
 
 def run(cmd: list[str]) -> None:
     print("$ " + " ".join(cmd))
@@ -81,10 +68,15 @@ def title_for(path: Path) -> str:
         kind = "Example"
 
     method = "head"
-    for suffix in ["_embeddings", "_mp3tovec"]:
+    for suffix, label in [
+        ("_mp3tovec", "mp3tovec"),
+        ("_hw100", "hw=1.0"),
+        ("_hw50", "hw=0.5"),
+        ("_hw0", "hw=0.0"),
+    ]:
         if name.endswith(suffix):
             name = name[: -len(suffix)]
-            method = suffix.removeprefix("_")
+            method = label
             break
 
     label = name.replace("_", " ").title()
@@ -100,33 +92,27 @@ def write_index(out_dir: Path) -> None:
         path for path in out_dir.glob("*.html") if path.name != "index.html"
     )
     groups = [
-        ("Playlists", [path for path in html_files if path.name.startswith("playlist_")]),
-        ("Journeys", [path for path in html_files if path.name.startswith("journey_")]),
-        ("Other", [
-            path
-            for path in html_files
-            if not path.name.startswith(("playlist_", "journey_"))
-        ]),
+        ("Playlists", [p for p in html_files if p.name.startswith("playlist_")]),
+        ("Journeys",  [p for p in html_files if p.name.startswith("journey_")]),
+        ("Other",     [p for p in html_files if not p.name.startswith(("playlist_", "journey_"))]),
     ]
     sections = []
     for heading, files in groups:
         if not files:
             continue
         links = "\n".join(
-            f'        <li><a href="{escape(path.name)}">{escape(title_for(path))}</a></li>'
-            for path in files
+            f'        <li><a href="{escape(p.name)}">{escape(title_for(p))}</a></li>'
+            for p in files
         )
         sections.append(
-            "\n".join(
-                [
-                    f"    <section>",
-                    f"      <h2>{escape(heading)}</h2>",
-                    f"      <ul>",
-                    links,
-                    f"      </ul>",
-                    f"    </section>",
-                ]
-            )
+            "\n".join([
+                "    <section>",
+                f"      <h2>{escape(heading)}</h2>",
+                "      <ul>",
+                links,
+                "      </ul>",
+                "    </section>",
+            ])
         )
 
     html = f"""<!doctype html>
@@ -209,6 +195,7 @@ def main():
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
+    parser.add_argument("--mp3tovec_model_dir", default=None)
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -224,143 +211,50 @@ def main():
 
     checkpoint_dir = Path(args.checkpoint_dir)
     cont_head = checkpoint_dir / "continuation_head.pt"
+
+    def run_playlist(name, seeds, hw_label, extra):
+        run(base + extra + [
+            "--seeds", *seeds,
+            "--size", str(args.size),
+            "--noise", str(args.noise),
+            "--out_html", str(out_dir / f"playlist_{name}_{hw_label}.html"),
+            "--title", example_title(f"playlist_{name}_{hw_label}.html"),
+        ] + device_args)
+
+    def run_journey(name, waypoints, between, hw_label, extra):
+        run(base + extra + [
+            "--journey", *waypoints,
+            "--between", str(between),
+            "--noise", str(args.noise),
+            "--out_html", str(out_dir / f"journey_{name}_{hw_label}.html"),
+            "--title", example_title(f"journey_{name}_{hw_label}.html"),
+        ] + device_args)
+
     if cont_head.exists():
-        head_examples = [
-            (name, seeds, drift, args.noise)
-            for name, seeds, drift in HEAD_CONTINUATION_DRIFT_EXAMPLES
-        ] + HEAD_CONTINUATION_NOISE_EXAMPLES + [
-            (name, seeds, 0.0, args.noise)
-            for name, seeds in CONTINUATION_EXAMPLES
-            if name != "electronic"
-        ]
-        for name, seeds, drift, noise in head_examples:
-            run(
-                base
-                + [
-                    "--head",
-                    str(cont_head),
-                    "--seeds",
-                    *seeds,
-                    "--size",
-                    str(args.size),
-                    "--noise",
-                    str(noise),
-                    "--drift",
-                    str(drift),
-                    "--out_html",
-                    str(out_dir / f"playlist_{name}.html"),
-                    "--title",
-                    example_title(f"playlist_{name}.html"),
-                ]
-                + device_args
-            )
-    else:
-        print(f"Skipping continuation examples: missing {cont_head}")
+        for name, seeds in CONTINUATION_EXAMPLES:
+            for hw in HEAD_WEIGHTS:
+                hw_label = f"hw{int(hw * 100)}"
+                run_playlist(name, seeds, hw_label,
+                             ["--head", str(cont_head), "--head_weight", str(hw)])
 
-    for name, seeds in CONTINUATION_EXAMPLES:
-        run(
-            base
-            + [
-                "--method",
-                "embeddings",
-                "--seeds",
-                *seeds,
-                "--size",
-                str(args.size),
-                "--noise",
-                str(args.noise),
-                "--out_html",
-                str(out_dir / f"playlist_{name}_embeddings.html"),
-                "--title",
-                example_title(f"playlist_{name}_embeddings.html"),
-            ]
-            + device_args
-        )
-
-    for name, seeds in CONTINUATION_EXAMPLES:
-        run(
-            base
-            + [
-                "--method",
-                "mp3tovec",
-                "--seeds",
-                *seeds,
-                "--size",
-                str(args.size),
-                "--noise",
-                str(args.noise),
-                "--out_html",
-                str(out_dir / f"playlist_{name}_mp3tovec.html"),
-                "--title",
-                example_title(f"playlist_{name}_mp3tovec.html"),
-            ]
-        )
-
-    infill_head = checkpoint_dir / "infill_head.pt"
-    if infill_head.exists():
         for name, waypoints, between_override in JOURNEY_EXAMPLES:
             between = between_override or args.between
-            run(
-                base
-                + [
-                    "--head",
-                    str(infill_head),
-                    "--journey",
-                    *waypoints,
-                    "--between",
-                    str(between),
-                    "--noise",
-                    str(args.noise),
-                    "--out_html",
-                    str(out_dir / f"journey_{name}.html"),
-                    "--title",
-                    example_title(f"journey_{name}.html"),
-                ]
-                + device_args
-            )
+            for hw in HEAD_WEIGHTS:
+                hw_label = f"hw{int(hw * 100)}"
+                run_journey(name, waypoints, between, hw_label,
+                            ["--head", str(cont_head), "--head_weight", str(hw)])
     else:
-        print(f"Skipping journey examples: missing {infill_head}")
+        print(f"Skipping head examples: missing {cont_head}")
 
-    for name, waypoints, between_override in JOURNEY_EXAMPLES:
-        between = between_override or args.between
-        run(
-            base
-            + [
-                "--method",
-                "embeddings",
-                "--journey",
-                *waypoints,
-                "--between",
-                str(between),
-                "--noise",
-                str(args.noise),
-                "--out_html",
-                str(out_dir / f"journey_{name}_embeddings.html"),
-                "--title",
-                example_title(f"journey_{name}_embeddings.html"),
-            ]
-            + device_args
-        )
-
-    for name, waypoints, between_override in JOURNEY_EXAMPLES:
-        between = between_override or args.between
-        run(
-            base
-            + [
-                "--method",
-                "mp3tovec",
-                "--journey",
-                *waypoints,
-                "--between",
-                str(between),
-                "--noise",
-                str(args.noise),
-                "--out_html",
-                str(out_dir / f"journey_{name}_mp3tovec.html"),
-                "--title",
-                example_title(f"journey_{name}_mp3tovec.html"),
-            ]
-        )
+    if args.mp3tovec_model_dir:
+        mp3tovec_args = ["--mp3tovec_model_dir", args.mp3tovec_model_dir]
+        for name, seeds in CONTINUATION_EXAMPLES:
+            run_playlist(name, seeds, "mp3tovec", mp3tovec_args)
+        for name, waypoints, between_override in JOURNEY_EXAMPLES:
+            between = between_override or args.between
+            run_journey(name, waypoints, between, "mp3tovec", mp3tovec_args)
+    else:
+        print("Skipping mp3tovec examples: pass --mp3tovec_model_dir to enable")
 
     write_index(out_dir)
     print(f"Wrote examples to {out_dir}")

@@ -14,17 +14,17 @@ PAGES_WORKTREE ?= /tmp/music-jepa-pages
 PAGES_MESSAGE ?= Publish $(OUTPUT_DIR)
 
 LIMIT ?= 20
-METHOD ?= head
-DRIFT ?= 0.0
+HEAD_WEIGHT ?= 1.0
 OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
 JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
 EXPLORE_HTML ?= $(OUTPUT_DIR)/explore.html
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz publish-pages tensorboard test help
+.PHONY: setup app data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz publish-pages tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
 	@echo "  make setup             Create venv and install dependencies"
+	@echo "  make app               Launch Streamlit playlist generator"
 	@echo "  make data              Download previews + spectrograms for TRACKS_FILE"
 	@echo "  make data-sample       Bootstrap a 2000-playlist sample subset"
 	@echo "  make train-encoder     Train encoder, resume CHECKPOINT_DIR/last.ckpt if present"
@@ -51,7 +51,10 @@ help:
 	@echo "  PAGES_WORKTREE=$(PAGES_WORKTREE)"
 
 setup:
-	$(UV) sync --extra eval
+	$(UV) sync --extra eval --extra app
+
+app:
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE)
 
 # Data pipeline --------------------------------------------------------------
 
@@ -94,11 +97,11 @@ train-head-cont:
 	$(UV) run python train_head.py --config $(HEAD_CONT_CONFIG) --out $(CHECKPOINT_DIR)/continuation_head.pt
 
 journey:
-	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/infill_head.pt --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
-	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --drift $(DRIFT) --out_html $(OUT_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
 
 examples:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples

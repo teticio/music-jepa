@@ -113,17 +113,17 @@ def generate_continuation(
     size: int,
     max_history: int,
     noise: float,
-    drift: float,
+    head_weight: float,
     device: str,
 ) -> List[str]:
     playlist = list(seeds)
-    drift = min(max(drift, 0.0), 1.0)
+    head_weight = min(max(head_weight, 0.0), 1.0)
     while len(playlist) < size:
         pred = predict_next(head, playlist, emb, max_history, device)
-        if drift > 0:
+        if head_weight < 1.0:
             recent = playlist[-max_history:]
             anchor = np.stack([emb[tid] for tid in recent]).mean(axis=0)
-            query = (1 - drift) * pred + drift * anchor
+            query = head_weight * pred + (1 - head_weight) * anchor
         else:
             query = pred
         candidates = rank_tracks(query, ids, vecs, exclude=playlist, top_k=100)
@@ -296,16 +296,14 @@ def write_m3u(path: str, playlist: List[str], urls: List[Optional[str]]) -> None
             f.write(f"{url or tid}\n")
 
 
-def write_html(
-    path: str,
+def build_html_str(
     playlist: List[str],
     urls: List[Optional[str]],
     tracks_df,
     highlighted: set[str],
     page_title: str,
     metadata: Optional[dict] = None,
-) -> None:
-    Path(path).parent.mkdir(parents=True, exist_ok=True)
+) -> str:
     rows = []
     playable_previews = []
     for i, (tid, url) in enumerate(zip(playlist, urls), 1):
@@ -615,15 +613,28 @@ def write_html(
 </body>
 </html>
 """
+    return html
+
+
+def write_html(
+    path: str,
+    playlist: List[str],
+    urls: List[Optional[str]],
+    tracks_df,
+    highlighted: set[str],
+    page_title: str,
+    metadata: Optional[dict] = None,
+) -> None:
+    html = build_html_str(playlist, urls, tracks_df, highlighted, page_title, metadata)
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(html)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--head", default=None)
-    parser.add_argument("--method", choices=["head", "embeddings", "mp3tovec"], default="head")
     parser.add_argument("--embeddings", default="embeddings.npy")
-    parser.add_argument("--mp3tovec_model_dir", default="../deej-ai.online-app/model")
+    parser.add_argument("--mp3tovec_model_dir", default=None, help="If set, use Mp3ToVec instead of the head")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--seeds", nargs="*", default=None)
     parser.add_argument("--journey", nargs="+", default=None, help="Two or more waypoint track IDs")
@@ -631,12 +642,11 @@ def main():
     parser.add_argument("--between", type=int, default=9)
     parser.add_argument("--noise", type=float, default=0.0)
     parser.add_argument(
-        "--drift",
+        "--head_weight",
         type=float,
-        default=0.0,
-        help="For continuation heads, blend head prediction toward recent embedding mean: 0=head, 1=embeddings.",
+        default=1.0,
+        help="0=geometry, 1=head prediction. Continuation: blends head vs recent mean. Journey: blends interpolation vs head.",
     )
-    parser.add_argument("--head_weight", type=float, default=0.35)
     parser.add_argument("--out_m3u", default=None)
     parser.add_argument("--out_html", default=None)
     parser.add_argument("--title", default=None)
@@ -651,17 +661,18 @@ def main():
 
     tracks_df = load_tracks(args.tracks_file)
     metadata = {}
-    if args.method == "mp3tovec":
+    mp3tovec = args.mp3tovec_model_dir is not None
+    if mp3tovec:
         ids, vecs, metadata = load_mp3tovec(args.mp3tovec_model_dir)
     else:
+        if not args.head:
+            raise SystemExit("Pass --head (or --mp3tovec_model_dir for Mp3ToVec mode)")
         ids, vecs = load_embeddings(args.embeddings)
     emb = {tid: vec for tid, vec in zip(ids, vecs)}
     head = None
     task = "continuation"
     max_history = 3
-    if args.method == "head":
-        if not args.head:
-            raise SystemExit("Pass --head when using --method head")
+    if not mp3tovec:
         head, cfg = load_head(args.head, device=args.device)
         task = cfg.get("data", {}).get("task", "continuation")
         max_history = cfg.get("data", {}).get("max_history", 3)
@@ -672,64 +683,35 @@ def main():
         raise SystemExit(f"Missing embeddings for: {', '.join(missing)}")
 
     if args.journey:
-        if args.method in {"embeddings", "mp3tovec"}:
+        if mp3tovec:
             playlist = generate_embedding_journey(
-                args.journey,
-                emb,
-                ids,
-                vecs,
-                between=args.between,
-                noise=args.noise,
+                args.journey, emb, ids, vecs,
+                between=args.between, noise=args.noise,
             )
         elif task == "infill":
             playlist = generate_infill_journey(
-                head,
-                args.journey,
-                emb,
-                ids,
-                vecs,
-                between=args.between,
-                noise=args.noise,
-                device=args.device,
+                head, args.journey, emb, ids, vecs,
+                between=args.between, noise=args.noise, device=args.device,
             )
         else:
             playlist = generate_journey(
-                head,
-                args.journey,
-                emb,
-                ids,
-                vecs,
-                between=args.between,
-                max_history=max_history,
-                noise=args.noise,
-                head_weight=args.head_weight,
-                device=args.device,
+                head, args.journey, emb, ids, vecs,
+                between=args.between, max_history=max_history,
+                noise=args.noise, head_weight=args.head_weight, device=args.device,
             )
     else:
-        if args.method in {"embeddings", "mp3tovec"}:
+        if mp3tovec:
             playlist = generate_embedding_continuation(
-                args.seeds,
-                emb,
-                ids,
-                vecs,
-                size=args.size,
-                max_history=max_history,
-                noise=args.noise,
+                args.seeds, emb, ids, vecs,
+                size=args.size, max_history=max_history, noise=args.noise,
             )
         elif task == "infill":
             raise SystemExit("This checkpoint is trained for --journey infilling. Use a continuation head for --seeds.")
         else:
             playlist = generate_continuation(
-                head,
-                args.seeds,
-                emb,
-                ids,
-                vecs,
-                size=args.size,
-                max_history=max_history,
-                noise=args.noise,
-                drift=args.drift,
-                device=args.device,
+                head, args.seeds, emb, ids, vecs,
+                size=args.size, max_history=max_history,
+                noise=args.noise, head_weight=args.head_weight, device=args.device,
             )
 
     urls = []

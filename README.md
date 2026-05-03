@@ -173,35 +173,25 @@ make train-head-infil
 ```
 
 The continuation head predicts the next track from seed history. Use it for
-open-ended playlist generation. `METHOD=head` is the default. Use
-`METHOD=embeddings` to compare against a raw JEPA nearest-neighbour baseline,
-or `METHOD=mp3tovec` to compare against Deej-AI's MP3ToVec audio baseline from
-`../deej-ai.online-app/model/spotifytovec.p`:
+open-ended playlist generation. `HEAD_WEIGHT` (0–1) controls how much the head
+prediction is trusted versus anchoring to the recent embedding mean; 1 = pure
+head, 0 = pure rolling-mean (equivalent to linear embedding extrapolation).
+Pass `--mp3tovec_model_dir` to compare against Deej-AI's MP3ToVec audio
+baseline from `../deej-ai.online-app/model/spotifytovec.p`:
 
 ```bash
 make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make playlist DRIFT=0.35 SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
-make playlist METHOD=mp3tovec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
+make playlist HEAD_WEIGHT=0.5 SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
-
-For continuation heads, `DRIFT=0` uses the head prediction directly. Higher
-values blend that prediction toward the recent-history embedding mean; `DRIFT=1`
-is equivalent to asking the head to behave like the raw rolling-embedding
-continuation. Raw embeddings and MP3ToVec continuations already use that
-rolling mean directly. The MP3ToVec baseline is selected with `METHOD=mp3tovec`;
-the old `METHOD=track2vec` name is not supported.
 
 The infill head sees a left anchor, a right anchor, and their interpolation
 point; it predicts the missing middle-track vector. Use it for waypoint
-journeys. The embeddings and Deej-AI baselines linearly interpolate between
-waypoint embeddings, then snap each step to the nearest real track:
+journeys. The continuation head can also fill journeys via `make journey`,
+blending linear interpolation with head predictions via `HEAD_WEIGHT`:
 
 ```bash
 # "Join the dots" between waypoint tracks over several generated steps
 make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make journey METHOD=embeddings JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make journey METHOD=mp3tovec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
 
 Generated playlist output includes track IDs, artist/title, and MP3 preview
@@ -212,11 +202,10 @@ pages include per-track browser audio controls plus a top-level
 user click. Add `--out_m3u path/to/file.m3u` when calling
 `eval/generate_playlist.py` directly to write a playable M3U file.
 
-For quick comparisons, `make examples` writes head-based examples and
-baseline pages under the configured output dir. Raw JEPA baselines use the
-`_embeddings.html` suffix, MP3ToVec baselines use `_mp3tovec.html`, and the
-generated index links to all example pages. The head continuation gallery
-includes electronic examples at several drift and noise values.
+For quick comparisons, `make examples` writes head-based examples at
+`head_weight` 0, 0.5, and 1.0 for every playlist and journey, plus MP3ToVec
+baselines when `--mp3tovec_model_dir` is supplied. The generated index links
+to all example pages.
 
 Publish the configured output dir to GitHub Pages with:
 

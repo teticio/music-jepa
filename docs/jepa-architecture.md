@@ -582,26 +582,12 @@ configured output dir with each track ID, artist/title, per-track audio
 controls, and a top-level "Play all previews" button that chains available
 30-second previews.
 
-Both workflows also have head-free baselines:
-
-```
-make playlist METHOD=embeddings SEEDS="TRACK_ID [TRACK_ID ...]"
-make journey METHOD=embeddings JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
-make playlist METHOD=mp3tovec SEEDS="TRACK_ID [TRACK_ID ...]"
-make journey METHOD=mp3tovec JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
-```
-
-For continuation, both head-free baselines average recent seed/history vectors
-and retrieve nearest unused neighbours in their own vector space. For journeys,
-they linearly interpolate between waypoint vectors and snap each interpolation
-point to the nearest catalogue track. This is useful for judging whether a
-trained head is adding useful playlist structure beyond the underlying vector
-space.
-
-`METHOD=mp3tovec` uses Deej-AI's `spotifytovec.p` vectors from
-`../deej-ai.online-app/model/spotifytovec.p` as an MP3ToVec audio baseline.
-It uses the MP3ToVec vector only; Deej-AI's `tracktovec.p` collaborative vector
-is not blended in. The old `METHOD=track2vec` name is not supported.
+`HEAD_WEIGHT` (0–1, default 1) controls how much the head's prediction is
+trusted. At 0, playlist continuation averages recent embeddings and journey
+fill linearly interpolates — equivalent to a head-free baseline. The MP3ToVec
+audio baseline is available by passing `--mp3tovec_model_dir` directly to
+`eval/generate_playlist.py`; it uses Deej-AI's `spotifytovec.p` vectors and
+linearly interpolates or averages embeddings without any head.
 
 Track IDs can be found locally with:
 

@@ -28,6 +28,9 @@ eval = [
     "matplotlib>=3.7.0",
     "bokeh>=3.3.0",
 ]
+app = [
+    "streamlit>=1.32.0",
+]
 dev = [
     "pytest>=7.0",
 ]
