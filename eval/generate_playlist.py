@@ -313,22 +313,20 @@ def write_html(
         marker = " seed" if tid in highlighted else ""
         badge = "<span class=\"badge\">seed</span>" if tid in highlighted else ""
         row_id = f"track-{i}"
+        preview_index = None
         if url:
+            preview_index = len(playable_previews)
             playable_previews.append({"url": url, "rowId": row_id})
-        player = (
-            f"<audio controls preload=\"none\" src=\"{escape(url)}\"></audio>"
-            if url
-            else "<span class=\"missing\">no preview</span>"
-        )
+        preview_attr = f" data-preview-index=\"{preview_index}\"" if preview_index is not None else ""
+        preview_badge = "" if url else "<span class=\"missing\">no preview</span>"
         rows.append(
             "\n".join(
                 [
-                    f"<tr id=\"{row_id}\" class=\"track{marker}\">",
+                    f"<tr id=\"{row_id}\" class=\"track{marker}\"{preview_attr}>",
                     f"  <td class=\"idx\">{i:02d}</td>",
                     f"  <td><div class=\"title\">{escape(title)} {badge}</div>"
                     f"<div class=\"artist\">{escape(artist)}</div>"
-                    f"<code>{escape(tid)}</code></td>",
-                    f"  <td>{player}</td>",
+                    f"<code>{escape(tid)}</code>{preview_badge}</td>",
                     "</tr>",
                 ]
             )
@@ -416,6 +414,12 @@ def write_html(
     tr.seed {{
       background: #20281f;
     }}
+    tr[data-preview-index] {{
+      cursor: pointer;
+    }}
+    tr[data-preview-index]:hover {{
+      background: #222733;
+    }}
     tr.playing {{
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -443,10 +447,6 @@ def write_html(
       color: #8fb3ff;
       font-size: 12px;
     }}
-    audio {{
-      width: 260px;
-      max-width: 100%;
-    }}
     @media (max-width: 720px) {{
       body {{
         padding: 18px;
@@ -471,6 +471,8 @@ def write_html(
       vertical-align: 1px;
     }}
     .missing {{
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }}
@@ -482,6 +484,7 @@ def write_html(
       <h1>{escape(page_title)}</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">{len(playable_previews)} previews available</span>
@@ -489,7 +492,7 @@ def write_html(
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
         {''.join(rows)}
@@ -499,12 +502,12 @@ def write_html(
   <script>
     const previewItems = {json.dumps(playable_previews)};
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {{
       statusEl.textContent = text;
@@ -516,90 +519,98 @@ def write_html(
       }});
     }}
 
-    function setPlaying(rowId) {{
+    function setPlaying(index) {{
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({{ block: 'nearest', behavior: 'smooth' }});
     }}
 
-    function stopCurrent() {{
-      stopRequested = true;
+    function updateButtons() {{
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }}
+
+    function stopCurrent(resetStatus = true) {{
       if (currentAudio) {{
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }}
-      if (currentResolve) {{
-        currentResolve();
-        currentResolve = null;
-      }}
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${{previewItems.length}} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${{previewItems.length}} previews available`);
+    }}
+
+    function playIndex(index) {{
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {{
+        currentAudio.pause();
+        currentAudio = null;
+      }}
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${{index + 1}} of ${{previewItems.length}}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {{
+        if (currentIndex < previewItems.length - 1) {{
+          playIndex(currentIndex + 1);
+        }} else {{
+          stopCurrent(false);
+          setStatus('Finished');
+        }}
+      }}, {{ once: true }});
+      currentAudio.addEventListener('error', () => {{
+        if (currentIndex < previewItems.length - 1) {{
+          playIndex(currentIndex + 1);
+        }} else {{
+          stopCurrent(false);
+          setStatus('Finished');
+        }}
+      }}, {{ once: true }});
+      currentAudio.play().catch(() => {{
+        stopCurrent(false);
+        setStatus('Playback failed');
+      }});
     }}
 
     function nextPreview() {{
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {{
-        currentResolve();
-        currentResolve = null;
-      }}
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }}
 
-    async function playAll() {{
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {{
-        if (stopRequested) break;
-        setStatus(`Playing preview ${{i + 1}} of ${{previewItems.length}}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {{
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, {{ once: true }});
-          currentAudio.addEventListener('error', resolve, {{ once: true }});
-          currentAudio.play().catch(resolve);
-        }});
-        currentResolve = null;
-      }}
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {{
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }}
 
-    document.querySelectorAll('audio').forEach((audio) => {{
-      audio.addEventListener('play', () => {{
-        if (currentAudio) {{
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {{
+      if (previewItems.length) playIndex(0);
+    }}
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {{
+      row.addEventListener('click', () => {{
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {{
+          stopCurrent();
+        }} else {{
+          playIndex(index);
         }}
-        setPlaying(audio.closest('tr').id);
-      }});
-      audio.addEventListener('pause', () => {{
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      }});
-      audio.addEventListener('ended', () => {{
-        audio.closest('tr').classList.remove('playing');
       }});
     }});
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>
