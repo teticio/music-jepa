@@ -2,6 +2,11 @@
 
 A self-supervised music representation model using Joint Embedding Predictive Architecture (JEPA).
 
+## Live outputs
+
+- [Embedding explorer](https://teticio.github.io/music-jepa/explore.html)
+- [Generated playlist examples](https://teticio.github.io/music-jepa/examples/)
+
 ## Concept
 
 Consecutive tracks in a Spotify playlist are treated like frames in a video. A ViT encoder
