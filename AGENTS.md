@@ -48,11 +48,12 @@ the architecture doc move, update the doc in the same change.
 - `make journey JOURNEY="..."` uses the configured infill head.
 - Add `METHOD=embeddings` to `make playlist` or `make journey` to bypass heads
   and use the raw JEPA embedding baseline.
-- Add `METHOD=track2vec` to use Deej-AI's Track2Vec-only baseline from
-  `../deej-ai.online-app/model/tracktovec.p`.
+- Add `METHOD=mp3tovec` to use Deej-AI's MP3ToVec audio baseline from
+  `../deej-ai.online-app/model/spotifytovec.p`; `METHOD=track2vec` is not
+  supported.
 - Generated playlist/journey HTML includes preview audio controls and a
   "Play all previews" button.
-- `make examples` writes head, embeddings, and Track2Vec examples under the
+- `make examples` writes head, embeddings, and MP3ToVec examples under the
   configured output dir.
 - `make search QUERY="artist or title"` searches local track metadata for IDs.
 
@@ -83,8 +84,8 @@ make playlist SEEDS="TRACK_ID"
 make journey JOURNEY="START_ID END_ID"
 make playlist METHOD=embeddings SEEDS="TRACK_ID"
 make journey METHOD=embeddings JOURNEY="START_ID END_ID"
-make playlist METHOD=track2vec SEEDS="TRACK_ID"
-make journey METHOD=track2vec JOURNEY="START_ID END_ID"
+make playlist METHOD=mp3tovec SEEDS="TRACK_ID"
+make journey METHOD=mp3tovec JOURNEY="START_ID END_ID"
 make examples
 make viz
 make tensorboard

@@ -35,9 +35,9 @@ def normalize_vecs(vecs: np.ndarray) -> np.ndarray:
     return vecs / np.maximum(np.linalg.norm(vecs, axis=1, keepdims=True), 1e-8)
 
 
-def load_track2vec(model_dir: str):
+def load_mp3tovec(model_dir: str):
     model_path = Path(model_dir)
-    with (model_path / "tracktovec.p").open("rb") as f:
+    with (model_path / "spotifytovec.p").open("rb") as f:
         data = pickle.load(f)
     ids = list(data.keys())
     vecs = normalize_vecs(np.stack([data[k] for k in ids]).astype("float32"))
@@ -621,9 +621,9 @@ def write_html(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--head", default=None)
-    parser.add_argument("--method", choices=["head", "embeddings", "track2vec"], default="head")
+    parser.add_argument("--method", choices=["head", "embeddings", "mp3tovec"], default="head")
     parser.add_argument("--embeddings", default="embeddings.npy")
-    parser.add_argument("--track2vec_model_dir", default="../deej-ai.online-app/model")
+    parser.add_argument("--mp3tovec_model_dir", default="../deej-ai.online-app/model")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--seeds", nargs="*", default=None)
     parser.add_argument("--journey", nargs="+", default=None, help="Two or more waypoint track IDs")
@@ -651,8 +651,8 @@ def main():
 
     tracks_df = load_tracks(args.tracks_file)
     metadata = {}
-    if args.method == "track2vec":
-        ids, vecs, metadata = load_track2vec(args.track2vec_model_dir)
+    if args.method == "mp3tovec":
+        ids, vecs, metadata = load_mp3tovec(args.mp3tovec_model_dir)
     else:
         ids, vecs = load_embeddings(args.embeddings)
     emb = {tid: vec for tid, vec in zip(ids, vecs)}
@@ -672,7 +672,7 @@ def main():
         raise SystemExit(f"Missing embeddings for: {', '.join(missing)}")
 
     if args.journey:
-        if args.method in {"embeddings", "track2vec"}:
+        if args.method in {"embeddings", "mp3tovec"}:
             playlist = generate_embedding_journey(
                 args.journey,
                 emb,
@@ -706,7 +706,7 @@ def main():
                 device=args.device,
             )
     else:
-        if args.method in {"embeddings", "track2vec"}:
+        if args.method in {"embeddings", "mp3tovec"}:
             playlist = generate_embedding_continuation(
                 args.seeds,
                 emb,

@@ -81,7 +81,7 @@ def title_for(path: Path) -> str:
         kind = "Example"
 
     method = "head"
-    for suffix in ["_embeddings", "_track2vec"]:
+    for suffix in ["_embeddings", "_mp3tovec"]:
         if name.endswith(suffix):
             name = name[: -len(suffix)]
             method = suffix.removeprefix("_")
@@ -282,7 +282,7 @@ def main():
             base
             + [
                 "--method",
-                "track2vec",
+                "mp3tovec",
                 "--seeds",
                 *seeds,
                 "--size",
@@ -290,9 +290,9 @@ def main():
                 "--noise",
                 str(args.noise),
                 "--out_html",
-                str(out_dir / f"playlist_{name}_track2vec.html"),
+                str(out_dir / f"playlist_{name}_mp3tovec.html"),
                 "--title",
-                example_title(f"playlist_{name}_track2vec.html"),
+                example_title(f"playlist_{name}_mp3tovec.html"),
             ]
         )
 
@@ -348,7 +348,7 @@ def main():
             base
             + [
                 "--method",
-                "track2vec",
+                "mp3tovec",
                 "--journey",
                 *waypoints,
                 "--between",
@@ -356,9 +356,9 @@ def main():
                 "--noise",
                 str(args.noise),
                 "--out_html",
-                str(out_dir / f"journey_{name}_track2vec.html"),
+                str(out_dir / f"journey_{name}_mp3tovec.html"),
                 "--title",
-                example_title(f"journey_{name}_track2vec.html"),
+                example_title(f"journey_{name}_mp3tovec.html"),
             ]
         )
 

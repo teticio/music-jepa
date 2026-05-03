@@ -587,20 +587,21 @@ Both workflows also have head-free baselines:
 ```
 make playlist METHOD=embeddings SEEDS="TRACK_ID [TRACK_ID ...]"
 make journey METHOD=embeddings JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
-make playlist METHOD=track2vec SEEDS="TRACK_ID [TRACK_ID ...]"
-make journey METHOD=track2vec JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
+make playlist METHOD=mp3tovec SEEDS="TRACK_ID [TRACK_ID ...]"
+make journey METHOD=mp3tovec JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
 ```
 
-For continuation, the embeddings baseline averages recent seed/history
-embeddings and retrieves nearest unused neighbours. For journeys, it linearly
-interpolates between waypoint embeddings and snaps each interpolation point to
-the nearest catalogue track. This is useful for judging whether a trained head
-is adding useful playlist structure beyond the raw JEPA space.
+For continuation, both head-free baselines average recent seed/history vectors
+and retrieve nearest unused neighbours in their own vector space. For journeys,
+they linearly interpolate between waypoint vectors and snap each interpolation
+point to the nearest catalogue track. This is useful for judging whether a
+trained head is adding useful playlist structure beyond the underlying vector
+space.
 
-`METHOD=track2vec` uses Deej-AI's `tracktovec.p` vectors from
-`../deej-ai.online-app/model/tracktovec.p` as a collaborative Track2Vec
-baseline. It uses Track2Vec only — the old Deej-AI audio/Spotify embedding is
-not blended in.
+`METHOD=mp3tovec` uses Deej-AI's `spotifytovec.p` vectors from
+`../deej-ai.online-app/model/spotifytovec.p` as an MP3ToVec audio baseline.
+It uses the MP3ToVec vector only; Deej-AI's `tracktovec.p` collaborative vector
+is not blended in. The old `METHOD=track2vec` name is not supported.
 
 Track IDs can be found locally with:
 
@@ -616,7 +617,7 @@ make examples
 
 This writes head-based playlist and journey pages under the configured output
 dir, plus matching raw-JEPA baselines with an `_embeddings.html` suffix and
-Deej-AI Track2Vec baselines with a `_track2vec.html` suffix. It also writes an
+Deej-AI MP3ToVec baselines with a `_mp3tovec.html` suffix. It also writes an
 index page linking to all generated pages.
 
 ### Journey generation (`eval/generate_playlist.py`)

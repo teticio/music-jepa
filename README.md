@@ -175,21 +175,22 @@ make train-head-infil
 The continuation head predicts the next track from seed history. Use it for
 open-ended playlist generation. `METHOD=head` is the default. Use
 `METHOD=embeddings` to compare against a raw JEPA nearest-neighbour baseline,
-or `METHOD=track2vec` to compare against Deej-AI's Track2Vec collaborative
-baseline from `../deej-ai.online-app/model/tracktovec.p`:
+or `METHOD=mp3tovec` to compare against Deej-AI's MP3ToVec audio baseline from
+`../deej-ai.online-app/model/spotifytovec.p`:
 
 ```bash
 make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist DRIFT=0.35 SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
-make playlist METHOD=track2vec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
+make playlist METHOD=mp3tovec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 ```
 
 For continuation heads, `DRIFT=0` uses the head prediction directly. Higher
 values blend that prediction toward the recent-history embedding mean; `DRIFT=1`
 is equivalent to asking the head to behave like the raw rolling-embedding
-continuation. Raw embeddings and Track2Vec continuations already use that
-rolling mean directly.
+continuation. Raw embeddings and MP3ToVec continuations already use that
+rolling mean directly. The MP3ToVec baseline is selected with `METHOD=mp3tovec`;
+the old `METHOD=track2vec` name is not supported.
 
 The infill head sees a left anchor, a right anchor, and their interpolation
 point; it predicts the missing middle-track vector. Use it for waypoint
@@ -200,7 +201,7 @@ waypoint embeddings, then snap each step to the nearest real track:
 # "Join the dots" between waypoint tracks over several generated steps
 make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make journey METHOD=embeddings JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make journey METHOD=track2vec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make journey METHOD=mp3tovec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
 
 Generated playlist output includes track IDs, artist/title, and MP3 preview
@@ -213,7 +214,7 @@ user click. Add `--out_m3u path/to/file.m3u` when calling
 
 For quick comparisons, `make examples` writes head-based examples and
 baseline pages under the configured output dir. Raw JEPA baselines use the
-`_embeddings.html` suffix, Track2Vec baselines use `_track2vec.html`, and the
+`_embeddings.html` suffix, MP3ToVec baselines use `_mp3tovec.html`, and the
 generated index links to all example pages. The head continuation gallery
 includes electronic examples at several drift and noise values.
 
