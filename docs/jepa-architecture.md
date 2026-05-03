@@ -273,8 +273,14 @@ in principle — a very slow drift toward constant outputs could still slip
 through. VICReg adds two explicit penalties that close the loophole
 ([jepa/loss.py:5-30](../jepa/loss.py#L5-L30)).
 
-It operates on the target encoder's patch representations, mean-pooled to one
-vector per track: `(B, D)` — one 384-d vector per item in the batch.
+By default VICReg is applied to the **predictor output** (mean-pooled to one
+384-d vector per batch item), so gradients flow back into the predictor and
+context encoder. The same penalty can also be evaluated on the EMA target
+encoder's representations (still mean-pooled to `(B, D)`) as a diagnostic-only
+mode that contributes no gradient — set `training.vicreg_target: target` in the
+encoder config to switch. The original I-JEPA recipe uses MSE only and relies
+on EMA asymmetry alone; gradient-flowing VICReg is a safety net inspired by
+C-JEPA / V-JEPA's VCR variant.
 
 ### Variance term — no dimension may go constant
 
@@ -316,7 +322,7 @@ was specifically designed to be less batch-size-sensitive than contrastive
 methods (which need hundreds of negatives).
 
 The full training config uses `accumulate_grad_batches: 4`
-([configs/train.yaml](../configs/encoder.yaml)) with batch_size=64 on 2 GPUs,
+([configs/encoder.yaml](../configs/encoder.yaml)) with batch_size=64 on 2 GPUs,
 giving an effective batch of 64 × 2 × 4 = 512 for the MSE loss. However,
 gradient accumulation does **not** help VICReg's statistics — variance and
 covariance are computed within each forward pass on the local 64-sample batch.
@@ -393,8 +399,9 @@ Batch size B=64, so 64 consecutive playlist pairs.
 
 5. **Loss:**
    ```python
-   mse = F.mse_loss(predicted, target)
-   reg = vicreg_loss(target.mean(dim=1))
+   mse = F.mse_loss(predicted, target.detach())
+   # Default: VICReg on predictor output (gradient flows).
+   reg = vicreg_loss(predicted.mean(dim=1))
    loss = mse + reg
    ```
 

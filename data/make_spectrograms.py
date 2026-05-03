@@ -74,12 +74,20 @@ def main():
 
     os.makedirs(args.spectrograms_dir, exist_ok=True)
     mp3_files = [f for f in os.listdir(args.previews_dir) if f.endswith(".mp3")]
-    print(f"MP3 files: {len(mp3_files):,}")
+    already_done = set(os.listdir(args.spectrograms_dir))
+    todo = [f for f in mp3_files if f"{f[:-4]}.png" not in already_done]
+    print(
+        f"MP3 files: {len(mp3_files):,}  "
+        f"spectrograms to compute: {len(todo):,}  "
+        f"(already done: {len(already_done):,})"
+    )
+    if not todo:
+        return
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.max_workers) as executor:
         futures = {
             executor.submit(make_spectrogram, f, args.previews_dir, args.spectrograms_dir): f
-            for f in tqdm(mp3_files, desc="Submitting jobs")
+            for f in tqdm(todo, desc="Submitting jobs")
             if sleep(1e-5) is None
         }
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Computing spectrograms"):

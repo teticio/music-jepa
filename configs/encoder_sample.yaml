@@ -30,6 +30,7 @@ training:
   max_epochs: 10
   std_coef: 25.0
   cov_coef: 1.0
+  vicreg_target: predicted
 
 # Lightning Trainer kwargs (passed directly)
 trainer:

@@ -30,6 +30,9 @@ training:
   max_epochs: 100
   std_coef: 25.0              # VICReg variance coefficient
   cov_coef: 1.0               # VICReg covariance coefficient
+  vicreg_target: predicted    # apply VICReg to predictor output (gradient flows).
+                              # Set to "target" for diagnostic-only behaviour
+                              # (no gradient — equivalent to MSE-only training).
 
 # Lightning Trainer kwargs (passed directly)
 trainer:

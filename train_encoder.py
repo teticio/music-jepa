@@ -22,12 +22,9 @@ from jepa.model import build_model
 from jepa.module import JEPAModule, build_dataloaders
 
 
-def summarize_split(split):
-    dataset = split.dataset
-    indices = split.indices
-    playlists = [dataset.playlists[i] for i in indices]
-    tracks = {track_id for playlist in playlists for track_id in playlist}
-    return len(playlists), len(tracks)
+def summarize_dataset(dataset):
+    tracks = {track_id for playlist in dataset.playlists for track_id in playlist}
+    return len(dataset.playlists), len(tracks), len(dataset)
 
 
 def main():
@@ -49,24 +46,22 @@ def main():
     )
 
     train_loader, val_loader = build_dataloaders(cfg)
-    train_playlists, train_tracks = summarize_split(train_loader.dataset)
-    val_playlists, val_tracks = summarize_split(val_loader.dataset)
-    all_tracks = {
-        track_id
-        for playlist in train_loader.dataset.dataset.playlists
-        for track_id in playlist
-    }
-    dataset = train_loader.dataset.dataset
+    train_pls, train_tracks, train_pairs = summarize_dataset(train_loader.dataset)
+    val_pls, val_tracks, val_pairs = summarize_dataset(val_loader.dataset)
+    all_tracks = (
+        {t for pl in train_loader.dataset.playlists for t in pl}
+        | {t for pl in val_loader.dataset.playlists for t in pl}
+    )
     print(
         "Training data after spectrogram filter: "
-        f"{train_playlists:,} train playlists / {train_tracks:,} tracks  |  "
-        f"{val_playlists:,} val playlists / {val_tracks:,} tracks  |  "
+        f"{train_pls:,} train playlists / {train_tracks:,} tracks / {train_pairs:,} pairs  |  "
+        f"{val_pls:,} val playlists / {val_tracks:,} tracks / {val_pairs:,} pairs  |  "
         f"{len(all_tracks):,} unique tracks total"
     )
     print(
         "Raw data: "
-        f"{dataset.raw_playlist_count:,} playlists  |  "
-        f"{dataset.available_track_count:,} tracks with spectrograms"
+        f"{train_loader.dataset.raw_playlist_count:,} playlists  |  "
+        f"{train_loader.dataset.available_track_count:,} tracks with spectrograms"
     )
 
     callbacks = [

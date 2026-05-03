@@ -28,9 +28,12 @@ eval = [
     "matplotlib>=3.7.0",
     "bokeh>=3.3.0",
 ]
+dev = [
+    "pytest>=7.0",
+]
 
 [project.scripts]
-train = "train:main"
+train-encoder = "train_encoder:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["jepa"]

@@ -96,7 +96,10 @@ def main():
         device=args.device,
     )
 
-    np.save(args.out, embeddings)
+    tmp_path = f"{args.out}.tmp"
+    with open(tmp_path, "wb") as f:
+        np.save(f, embeddings)
+    os.replace(tmp_path, args.out)
     print(f"Saved {len(embeddings):,} embeddings -> {args.out}")
 
 

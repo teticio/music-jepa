@@ -9,6 +9,7 @@ Usage:
     python data/sample_data.py --n_playlists 2000 --min_track_count 10
 """
 import argparse
+import os
 import random
 
 import pandas as pd
@@ -61,15 +62,17 @@ def main():
         unique_tracks.update(pl)
     print(f"Unique tracks in sample: {len(unique_tracks):,}")
 
-    # Write sampled playlists
-    with open(args.out_playlists, "w") as f:
+    tmp_playlists = f"{args.out_playlists}.tmp"
+    with open(tmp_playlists, "w") as f:
         for pl in sampled:
             f.write(",".join(pl) + "\n")
+    os.replace(tmp_playlists, args.out_playlists)
     print(f"Written: {args.out_playlists}")
 
-    # Write sampled tracks (preserve original CSV format)
     tracks_sample = tracks_df[tracks_df.index.astype(str).isin(unique_tracks)]
-    tracks_sample.to_csv(args.out_tracks, header=False)
+    tmp_tracks = f"{args.out_tracks}.tmp"
+    tracks_sample.to_csv(tmp_tracks, header=False)
+    os.replace(tmp_tracks, args.out_tracks)
     print(f"Written: {args.out_tracks}  ({len(tracks_sample):,} tracks)")
 
 

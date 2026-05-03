@@ -4,7 +4,7 @@ NPROC_PER_NODE ?= 2
 
 # Per-mode knobs (override in .env to swap between full/sample/elsewhere) ----
 CHECKPOINT_DIR ?= checkpoints
-TRAIN_CONFIG ?= configs/train.yaml
+TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
 HEAD_INFIL_CONFIG ?= configs/head_infil.yaml
 TRACKS_FILE ?= data/tracks_dedup.csv
@@ -16,7 +16,7 @@ OUT_HTML ?= outputs/playlist.html
 JOURNEY_HTML ?= outputs/journey.html
 EXPLORE_HTML ?= outputs/explore.html
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard help
+.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -33,6 +33,7 @@ help:
 	@echo "  make search            Search tracks: QUERY=\"artist or title\""
 	@echo "  make viz               Nearest-neighbour report + t-SNE"
 	@echo "  make tensorboard       Launch TensorBoard on logs/"
+	@echo "  make test              Run pytest test suite"
 	@echo ""
 	@echo "Override defaults via .env (see .env.example) or env vars:"
 	@echo "  CHECKPOINT_DIR=$(CHECKPOINT_DIR)"
@@ -67,10 +68,12 @@ data-sample: sample previews-sample spectrograms
 # Training / eval ------------------------------------------------------------
 
 train-encoder:
-	@if [ -f $(CHECKPOINT_DIR)/last.ckpt ]; then \
-		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) --ckpt $(CHECKPOINT_DIR)/last.ckpt; \
+	@RESUME=""; \
+	if [ -f $(CHECKPOINT_DIR)/last.ckpt ]; then RESUME="--ckpt $(CHECKPOINT_DIR)/last.ckpt"; fi; \
+	if [ "$(NPROC_PER_NODE)" -gt 1 ]; then \
+		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) $$RESUME; \
 	else \
-		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR); \
+		$(UV) run python train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) $$RESUME; \
 	fi
 
 embed:
@@ -86,7 +89,8 @@ journey:
 	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/infill_head.pt --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
 
 playlist:
-	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(or $(SEEDS),$(JOURNEY)) --drift $(DRIFT) --out_html $(OUT_HTML)
+	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
+	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --drift $(DRIFT) --out_html $(OUT_HTML)
 
 examples:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE)
@@ -102,3 +106,6 @@ viz-nn:
 
 tensorboard:
 	$(UV) run tensorboard --logdir logs/
+
+test:
+	$(UV) run --extra dev pytest tests/ -v

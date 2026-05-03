@@ -30,8 +30,12 @@ playlist:  [track_0, track_1, track_2, ...]
 ```
 
 **Why JEPA prevents mode collapse:**
-- EMA target encoder creates asymmetry (only student gets gradients)
-- VICReg regularisation enforces variance + decorrelation on target representations
+- EMA target encoder creates asymmetry (only student gets gradients) — the
+  primary mechanism, per the I-JEPA recipe
+- VICReg regularisation on the predictor output adds variance + decorrelation
+  pressure as a gradient-flowing safety net
+  ([configurable](configs/encoder.yaml) via `training.vicreg_target`; set to
+  `target` to revert to diagnostic-only / MSE-only training)
 - Patch-level prediction (not single-vector) requires spatially-specific predictions
 
 ## Setup
@@ -61,7 +65,7 @@ Defaults target the **full dataset**:
 | Variable           | Default                              | Purpose                                     |
 |--------------------|--------------------------------------|---------------------------------------------|
 | `CHECKPOINT_DIR`   | `checkpoints`                        | Where checkpoints are read/written          |
-| `TRAIN_CONFIG`     | `configs/train.yaml`                 | Encoder training + embedding extraction     |
+| `TRAIN_CONFIG`     | `configs/encoder.yaml`               | Encoder training + embedding extraction     |
 | `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml`     | Continuation-head training                  |
 | `HEAD_INFIL_CONFIG`| `configs/head_infil.yaml`            | Infill-head training                        |
 | `TRACKS_FILE`      | `data/tracks_dedup.csv`              | Track metadata for eval / playlist scripts  |
@@ -80,6 +84,16 @@ TRACKS_FILE=data/tracks_sample.csv
 You can also override per-command, e.g. `make train-encoder CHECKPOINT_DIR=checkpoints-foo`.
 
 ## Data pipeline
+
+### Source CSVs
+
+This repo expects `data/tracks_dedup.csv` and `data/playlists_dedup.csv` to
+already exist. They come from the upstream
+[Deej-AI](https://github.com/teticio/Deej-AI) data-collection pipeline (see
+`train/README.md` in that repo): scrape Spotify user playlists, fetch track
+listings, then run `train/deduplicate.py --min_count=10` to drop near-duplicate
+tracks and tracks without preview URLs. Once you have those two CSVs, drop them
+into `data/` and you're ready for the steps below.
 
 Full dataset (downloads previews for every track in `data/tracks_dedup.csv`
 and computes spectrograms for all of them):
