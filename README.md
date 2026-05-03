@@ -220,9 +220,10 @@ This syncs `OUTPUT_DIR` into a temporary worktree for the Pages branch, commits
 changes if needed, and pushes.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
-continuous vector space between waypoint tracks, then snap each waypoint to a real
-catalogue track. The trained head learns the correction from pure interpolation
-to "what track would plausibly be missing here?"
+continuous vector space between waypoint tracks, then snap each step to a real
+catalogue track. The infill head learns a correction on top of the interpolated
+point toward a plausible missing track; the continuation head learns the
+transition dynamics from playlist history.
 
 ## Architecture
 
