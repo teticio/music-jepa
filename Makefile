@@ -8,15 +8,19 @@ TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
 HEAD_INFIL_CONFIG ?= configs/head_infil.yaml
 TRACKS_FILE ?= data/tracks_dedup.csv
+OUTPUT_DIR ?= outputs
+PAGES_BRANCH ?= gh-pages
+PAGES_WORKTREE ?= /tmp/music-jepa-pages
+PAGES_MESSAGE ?= Publish $(OUTPUT_DIR)
 
 LIMIT ?= 20
 METHOD ?= head
 DRIFT ?= 0.0
-OUT_HTML ?= outputs/playlist.html
-JOURNEY_HTML ?= outputs/journey.html
-EXPLORE_HTML ?= outputs/explore.html
+OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
+JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
+EXPLORE_HTML ?= $(OUTPUT_DIR)/explore.html
 
-.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz viz-nn tensorboard test help
+.PHONY: setup data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz publish-pages tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -31,7 +35,8 @@ help:
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
 	@echo "  make examples          Generate example playlist/journey HTML gallery"
 	@echo "  make search            Search tracks: QUERY=\"artist or title\""
-	@echo "  make viz               Nearest-neighbour report + t-SNE"
+	@echo "  make viz               Interactive t-SNE embedding explorer"
+	@echo "  make publish-pages     Publish OUTPUT_DIR to the gh-pages branch"
 	@echo "  make tensorboard       Launch TensorBoard on logs/"
 	@echo "  make test              Run pytest test suite"
 	@echo ""
@@ -41,6 +46,9 @@ help:
 	@echo "  HEAD_CONT_CONFIG=$(HEAD_CONT_CONFIG)"
 	@echo "  HEAD_INFIL_CONFIG=$(HEAD_INFIL_CONFIG)"
 	@echo "  TRACKS_FILE=$(TRACKS_FILE)"
+	@echo "  OUTPUT_DIR=$(OUTPUT_DIR)"
+	@echo "  PAGES_BRANCH=$(PAGES_BRANCH)"
+	@echo "  PAGES_WORKTREE=$(PAGES_WORKTREE)"
 
 setup:
 	$(UV) sync --extra eval
@@ -93,16 +101,28 @@ playlist:
 	$(UV) run python eval/generate_playlist.py --method $(METHOD) --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --drift $(DRIFT) --out_html $(OUT_HTML)
 
 examples:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE)
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
 
 viz:
-	$(UV) run python eval/explore.py --embeddings embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML)
+	$(UV) run python eval/explore.py --embeddings embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --export
 
-viz-nn:
-	$(UV) run python eval/visualize.py --embeddings embeddings.npy --tracks_file $(TRACKS_FILE) --tsne
+publish-pages:
+	@if [ ! -d "$(OUTPUT_DIR)" ]; then echo "Missing OUTPUT_DIR=$(OUTPUT_DIR). Generate outputs first."; exit 1; fi
+	@if [ ! -e "$(PAGES_WORKTREE)/.git" ]; then \
+		if git show-ref --verify --quiet refs/heads/$(PAGES_BRANCH) || git ls-remote --exit-code --heads origin $(PAGES_BRANCH) >/dev/null 2>&1; then \
+			git worktree add "$(PAGES_WORKTREE)" "$(PAGES_BRANCH)"; \
+		else \
+			git worktree add --orphan -b "$(PAGES_BRANCH)" "$(PAGES_WORKTREE)"; \
+		fi; \
+	fi
+	rsync -a --delete --exclude=.git "$(OUTPUT_DIR)/" "$(PAGES_WORKTREE)/"
+	touch "$(PAGES_WORKTREE)/.nojekyll"
+	printf '%s\n' '<!doctype html>' '<html lang="en">' '<head>' '  <meta charset="utf-8">' '  <meta name="viewport" content="width=device-width, initial-scale=1">' '  <meta http-equiv="refresh" content="0; url=explore.html">' '  <title>music-jepa</title>' '</head>' '<body>' '  <main>' '    <h1>music-jepa</h1>' '    <p><a href="explore.html">Open embedding explorer</a></p>' '    <p><a href="examples/">Open examples</a></p>' '  </main>' '</body>' '</html>' > "$(PAGES_WORKTREE)/index.html"
+	cd "$(PAGES_WORKTREE)" && git add . && if git diff --cached --quiet; then echo "No changes to publish."; else git commit -m "$(PAGES_MESSAGE)"; fi
+	cd "$(PAGES_WORKTREE)" && git push origin "$(PAGES_BRANCH)"
 
 tensorboard:
 	$(UV) run tensorboard --logdir logs/

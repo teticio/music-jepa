@@ -53,7 +53,7 @@ checkpoints*/
 *.log
 logs/
 runs/
-outputs/
+outputs*/
 wandb/
 lightning_logs/
 

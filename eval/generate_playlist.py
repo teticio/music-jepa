@@ -302,15 +302,19 @@ def write_html(
     urls: List[Optional[str]],
     tracks_df,
     highlighted: set[str],
+    page_title: str,
     metadata: Optional[dict] = None,
 ) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     rows = []
-    playable_urls = [url for url in urls if url]
+    playable_previews = []
     for i, (tid, url) in enumerate(zip(playlist, urls), 1):
         artist, title, _ = get_generated_track_info(tid, tracks_df, metadata)
         marker = " seed" if tid in highlighted else ""
         badge = "<span class=\"badge\">seed</span>" if tid in highlighted else ""
+        row_id = f"track-{i}"
+        if url:
+            playable_previews.append({"url": url, "rowId": row_id})
         player = (
             f"<audio controls preload=\"none\" src=\"{escape(url)}\"></audio>"
             if url
@@ -319,7 +323,7 @@ def write_html(
         rows.append(
             "\n".join(
                 [
-                    f"<tr class=\"track{marker}\">",
+                    f"<tr id=\"{row_id}\" class=\"track{marker}\">",
                     f"  <td class=\"idx\">{i:02d}</td>",
                     f"  <td><div class=\"title\">{escape(title)} {badge}</div>"
                     f"<div class=\"artist\">{escape(artist)}</div>"
@@ -335,7 +339,7 @@ def write_html(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Generated playlist</title>
+  <title>{escape(page_title)}</title>
   <style>
     :root {{
       color-scheme: light dark;
@@ -357,11 +361,20 @@ def write_html(
       font-size: 28px;
       font-weight: 700;
     }}
+    .sticky-header {{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }}
     .toolbar {{
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 0 0 18px;
+      margin: 0;
     }}
     button {{
       border: 1px solid #3a4150;
@@ -403,6 +416,14 @@ def write_html(
     tr.seed {{
       background: #20281f;
     }}
+    tr.playing {{
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }}
+    tr.playing .idx,
+    tr.playing .title {{
+      color: #ffffff;
+    }}
     .idx {{
       width: 48px;
       color: #b9bec8;
@@ -426,6 +447,18 @@ def write_html(
       width: 260px;
       max-width: 100%;
     }}
+    @media (max-width: 720px) {{
+      body {{
+        padding: 18px;
+      }}
+      .sticky-header {{
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }}
+      .toolbar {{
+        flex-wrap: wrap;
+      }}
+    }}
     .badge {{
       display: inline-block;
       margin-left: 8px;
@@ -445,12 +478,14 @@ def write_html(
 </head>
 <body>
   <main>
-    <h1>Generated playlist</h1>
-    <div class="toolbar">
-      <button id="play-all" type="button">Play all previews</button>
-      <button id="next-preview" type="button" disabled>Next</button>
-      <button id="stop-all" type="button" disabled>Stop</button>
-      <span class="status" id="play-status">{len(playable_urls)} previews available</span>
+    <div class="sticky-header">
+      <h1>{escape(page_title)}</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">{len(playable_previews)} previews available</span>
+      </div>
     </div>
     <table>
       <thead>
@@ -462,7 +497,7 @@ def write_html(
     </table>
   </main>
   <script>
-    const previewUrls = {json.dumps(playable_urls)};
+    const previewItems = {json.dumps(playable_previews)};
     const playButton = document.getElementById('play-all');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
@@ -473,6 +508,20 @@ def write_html(
 
     function setStatus(text) {{
       statusEl.textContent = text;
+    }}
+
+    function clearPlaying() {{
+      document.querySelectorAll('tr.playing').forEach((row) => {{
+        row.classList.remove('playing');
+      }});
+    }}
+
+    function setPlaying(rowId) {{
+      clearPlaying();
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({{ block: 'nearest', behavior: 'smooth' }});
     }}
 
     function stopCurrent() {{
@@ -489,7 +538,8 @@ def write_html(
       playButton.disabled = false;
       nextButton.disabled = true;
       stopButton.disabled = true;
-      setStatus(`${{previewUrls.length}} previews available`);
+      clearPlaying();
+      setStatus(`${{previewItems.length}} previews available`);
     }}
 
     function nextPreview() {{
@@ -504,15 +554,17 @@ def write_html(
     }}
 
     async function playAll() {{
-      if (!previewUrls.length) return;
+      if (!previewItems.length) return;
       stopRequested = false;
       playButton.disabled = true;
       nextButton.disabled = false;
       stopButton.disabled = false;
-      for (let i = 0; i < previewUrls.length; i += 1) {{
+      document.querySelectorAll('audio').forEach((audio) => audio.pause());
+      for (let i = 0; i < previewItems.length; i += 1) {{
         if (stopRequested) break;
-        setStatus(`Playing preview ${{i + 1}} of ${{previewUrls.length}}`);
-        currentAudio = new Audio(previewUrls[i]);
+        setStatus(`Playing preview ${{i + 1}} of ${{previewItems.length}}`);
+        setPlaying(previewItems[i].rowId);
+        currentAudio = new Audio(previewItems[i].url);
         await new Promise((resolve) => {{
           currentResolve = resolve;
           currentAudio.addEventListener('ended', resolve, {{ once: true }});
@@ -525,9 +577,26 @@ def write_html(
       playButton.disabled = false;
       nextButton.disabled = true;
       stopButton.disabled = true;
+      clearPlaying();
       if (!stopRequested) setStatus('Finished');
     }}
 
+    document.querySelectorAll('audio').forEach((audio) => {{
+      audio.addEventListener('play', () => {{
+        if (currentAudio) {{
+          currentAudio.pause();
+          currentAudio = null;
+        }}
+        setPlaying(audio.closest('tr').id);
+      }});
+      audio.addEventListener('pause', () => {{
+        if (audio.ended) return;
+        audio.closest('tr').classList.remove('playing');
+      }});
+      audio.addEventListener('ended', () => {{
+        audio.closest('tr').classList.remove('playing');
+      }});
+    }});
     playButton.addEventListener('click', playAll);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
@@ -559,6 +628,7 @@ def main():
     parser.add_argument("--head_weight", type=float, default=0.35)
     parser.add_argument("--out_m3u", default=None)
     parser.add_argument("--out_html", default=None)
+    parser.add_argument("--title", default=None)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
@@ -665,7 +735,16 @@ def main():
 
     if args.out_html:
         highlighted = set(args.journey or args.seeds or [])
-        write_html(args.out_html, playlist, urls, tracks_df, highlighted, metadata)
+        default_title = "Generated journey" if args.journey else "Generated playlist"
+        write_html(
+            args.out_html,
+            playlist,
+            urls,
+            tracks_df,
+            highlighted,
+            args.title or default_title,
+            metadata,
+        )
         print(f"wrote {args.out_html}")
 
 

@@ -1,4 +1,4 @@
-# Music JEPA
+# music-jepa
 
 A self-supervised music representation model using Joint Embedding Predictive Architecture (JEPA).
 
@@ -60,28 +60,22 @@ Copy `.env.example` to `.env` and uncomment what you need:
 cp .env.example .env
 ```
 
-Defaults target the **full dataset**:
+Defaults target the **full dataset**. To switch to the sample preset, uncomment
+the sample block in `.env`.
 
-| Variable           | Default                              | Purpose                                     |
-|--------------------|--------------------------------------|---------------------------------------------|
-| `CHECKPOINT_DIR`   | `checkpoints`                        | Where checkpoints are read/written          |
-| `TRAIN_CONFIG`     | `configs/encoder.yaml`               | Encoder training + embedding extraction     |
-| `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml`     | Continuation-head training                  |
-| `HEAD_INFIL_CONFIG`| `configs/head_infil.yaml`            | Infill-head training                        |
-| `TRACKS_FILE`      | `data/tracks_dedup.csv`              | Track metadata for eval / playlist scripts  |
-| `NPROC_PER_NODE`   | `2`                                  | GPU process count for `torchrun`            |
+| Variable           | Full default                     | Sample preset                         | Purpose                                     |
+|--------------------|----------------------------------|---------------------------------------|---------------------------------------------|
+| `CHECKPOINT_DIR`   | `checkpoints`                    | `checkpoints-sample`                  | Where checkpoints are read/written          |
+| `TRAIN_CONFIG`     | `configs/encoder.yaml`           | `configs/encoder_sample.yaml`         | Encoder training + embedding extraction     |
+| `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml` | `configs/head_continuation_sample.yaml` | Continuation-head training                |
+| `HEAD_INFIL_CONFIG`| `configs/head_infil.yaml`        | `configs/head_infil_sample.yaml`      | Infill-head training                        |
+| `TRACKS_FILE`      | `data/tracks_dedup.csv`          | `data/tracks_sample.csv`              | Track metadata for eval / playlist scripts  |
+| `OUTPUT_DIR`       | `outputs`                        | `outputs-sample`                      | Generated HTML reports and examples         |
+| `PAGES_BRANCH`     | `gh-pages`                       | `gh-pages`                            | GitHub Pages branch                         |
+| `PAGES_WORKTREE`   | `/tmp/music-jepa-pages`          | `/tmp/music-jepa-pages`               | Local worktree used for publishing          |
+| `NPROC_PER_NODE`   | `2`                              | `2`                                   | GPU process count for `torchrun`            |
 
-To switch to the sample preset, uncomment the sample block in `.env`:
-
-```bash
-CHECKPOINT_DIR=checkpoints-sample
-TRAIN_CONFIG=configs/encoder_sample.yaml
-HEAD_CONT_CONFIG=configs/head_continuation_sample.yaml
-HEAD_INFIL_CONFIG=configs/head_infil_sample.yaml
-TRACKS_FILE=data/tracks_sample.csv
-```
-
-You can also override per-command, e.g. `make train-encoder CHECKPOINT_DIR=checkpoints-foo`.
+You can also override any Make knob per command, e.g. `make train-encoder NAME=value`.
 
 ## Data pipeline
 
@@ -95,8 +89,8 @@ listings, then run `train/deduplicate.py --min_count=10` to drop near-duplicate
 tracks and tracks without preview URLs. Once you have those two CSVs, drop them
 into `data/` and you're ready for the steps below.
 
-Full dataset (downloads previews for every track in `data/tracks_dedup.csv`
-and computes spectrograms for all of them):
+Full dataset (downloads previews for every configured track and computes
+spectrograms):
 
 ```bash
 make data          # = make previews + make spectrograms
@@ -105,7 +99,7 @@ make data          # = make previews + make spectrograms
 Or step by step:
 ```bash
 # 1. Download 30-second MP3 previews (~350KB each) from Spotify CDN
-make previews      # uv run python data/download_previews.py --tracks_file data/tracks_dedup.csv
+make previews
 
 # 2. Compute mel spectrograms (96 mel-bins x 216 time-frames, first 5s)
 make spectrograms  # uv run python data/make_spectrograms.py
@@ -117,29 +111,26 @@ Sample subset (a 2000-playlist slice — fast iteration / smoke testing):
 make data-sample   # = sample → previews-sample → spectrograms
 ```
 
-This writes `data/playlists_sample.csv` + `data/tracks_sample.csv` and only
-downloads previews for tracks in the sample. To use the sample subset across
-all later targets (training, eval, playlists), point your `.env` at the sample
-preset described in the [Configuration](#configuration) section.
+This writes the sample playlist/track CSVs and only downloads previews for
+tracks in the sample. To use the sample subset across later targets, point your
+`.env` at the sample preset described in [Configuration](#configuration).
 
 ## Training
 
-Encoder training uses `torchrun`. The Makefile passes `--config $(TRAIN_CONFIG)`
-through to `train_encoder.py`, so swapping training configs is a one-line `.env`
-override (or a per-command flag).
+Encoder training uses `torchrun`. The Makefile passes the configured training
+file through to `train_encoder.py`, so swapping modes is a one-line `.env`
+change or a per-command override.
 
-If `$(CHECKPOINT_DIR)/last.ckpt` exists, `make train-encoder` resumes from it
-automatically:
+If the configured checkpoint dir contains `last.ckpt`, `make train-encoder`
+resumes from it automatically:
 
 ```bash
 make train-encoder
-make train-encoder CHECKPOINT_DIR=checkpoints-full
-make train-encoder TRAIN_CONFIG=configs/encoder_sample.yaml CHECKPOINT_DIR=checkpoints-sample
 ```
 
 Manual resume from a specific checkpoint:
 ```bash
-uv run python train_encoder.py --ckpt checkpoints/last.ckpt
+uv run python train_encoder.py --ckpt path/to/checkpoint.ckpt
 ```
 
 TensorBoard logs are written to `logs/music_jepa/`. Launch the UI with:
@@ -150,18 +141,14 @@ make tensorboard   # uv run tensorboard --logdir logs/
 ## Evaluation
 
 ```bash
-# Extract embeddings for all tracks from $(CHECKPOINT_DIR)/last.ckpt
+# Extract embeddings for all configured tracks from the latest checkpoint
 make embed
-make embed CHECKPOINT_DIR=checkpoints-sample
 
 # Search local track metadata for IDs and preview URLs
 make search QUERY="daft punk"
 
-# Nearest-neighbour report + t-SNE
-make viz-nn        # uv run python eval/visualize.py --embeddings embeddings.npy --tsne
-
 # Interactive embedding explorer
-make viz           # writes outputs/explore.html
+make viz
 ```
 
 **Success criterion:** nearest neighbours should be musically coherent (e.g. Nirvana
@@ -172,17 +159,12 @@ and audio content.
 ## Playlist heads
 
 Once the JEPA encoder has produced `embeddings.npy`, train lightweight heads in
-the frozen JEPA space. Head training uses `$(HEAD_CONT_CONFIG)` /
-`$(HEAD_INFIL_CONFIG)`, which default to the full-dataset configs
-(`configs/head_continuation.yaml` and `configs/head_infil.yaml`). Sample
-variants live alongside them with the `_sample.yaml` suffix and are picked up
-automatically when the sample preset is active in `.env`.
+the frozen JEPA space. Head training uses the config files selected in
+[Configuration](#configuration).
 
 ```bash
 make train-head-cont
 make train-head-infil
-make train-head-cont HEAD_CONT_CONFIG=configs/head_continuation_sample.yaml \
-                     CHECKPOINT_DIR=checkpoints-sample
 ```
 
 The continuation head predicts the next track from seed history. Use it for
@@ -196,7 +178,6 @@ make playlist SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist DRIFT=0.35 SEEDS="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make playlist METHOD=embeddings SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make playlist METHOD=track2vec SEEDS="3EYOJ48Et32uATr9ZmLnAo"
-make playlist CHECKPOINT_DIR=checkpoints-sample SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 ```
 
 For continuation heads, `DRIFT=0` uses the head prediction directly. Higher
@@ -215,28 +196,30 @@ waypoint embeddings, then snap each step to the nearest real track:
 make journey JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make journey METHOD=embeddings JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make journey METHOD=track2vec JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
-make journey CHECKPOINT_DIR=checkpoints-sample JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 ```
 
 Generated playlist output includes track IDs, artist/title, and MP3 preview
-links when present. `make playlist` writes `outputs/playlist.html`,
-`make journey` writes `outputs/journey.html`, and `make viz` writes
-`outputs/explore.html`; all HTML outputs live under `outputs/`. The playlist
-and journey pages include per-track browser audio controls plus a top-level
+links when present. Generated HTML goes under the output dir configured in
+[Configuration](#configuration) and ignored by git. The playlist and journey
+pages include per-track browser audio controls plus a top-level
 “Play all previews” button that chains available 30-second previews after one
 user click. Add `--out_m3u path/to/file.m3u` when calling
 `eval/generate_playlist.py` directly to write a playable M3U file.
 
 For quick comparisons, `make examples` writes head-based examples and
-baseline pages to `outputs/examples/`. Raw JEPA baselines use the
-`_embeddings.html` suffix, and Track2Vec baselines use `_track2vec.html`,
-for example
-`playlist_classical_embeddings.html` and
-`journey_classical_jazz_funk_disco_house_techno_track2vec.html`. It also
-writes `outputs/examples/index.html`, which links to all generated example
-pages. The head continuation gallery includes electronic examples at several
-drift and noise values, named like `playlist_electronic_drift_35.html` and
-`playlist_electronic_noise_25.html`.
+baseline pages under the configured output dir. Raw JEPA baselines use the
+`_embeddings.html` suffix, Track2Vec baselines use `_track2vec.html`, and the
+generated index links to all example pages. The head continuation gallery
+includes electronic examples at several drift and noise values.
+
+Publish the configured output dir to GitHub Pages with:
+
+```bash
+make publish-pages
+```
+
+This syncs `OUTPUT_DIR` into a temporary worktree for the Pages branch, commits
+changes if needed, and pushes.
 
 The journey mode follows the original Deej-AI idea: interpolate through the
 continuous vector space between waypoint tracks, then snap each waypoint to a real

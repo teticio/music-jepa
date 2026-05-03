@@ -91,6 +91,10 @@ def title_for(path: Path) -> str:
     return f"{kind}: {label} ({method})"
 
 
+def example_title(filename: str) -> str:
+    return title_for(Path(filename))
+
+
 def write_index(out_dir: Path) -> None:
     html_files = sorted(
         path for path in out_dir.glob("*.html") if path.name != "index.html"
@@ -245,6 +249,8 @@ def main():
                     str(drift),
                     "--out_html",
                     str(out_dir / f"playlist_{name}.html"),
+                    "--title",
+                    example_title(f"playlist_{name}.html"),
                 ]
                 + device_args
             )
@@ -265,6 +271,8 @@ def main():
                 str(args.noise),
                 "--out_html",
                 str(out_dir / f"playlist_{name}_embeddings.html"),
+                "--title",
+                example_title(f"playlist_{name}_embeddings.html"),
             ]
             + device_args
         )
@@ -283,6 +291,8 @@ def main():
                 str(args.noise),
                 "--out_html",
                 str(out_dir / f"playlist_{name}_track2vec.html"),
+                "--title",
+                example_title(f"playlist_{name}_track2vec.html"),
             ]
         )
 
@@ -303,6 +313,8 @@ def main():
                     str(args.noise),
                     "--out_html",
                     str(out_dir / f"journey_{name}.html"),
+                    "--title",
+                    example_title(f"journey_{name}.html"),
                 ]
                 + device_args
             )
@@ -324,6 +336,8 @@ def main():
                 str(args.noise),
                 "--out_html",
                 str(out_dir / f"journey_{name}_embeddings.html"),
+                "--title",
+                example_title(f"journey_{name}_embeddings.html"),
             ]
             + device_args
         )
@@ -343,6 +357,8 @@ def main():
                 str(args.noise),
                 "--out_html",
                 str(out_dir / f"journey_{name}_track2vec.html"),
+                "--title",
+                example_title(f"journey_{name}_track2vec.html"),
             ]
         )
 

@@ -542,16 +542,11 @@ epochs and use validation-loss early stopping (`early_stopping_patience` and
 overfitting.
 
 Only playlists with **10–30 tracks** are used for head training
-(`min_playlist_len` / `max_playlist_len` in the head configs). The default head
-configs use `data/playlists_dedup.csv`, matching the encoder training set. For
-quick iteration on the sample subset there are parallel
-`configs/head_continuation_sample.yaml` and `configs/head_infil_sample.yaml`
-configs pointing at `data/playlists_sample.csv`; activate them via
-`HEAD_CONT_CONFIG` / `HEAD_INFIL_CONFIG` in `.env` (see `.env.example`).
-Pointing at the full dedup playlist file before the full catalogue has
-embeddings forces the loader to drop missing track IDs and train on chopped-up
-playlist fragments — only run head training after `make embed` covers the
-catalogue you point the head at.
+(`min_playlist_len` / `max_playlist_len` in the head configs). The active head
+configs are selected by the Makefile knobs documented in the README
+configuration table. Make sure `make embed` has covered the same catalogue the
+head config points at; otherwise the loader drops missing track IDs and trains
+on chopped-up playlist fragments.
 
 Short playlists lack context; very long playlists tend to be grab-bags with weak
 track-to-track coherence — noisier training signal than the JEPA encoder sees,
@@ -561,14 +556,11 @@ musically) actively train the head in the wrong direction.
 Make targets:
 
 ```
-make train-head-cont    # continuation head, writes $(CHECKPOINT_DIR)/continuation_head.pt
-make train-head-infil   # infill head, writes $(CHECKPOINT_DIR)/infill_head.pt
+make train-head-cont
+make train-head-infil
 ```
 
-All Make targets that read or write checkpoint artifacts use
-`CHECKPOINT_DIR`, defaulting to `checkpoints`. For example,
-`CHECKPOINT_DIR=checkpoints-sample make playlist ...` uses
-`checkpoints-sample/continuation_head.pt`.
+Make targets read/write checkpoints through the configured checkpoint dir.
 
 `train_head.py` is plain PyTorch. If multiple CUDA GPUs are visible it wraps the
 head with `torch.nn.DataParallel`; the saved checkpoints are unwrapped so
@@ -583,11 +575,12 @@ make playlist SEEDS="TRACK_ID [TRACK_ID ...]"
 make journey JOURNEY="START_ID END_ID [WAYPOINT_ID ...]"
 ```
 
-`make playlist` uses `$(CHECKPOINT_DIR)/continuation_head.pt` and `--seeds` to keep
-adding next tracks. `make journey` uses `$(CHECKPOINT_DIR)/infill_head.pt` and
-`--journey` to fill between waypoint IDs. Both targets write HTML under
-`outputs/` with each track ID, artist/title, per-track audio controls, and a
-top-level "Play all previews" button that chains available 30-second previews.
+`make playlist` uses the configured continuation head and `--seeds` to keep
+adding next tracks. `make journey` uses the configured infill head and
+`--journey` to fill between waypoint IDs. Both targets write HTML under the
+configured output dir with each track ID, artist/title, per-track audio
+controls, and a top-level "Play all previews" button that chains available
+30-second previews.
 
 Both workflows also have head-free baselines:
 
@@ -621,10 +614,10 @@ Example galleries can be regenerated with:
 make examples
 ```
 
-This writes head-based playlist and journey pages to `outputs/examples/`, plus
-matching raw-JEPA baselines with an `_embeddings.html` suffix and Deej-AI
-Track2Vec baselines with a `_track2vec.html` suffix. It also writes
-`outputs/examples/index.html`, which links to all generated pages.
+This writes head-based playlist and journey pages under the configured output
+dir, plus matching raw-JEPA baselines with an `_embeddings.html` suffix and
+Deej-AI Track2Vec baselines with a `_track2vec.html` suffix. It also writes an
+index page linking to all generated pages.
 
 ### Journey generation (`eval/generate_playlist.py`)
 

@@ -13,6 +13,7 @@ Usage:
         --probes 3EYOJ48Et32uATr9ZmLnAo 4CeeEOM32jQcH3eN9Q2dGj
 """
 import argparse
+import os
 
 import numpy as np
 import pandas as pd
@@ -57,19 +58,43 @@ def nearest_neighbours(query_id: str, ids, vecs, tracks_df, k=10):
 
 
 def tsne_plot(ids, vecs, tracks_df, out_path="tsne.png", n_points=3000):
+    os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
     from sklearn.manifold import TSNE
+    from matplotlib.colors import LogNorm
     import matplotlib.pyplot as plt
 
     n = min(n_points, len(ids))
-    idx = np.random.choice(len(ids), n, replace=False)
+    rng = np.random.default_rng(42)
+    idx = rng.choice(len(ids), n, replace=False)
     sub_vecs = vecs[idx]
 
     print(f"Running t-SNE on {n} tracks...")
     coords = TSNE(n_components=2, perplexity=30, random_state=42, max_iter=1000).fit_transform(sub_vecs)
 
-    fig, ax = plt.subplots(figsize=(14, 10))
-    ax.scatter(coords[:, 0], coords[:, 1], s=3, alpha=0.4, linewidths=0)
-    ax.set_title("Music JEPA embeddings (t-SNE)", fontsize=14)
+    counts = (
+        tracks_df.reindex([ids[i] for i in idx])["count"]
+        .fillna(1)
+        .astype(float)
+        .to_numpy()
+    )
+    colors = np.maximum(counts, 1)
+
+    fig, ax = plt.subplots(figsize=(14, 10), facecolor="#f7f4ef")
+    ax.set_facecolor("#f7f4ef")
+    scatter = ax.scatter(
+        coords[:, 0],
+        coords[:, 1],
+        c=colors,
+        cmap="viridis",
+        norm=LogNorm(vmin=colors.min(), vmax=colors.max()),
+        s=8,
+        alpha=0.72,
+        linewidths=0,
+    )
+    cbar = fig.colorbar(scatter, ax=ax, fraction=0.025, pad=0.02)
+    cbar.set_label("playlist count", color="#202124")
+    cbar.ax.tick_params(colors="#202124")
+    ax.set_title("music-jepa embeddings (t-SNE)", fontsize=16, fontweight="bold", color="#202124")
     ax.axis("off")
     plt.tight_layout()
     plt.savefig(out_path, dpi=150)
