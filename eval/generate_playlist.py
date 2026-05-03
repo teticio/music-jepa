@@ -304,12 +304,13 @@ def build_html_str(
     page_title: str,
     metadata: Optional[dict] = None,
 ) -> str:
+    label = "waypoint" if len(highlighted) > 1 else "seed"
     rows = []
     playable_previews = []
     for i, (tid, url) in enumerate(zip(playlist, urls), 1):
         artist, title, _ = get_generated_track_info(tid, tracks_df, metadata)
-        marker = " seed" if tid in highlighted else ""
-        badge = "<span class=\"badge\">seed</span>" if tid in highlighted else ""
+        marker = f" {label}" if tid in highlighted else ""
+        badge = f"<span class=\"badge\">{label}</span>" if tid in highlighted else ""
         row_id = f"track-{i}"
         preview_index = None
         if url:
@@ -409,7 +410,7 @@ def build_html_str(
       text-transform: uppercase;
       background: #20232a;
     }}
-    tr.seed {{
+    tr.seed, tr.waypoint {{
       background: #20281f;
     }}
     tr[data-preview-index] {{

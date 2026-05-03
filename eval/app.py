@@ -163,7 +163,7 @@ n = len(st.session_state.waypoints)
 if n == 1:
     size = st.number_input("Total tracks to generate", min_value=2, max_value=200, value=20)
 elif n > 1:
-    between = st.number_input("Tracks between each pair of waypoints", min_value=1, max_value=100, value=9)
+    between = st.number_input("Tracks between each pair of waypoints", min_value=1, max_value=100, value=10)
 
 # Generate
 if n >= 1 and st.button("Generate", type="primary"):
@@ -208,5 +208,5 @@ if st.session_state.playlist:
     html = build_html_str(pl, urls, tracks_df, st.session_state.highlighted, f"Generated {mode}")
 
     height = min(160 + 72 * len(pl), 900)
-    st.iframe(html, height=height, scrolling=True)
+    st.iframe(html, height=height)
     st.download_button("Download HTML", html, file_name=f"{mode}.html", mime="text/html")
