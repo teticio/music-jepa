@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Playlist: Rock (track2vec)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">20 previews available</span>
@@ -153,89 +158,69 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">Smells Like Teen Spirit <span class="badge">seed</span></div><div class="artist">Nirvana</div><code>4CeeEOM32jQcH3eN9Q2dGj</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">Heart-Shaped Box </div><div class="artist">Nirvana</div><code>11LmqTE2naFULdEP94AUBa</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/71c2606b4c7b16f217c033319f155f265c0666ac?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">Come As You Are </div><div class="artist">Nirvana</div><code>2RsAajgo0g7bMCHxwH3Sk0</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/7e9be2f1785c932e198f045ede7226957141f083?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">Lithium </div><div class="artist">Nirvana</div><code>5vHLwhxxlGzmClMcxRRFPr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bc669fd79c34b2ee7addf1c010c2a739f97a0242?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">All Apologies </div><div class="artist">Nirvana</div><code>1Ic9pKxGSJGM0LKeqf6lGe</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/82994a03fd672aa2a4bd18d6fddf14e5756258ee?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">About A Girl </div><div class="artist">Nirvana</div><code>55yvzYuvJYG2RUEnMK78tr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e42801f556c67d6a62f6954dba2766f5613e77eb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">Rape Me </div><div class="artist">Nirvana</div><code>2i5K0EdMY5zFs9t7KfYK3k</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/86766662e1f20be07b30e520c035f807adb16937?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Dumb </div><div class="artist">Nirvana</div><code>725QAOexNLmGZiFMN7U8pF</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f58ebf8e9d2fc69766ba5e4ee3d75480b3ba798d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">Aneurysm </div><div class="artist">Nirvana</div><code>0Pie5DFAHHxpkONFUsAI6s</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2a4924a69cebed00a659a729a731fd55ab781fbb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">Mr. Moustache </div><div class="artist">Nirvana</div><code>5TZbtpZcTWKEn81Du4hiTb</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/0f79a842f0741eba62856d860f712ef3b25a85ba?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track">
+</tr><tr id="track-11" class="track" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">Moist Vagina - 2013 Mix </div><div class="artist">Nirvana</div><code>3fP8KXXUoBenEM46UZZgSG</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a273a6f0867a961c3aa2ba05be1f1a7192a5b57a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-12" class="track">
+</tr><tr id="track-12" class="track" data-preview-index="11">
   <td class="idx">12</td>
   <td><div class="title">Swap Meet </div><div class="artist">Nirvana</div><code>7iU9kLfTsJxwBA931jm3Rv</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2f359d9f96a297f3f6bdd7a98f28b700ae0ee595?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-13" class="track">
+</tr><tr id="track-13" class="track" data-preview-index="12">
   <td class="idx">13</td>
   <td><div class="title">Downer </div><div class="artist">Nirvana</div><code>4e0MJaiXSwXBhrQZHyoK8c</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/82a26f02ed54bd976d2cbe36cd04af2a63c86036?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-14" class="track">
+</tr><tr id="track-14" class="track" data-preview-index="13">
   <td class="idx">14</td>
   <td><div class="title">Curmudgeon </div><div class="artist">Nirvana</div><code>3pduSzfSQUrpiawOhC23RL</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/74369b64f191210f933cc295dd26dd51ecce81ad?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-15" class="track">
+</tr><tr id="track-15" class="track" data-preview-index="14">
   <td class="idx">15</td>
   <td><div class="title">Beeswax </div><div class="artist">Nirvana</div><code>73heu76HyAQRRN1u3vubq6</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1cc48d2e1175875ea967170b145809b5cac0ce75?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-16" class="track">
+</tr><tr id="track-16" class="track" data-preview-index="15">
   <td class="idx">16</td>
   <td><div class="title">Drain You - Demo </div><div class="artist">Nirvana</div><code>0Bi3gUuKAOUIo9ZDAdrOWo</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/de933334a13892a14cee8e98106995160a36c3dc?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-17" class="track">
+</tr><tr id="track-17" class="track" data-preview-index="16">
   <td class="idx">17</td>
   <td><div class="title">Territorial Pissings - 1992/Live at Reading </div><div class="artist">Nirvana</div><code>1rzl8uP6RThJgykx6LMvdW</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/26f15dfbd23fce4bf1194ed6b4e7fde7a90ad68d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-18" class="track">
+</tr><tr id="track-18" class="track" data-preview-index="17">
   <td class="idx">18</td>
   <td><div class="title">Smells Like Teen Spirit - Rehearsal Demo </div><div class="artist">Nirvana</div><code>4lRQkns5X3lK2Che10Ap7i</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/2e67b651ce116d191b5ba6f7b1328faec9688bb8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-19" class="track">
+</tr><tr id="track-19" class="track" data-preview-index="18">
   <td class="idx">19</td>
   <td><div class="title">Breed - Rough Mix </div><div class="artist">Nirvana</div><code>6Vh8B3JhX4wLa50o2Lhd1t</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/37cac1bf40faee421f19e261b6814a4deb202ae9?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-20" class="track">
+</tr><tr id="track-20" class="track" data-preview-index="19">
   <td class="idx">20</td>
   <td><div class="title">Sappy - 1990 Studio Demo </div><div class="artist">Nirvana</div><code>0H7VIhhimL6nqCpoyvOpcQ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8cec016d242469c32dfb26623856c6014b381a76?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -243,12 +228,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/71c2606b4c7b16f217c033319f155f265c0666ac?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/7e9be2f1785c932e198f045ede7226957141f083?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/bc669fd79c34b2ee7addf1c010c2a739f97a0242?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/82994a03fd672aa2a4bd18d6fddf14e5756258ee?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/e42801f556c67d6a62f6954dba2766f5613e77eb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/86766662e1f20be07b30e520c035f807adb16937?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/f58ebf8e9d2fc69766ba5e4ee3d75480b3ba798d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/2a4924a69cebed00a659a729a731fd55ab781fbb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/0f79a842f0741eba62856d860f712ef3b25a85ba?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/a273a6f0867a961c3aa2ba05be1f1a7192a5b57a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/2f359d9f96a297f3f6bdd7a98f28b700ae0ee595?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/82a26f02ed54bd976d2cbe36cd04af2a63c86036?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/74369b64f191210f933cc295dd26dd51ecce81ad?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/1cc48d2e1175875ea967170b145809b5cac0ce75?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/de933334a13892a14cee8e98106995160a36c3dc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/26f15dfbd23fce4bf1194ed6b4e7fde7a90ad68d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/2e67b651ce116d191b5ba6f7b1328faec9688bb8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/37cac1bf40faee421f19e261b6814a4deb202ae9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/8cec016d242469c32dfb26623856c6014b381a76?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -260,90 +245,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>

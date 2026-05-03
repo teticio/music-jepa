@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Journey: Jazz To Rock (embeddings)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">11 previews available</span>
@@ -153,53 +158,42 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">My Favorite Things <span class="badge">seed</span></div><div class="artist">John Coltrane</div><code>6oVY50pmdXqLNVeK8bzomn</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/0182f30c954ce91a2e792f34537bbfe6c27d83a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">After The Rain </div><div class="artist">Duke Pearson</div><code>5IlHpX7zNkpbC4cUynWjKo</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/718486fb1087b5cdad27779ab06b863c1b830221?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">In &#x27;N Out - Remastered 2003 / Rudy Van Gelder Edition </div><div class="artist">Joe Henderson</div><code>0oAYPIX493opcBi2NsqTKb</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ae4a417e4a13263636286d0e12dbc642bf454f25?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">Milestones </div><div class="artist">Bill Evans Trio</div><code>1FSf2JmNY7qCq5GK8ZB67w</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5a690903ecde525ff5a672a59f19de9c16211c17?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">Grace And Mercy </div><div class="artist">Immanuel Wilkins</div><code>6AFJ6v57ZevcNCR2mJHDKf</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/983dc75e3f7dae8e72ed671caa40a77d4f6ceb4d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">Ebethron </div><div class="artist">The Sword</div><code>4JLInO0barcxZlgu0O4p0y</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/373d2c467507841c3ef1cfa9a5118240c5c1638b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">One World - Alternate Take </div><div class="artist">Anthrax</div><code>4eYuJvijjP5zCsAaIYdnVf</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/300e209e0b78ef67dbfefbde7881a89ff10c69a1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Bigger Than Kiss </div><div class="artist">Teenage Bottlerocket</div><code>4EAql3BjJv4GtJZnQb5juh</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ee2d3598f0539350383d2396db63fd9072d9a65c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">FML </div><div class="artist">Godsmack</div><code>0eBhdkzFaK06HFPo9AVgmG</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/35342c10310289e653fb326fe5923430eda3c0ec?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">Never Again </div><div class="artist">Nickelback</div><code>3K8rbysInYs6bEhMGgm0wh</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e0dbef21b98d8f6bec4f8a5bbdbe0fa68e743c0a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track seed">
+</tr><tr id="track-11" class="track seed" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">Smells Like Teen Spirit <span class="badge">seed</span></div><div class="artist">Nirvana</div><code>4CeeEOM32jQcH3eN9Q2dGj</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -207,12 +201,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/0182f30c954ce91a2e792f34537bbfe6c27d83a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/718486fb1087b5cdad27779ab06b863c1b830221?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/ae4a417e4a13263636286d0e12dbc642bf454f25?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/5a690903ecde525ff5a672a59f19de9c16211c17?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/983dc75e3f7dae8e72ed671caa40a77d4f6ceb4d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/373d2c467507841c3ef1cfa9a5118240c5c1638b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/300e209e0b78ef67dbfefbde7881a89ff10c69a1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/ee2d3598f0539350383d2396db63fd9072d9a65c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/35342c10310289e653fb326fe5923430eda3c0ec?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/e0dbef21b98d8f6bec4f8a5bbdbe0fa68e743c0a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/91219ebc0d0505a1001c4b854f8b2451fcec95b8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -224,90 +218,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>

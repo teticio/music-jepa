@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Playlist: Classical (track2vec)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">20 previews available</span>
@@ -153,89 +158,69 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">Requiem, K. 626: Lacrimosa <span class="badge">seed</span></div><div class="artist">Wolfgang Amadeus Mozart</div><code>3oHSL6pt9LpNrQZuQGu9wL</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bd646927434759cc08ba71a106b2571d65b3015e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">Nocturne en Mi Bémol Majeur, Op. 9 No. 2 </div><div class="artist">Frédéric Chopin</div><code>7n92QzQomRCLlciO14X0kd</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bf10b6a18f4c4105bae3582c6a30851a81a9ab27?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">Gnossienne: No. 1 </div><div class="artist">Erik Satie</div><code>4820SC1xnUaabzzYQTDkP2</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3b8cb3c40d0d47bd5df40463440b6d481653e20d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">The Carnival of the Animals, R. 125: XIII. The Swan (Arr. for Cello and Piano) </div><div class="artist">Camille Saint-Saëns</div><code>0jOnZhF75V68VsBObWx2XO</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1b3cb310d4e62e0c5a727500891a931866492103?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">Serenade for Strings in E Major, Op. 22, B. 52: II. Tempo di valse </div><div class="artist">Antonín Dvořák</div><code>3sAYxq1986j3ydqLv6jwUJ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bec0df08fe3c5c9621af91331b984f3ddb2fd9ee?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">Liebestraum No. 3 in A-Flat Major, S. 541 / 3 </div><div class="artist">Franz Liszt</div><code>2u9VGZmVz7Rm01SfDgzcfA</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a3f2cb8e5bc8f64631d7087fc779e1d7ec3515ae?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">Chopin: Nocturne No. 20 in C-Sharp Minor, Op. Posth. </div><div class="artist">Frédéric Chopin</div><code>2MSgFefjK0T7Iwjvr3OKqV</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e6c85252b818afd6bb03fe316cbac3716665df82?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Le Cygne </div><div class="artist">Camille Saint-Saëns</div><code>59eTbibtvvBIGj27eN3zqq</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/31b047dfc451140d4e0c2f6d42ca48370fa9680e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">6 Consolations, S. 172: No. 3 in D-Flat Major (Lento, placido) </div><div class="artist">Franz Liszt</div><code>1L4NadMj3Jj7YgGaikyhfr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/160507e90d6acf72c059d1d2625378c9392310a0?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">Serenade, D. 957, No. 4 </div><div class="artist">Franz Schubert</div><code>6BdrHOEmokkSxTyxCojD6r</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/53d83cc3f5ee6842d653b150413b141133ed017b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track">
+</tr><tr id="track-11" class="track" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">Liebestraum (Love Dream) </div><div class="artist">Franz Liszt</div><code>5gKtItUR49zbCMmlSNEhqo</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1be5abe0366599eb9d5fab1dbd71c6c2915f671d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-12" class="track">
+</tr><tr id="track-12" class="track" data-preview-index="11">
   <td class="idx">12</td>
   <td><div class="title">Liebestraum </div><div class="artist">Franz Liszt</div><code>3Nd9wTStUxHHBWkbrENCVL</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d1b46c5bf8fe34d0293b8b6c40f5e66fce2f8c78?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-13" class="track">
+</tr><tr id="track-13" class="track" data-preview-index="12">
   <td class="idx">13</td>
   <td><div class="title">Serenade for Strings in E Major, Op. 22, B. 52: IV. Larghetto </div><div class="artist">Antonín Dvořák</div><code>3o9br9LskOEbwc5irxfHqR</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d3cf41dca9771e7823e844b1bdeb4b86cbd09409?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-14" class="track">
+</tr><tr id="track-14" class="track" data-preview-index="13">
   <td class="idx">14</td>
   <td><div class="title">Swan Lake, Op. 20, TH 12 / Act II: No. 14 Scène (Moderato) </div><div class="artist">Pyotr Ilyich Tchaikovsky</div><code>6SdXIZIRpbRLHofZ7j2Xfb</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8cfd7b36ba4034c2d346c303f3f7f73b1c516ff4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-15" class="track">
+</tr><tr id="track-15" class="track" data-preview-index="14">
   <td class="idx">15</td>
   <td><div class="title">3 Nocturnes, Op. 9: I. Larghetto </div><div class="artist">Frédéric Chopin</div><code>4pTB18dbtjTTCLkybdylX6</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/64fa1d1d14cd42f8f2df38cc66411212688b9744?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-16" class="track">
+</tr><tr id="track-16" class="track" data-preview-index="15">
   <td class="idx">16</td>
   <td><div class="title">Waltz No. 19 in A Minor, KK IVb (Version for Harp in A Flat Minor) </div><div class="artist">Frédéric Chopin</div><code>7i9cdG6l1lg0xAraTublsw</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/054fdb9c88a698c2da02ef0034f9442f27a84707?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-17" class="track">
+</tr><tr id="track-17" class="track" data-preview-index="16">
   <td class="idx">17</td>
   <td><div class="title">5 Pieces, Op. 75, &quot;The Trees&quot;: No. 5 Granen (The Spruce) </div><div class="artist">Jean Sibelius</div><code>5gA69lYP3nCULBTdL3quJO</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5169fd7384184a193a0545eb2a9d9eab1df4eb28?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-18" class="track">
+</tr><tr id="track-18" class="track" data-preview-index="17">
   <td class="idx">18</td>
   <td><div class="title">4 Romantic Pieces, Op. 75, B. 150: I. Allegro moderato (Arr. Soltani For Solo Cello and Cello Ensemble) </div><div class="artist">Antonín Dvořák</div><code>3h36nK2T0kIsfEh6buiZPw</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/55d10220e3490582f0b0ff65e22cd066b2b8bf07?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-19" class="track">
+</tr><tr id="track-19" class="track" data-preview-index="18">
   <td class="idx">19</td>
   <td><div class="title">Gnossienne No. 1 </div><div class="artist">Alena Cherny</div><code>6fA0ItjPMuHOlmkeVpwU2w</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/4b1ebb0bda01aaaa442629818a2cd22e3f53f9a7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-20" class="track">
+</tr><tr id="track-20" class="track" data-preview-index="19">
   <td class="idx">20</td>
   <td><div class="title">Rêverie, L. 68 (Arr. by Badzura) </div><div class="artist">Claude Debussy</div><code>4VvRlFEuDDJnUaJURcDLE4</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/359f33725d4d694d25aa155b869edb861aab5223?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -243,12 +228,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/bd646927434759cc08ba71a106b2571d65b3015e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/bf10b6a18f4c4105bae3582c6a30851a81a9ab27?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/3b8cb3c40d0d47bd5df40463440b6d481653e20d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/1b3cb310d4e62e0c5a727500891a931866492103?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/bec0df08fe3c5c9621af91331b984f3ddb2fd9ee?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/a3f2cb8e5bc8f64631d7087fc779e1d7ec3515ae?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/e6c85252b818afd6bb03fe316cbac3716665df82?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/31b047dfc451140d4e0c2f6d42ca48370fa9680e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/160507e90d6acf72c059d1d2625378c9392310a0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/53d83cc3f5ee6842d653b150413b141133ed017b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/1be5abe0366599eb9d5fab1dbd71c6c2915f671d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/d1b46c5bf8fe34d0293b8b6c40f5e66fce2f8c78?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/d3cf41dca9771e7823e844b1bdeb4b86cbd09409?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/8cfd7b36ba4034c2d346c303f3f7f73b1c516ff4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/64fa1d1d14cd42f8f2df38cc66411212688b9744?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/054fdb9c88a698c2da02ef0034f9442f27a84707?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/5169fd7384184a193a0545eb2a9d9eab1df4eb28?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/55d10220e3490582f0b0ff65e22cd066b2b8bf07?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/4b1ebb0bda01aaaa442629818a2cd22e3f53f9a7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/359f33725d4d694d25aa155b869edb861aab5223?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -260,90 +245,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>

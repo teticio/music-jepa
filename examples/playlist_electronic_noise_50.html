@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Playlist: Electronic Noise 50 (head)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">20 previews available</span>
@@ -153,89 +158,69 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">Get Lucky (feat. Pharrell Williams and Nile Rodgers) <span class="badge">seed</span></div><div class="artist">Daft Punk</div><code>69kOkLUCkxIZYexIgSG8rq</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/6de52dda0d37a0646987856c3b9f7da075d965b4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">Mama - Remastered </div><div class="artist">David Walters</div><code>37gg0P3pLDtox6YRx4yyNe</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5023c87726f65f58a097f8fcba6bb1c7e2ace596?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">Paciencia De Jo </div><div class="artist">Bosq</div><code>0qnxKXS1eW5rNPfxrp8fbE</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e8e700597a5dc4cc0b1f6fff4b4c5bd05dc7eb83?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">Gravitate </div><div class="artist">Oscar Jerome</div><code>3i97OJms85ExXn3lf9cHF2</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/57363d7bf87e9508247ac84a20452b0b204f934d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">Hackney Birdwatch </div><div class="artist">Shire T</div><code>0CX874UshFA3nIHewSr9lr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/868026da442164b302153f829b04744fc576748f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">Moving </div><div class="artist">Dan Kye</div><code>3FsbNA7632mDE8gLp4K6oB</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f22769f0ddb91e0df0818e316f87426804b898b5?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">Arka - El Buho Remix </div><div class="artist">Nicola Cruz</div><code>4A1LbYyFsD7l618ZjmIoxc</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b2a3747607b6a914f4225eb81fbfe86e8e73495f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Sometimes You Just Know - Moodymann Remix </div><div class="artist">Pollyn</div><code>3qjoXcOOzzlNOyVHSVmyFu</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/614c127982668060720ac66475c3717d779e6e56?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">Kill Me - Crushed Soul Mix </div><div class="artist">Steffi</div><code>5hLAHI9DAyANNMQC6YTluq</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/69a7cb6d78d764caba6417c55a5dfb4a722049fa?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">November Morning </div><div class="artist">Stimming</div><code>2yZWWWwsri4JJqRTdhRMG5</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5b6352d45a403e9eb9739232cd1584a7c7ec086e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track">
+</tr><tr id="track-11" class="track" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">Minero - Xique-Xique Remix </div><div class="artist">Rodrigo Gallardo</div><code>1HZWlPgkzGYpHzm4cHDEyY</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bd8828eb80a5c9daa099684218c0a3242c4f6131?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-12" class="track">
+</tr><tr id="track-12" class="track" data-preview-index="11">
   <td class="idx">12</td>
   <td><div class="title">Another New Day - Moonstarr Mix </div><div class="artist">Jazzanova</div><code>6LfjPnsyyJlXzwyJUly5pR</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/90ee9348d8ca2de0aae6bb7c9f6ff0b0cef28a6c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-13" class="track">
+</tr><tr id="track-13" class="track" data-preview-index="12">
   <td class="idx">13</td>
   <td><div class="title">Step in Shadows </div><div class="artist">SBTRKT</div><code>3LN9PMgzb8h3QfOvhydpEI</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f9efdc5808427bf57558c66bba4a5e9fead6667f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-14" class="track">
+</tr><tr id="track-14" class="track" data-preview-index="13">
   <td class="idx">14</td>
   <td><div class="title">Beautiful Day - Banzai Republic vs. Trentemøller </div><div class="artist">Laid Back</div><code>1oAEvK8s0stEd17J7iWjii</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/265991ca925e4fb7a461311e7e4f3b198260f5c7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-15" class="track">
+</tr><tr id="track-15" class="track" data-preview-index="14">
   <td class="idx">15</td>
   <td><div class="title">Lonely Run </div><div class="artist">Conforce</div><code>2kyQrvKoYeOJ0d0ZyRapDJ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/52538f2840de4bf6b0ee4d14b520286e29f61f90?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-16" class="track">
+</tr><tr id="track-16" class="track" data-preview-index="15">
   <td class="idx">16</td>
   <td><div class="title">God Made Me Phunky (Extended Mix) </div><div class="artist">MD X-Spress</div><code>4tvejslaZsD6Y0pFCWipwJ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/106472c332422a4939a4559217d63786e3180e78?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-17" class="track">
+</tr><tr id="track-17" class="track" data-preview-index="16">
   <td class="idx">17</td>
   <td><div class="title">Ahora </div><div class="artist">Daphni</div><code>0jlVqqzqn3Uby6DoxmiTk4</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3d08cd92e196c5687359f359f4290992c66374af?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-18" class="track">
+</tr><tr id="track-18" class="track" data-preview-index="17">
   <td class="idx">18</td>
   <td><div class="title">Ridin High </div><div class="artist">Lee Stevens</div><code>1tkUk5oFXmf04eQEwopSh9</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/89fd389d9767ffafec3d9ae5badd159a4dfebffc?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-19" class="track">
+</tr><tr id="track-19" class="track" data-preview-index="18">
   <td class="idx">19</td>
   <td><div class="title">Up 2 U </div><div class="artist">dreamcastmoe</div><code>6rqjxPBRBBCuEZarxi7beI</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/320a8b289dafeefb5b2314e950fac4caeb0b27e1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-20" class="track">
+</tr><tr id="track-20" class="track" data-preview-index="19">
   <td class="idx">20</td>
   <td><div class="title">Push Up Ya Lighter </div><div class="artist">The Roots</div><code>4PIfVDOFSRh3jmcl2UhREg</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3b3ee57ce7315e6d9a1b72d3d3413b0afa8ae83f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -243,12 +228,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/6de52dda0d37a0646987856c3b9f7da075d965b4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/5023c87726f65f58a097f8fcba6bb1c7e2ace596?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/e8e700597a5dc4cc0b1f6fff4b4c5bd05dc7eb83?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/57363d7bf87e9508247ac84a20452b0b204f934d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/868026da442164b302153f829b04744fc576748f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/f22769f0ddb91e0df0818e316f87426804b898b5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/b2a3747607b6a914f4225eb81fbfe86e8e73495f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/614c127982668060720ac66475c3717d779e6e56?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/69a7cb6d78d764caba6417c55a5dfb4a722049fa?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/5b6352d45a403e9eb9739232cd1584a7c7ec086e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/bd8828eb80a5c9daa099684218c0a3242c4f6131?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/90ee9348d8ca2de0aae6bb7c9f6ff0b0cef28a6c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/f9efdc5808427bf57558c66bba4a5e9fead6667f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/265991ca925e4fb7a461311e7e4f3b198260f5c7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/52538f2840de4bf6b0ee4d14b520286e29f61f90?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/106472c332422a4939a4559217d63786e3180e78?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/3d08cd92e196c5687359f359f4290992c66374af?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/89fd389d9767ffafec3d9ae5badd159a4dfebffc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/320a8b289dafeefb5b2314e950fac4caeb0b27e1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/3b3ee57ce7315e6d9a1b72d3d3413b0afa8ae83f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -260,90 +245,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>

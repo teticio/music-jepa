@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Journey: Classical Jazz Funk Disco House Techno (track2vec)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">56 previews available</span>
@@ -153,233 +158,177 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">Vivaldi: The Four Seasons, Violin Concerto in G Minor, Op. 8 No. 2, RV 315 &quot;Summer&quot;: III. Presto <span class="badge">seed</span></div><div class="artist">Antonio Vivaldi</div><code>5N82c9RY2k4VeAel1pl5bJ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a1e2ebe01e858457e9025b8ab5300d23d2122cf1?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">Le Nozze di Figaro, K. 492: Sinfonia </div><div class="artist">Wolfgang Amadeus Mozart</div><code>4rjnWmrSRqXVkFWdKMG3pV</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e64ae1b6e789c754036bfd2db6630fe93250b688?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">21 Hungarian Dances, WoO 1: Hungarian Dance No. 5 in G Minor. Allegro (Orch. Schmeling) </div><div class="artist">Johannes Brahms</div><code>2oLjhx7w8Hyd3gry9cCXr7</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c065db61a85833b7767b8b17424132c0df2b881f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">Also sprach Zarathustra, Op. 30, TrV 176: Prelude (Sonnenaufgang) </div><div class="artist">Richard Strauss</div><code>43YwOmGUOS3zzGvj1Feszb</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/773010f67e416485d38d32696654ea2f26fedb48?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">Prokofiev: Romeo and Juliet, Op. 64, Act 1, Scene 2: Dance of the Knights </div><div class="artist">Sergei Prokofiev</div><code>4YLVOi2UXj5KLJfphy89nA</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1898d691b0162e775513a9ca0ac1a8a55d487702?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">Rhapsody in Blue </div><div class="artist">George Gershwin</div><code>0yzhOPf0iw2qWwcXRRta5L</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/979b8b7b7ba09d29e57133db93da91fbb668ab2d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">&#x27;Round Midnight (feat. John Coltrane, Red Garland, Paul Chambers &amp; Philly Joe Jones) </div><div class="artist">Miles Davis</div><code>5vb7At47uO0yPGfmYnAHuw</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c4114e23f7f1ea9ed4321113006c9c2599e5d355?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Blue in Green (feat. John Coltrane &amp; Bill Evans) </div><div class="artist">Miles Davis</div><code>0aWMVrwxPNYkKmFthzmpRi</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/9cedbd49d385ca7b8e22d7ba1d000a294dd8754e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">Flamenco Sketches (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) </div><div class="artist">Miles Davis</div><code>6dRx7OUXfvosnXG3g9lWGi</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/dd246b276b12372b4e678376e3ec41a7ab99f2d4?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">Milestones (feat. John Coltrane, Cannonball Adderley, Red Garland, Paul Chambers &amp; Philly Joe Jones) </div><div class="artist">Miles Davis</div><code>3sFwziMhmpgRmekNdvIMqg</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c5ee55ea873356bbc0afaead6ef819976bdc8ad6?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track">
+</tr><tr id="track-11" class="track" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">All Blues (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) </div><div class="artist">Miles Davis</div><code>5o3DSHw1ORhM3lWxqGRvEf</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/7ac7e22a838da835e0ca6abe61f5b646b90f14b7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-12" class="track seed">
+</tr><tr id="track-12" class="track seed" data-preview-index="11">
   <td class="idx">12</td>
   <td><div class="title">So What (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) <span class="badge">seed</span></div><div class="artist">Miles Davis</div><code>4vLYewWIvqHfKtJDk8c8tq</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d1a1a7b585e7bcf9becc2ab44938f6399fe90659?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-13" class="track">
+</tr><tr id="track-13" class="track" data-preview-index="12">
   <td class="idx">13</td>
   <td><div class="title">Freddie Freeloader (feat. John Coltrane, Cannonball Adderley, Wynton Kelly &amp; Paul Chambers) </div><div class="artist">Miles Davis</div><code>2x91iJc0UkFcjRMEZ2CoWB</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/562d59575894b94b47e702c9f8870c8b77609d96?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-14" class="track">
+</tr><tr id="track-14" class="track" data-preview-index="13">
   <td class="idx">14</td>
   <td><div class="title">Blue Train - Remastered 2003/Rudy Van Gelder Edition </div><div class="artist">John Coltrane</div><code>6ZgaUtMlUzUf7SqbUUnfbu</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f3c9a4b259a34039cf30d26745b89f2a83fda33b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-15" class="track">
+</tr><tr id="track-15" class="track" data-preview-index="14">
   <td class="idx">15</td>
   <td><div class="title">My Favorite Things </div><div class="artist">John Coltrane</div><code>6oVY50pmdXqLNVeK8bzomn</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/0182f30c954ce91a2e792f34537bbfe6c27d83a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-16" class="track">
+</tr><tr id="track-16" class="track" data-preview-index="15">
   <td class="idx">16</td>
   <td><div class="title">Goodbye Pork Pie Hat </div><div class="artist">Charles Mingus</div><code>3PJMsxg6rz9FOo6xNiASXz</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/05eba2024f734955141b525fbce773da11b50461?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-17" class="track">
+</tr><tr id="track-17" class="track" data-preview-index="16">
   <td class="idx">17</td>
   <td><div class="title">Giant Steps - Mono </div><div class="artist">John Coltrane</div><code>6QvVTzCv70hwn4XyRnobGi</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b014322bd5e5a9dcf38aa11b8d9fde439f27965e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-18" class="track">
+</tr><tr id="track-18" class="track" data-preview-index="17">
   <td class="idx">18</td>
   <td><div class="title">Papa&#x27;s Got A Brand New Bag - Pt. 1 </div><div class="artist">James Brown</div><code>58cAopfBOtm1Sgifx99jtR</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f52bd89a924dfd4fdf6c4ef7c1313921e7a1933c?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-19" class="track">
+</tr><tr id="track-19" class="track" data-preview-index="18">
   <td class="idx">19</td>
   <td><div class="title">I Got You (I Feel Good) </div><div class="artist">James Brown</div><code>5haXbSJqjjM0TCJ5XkfEaC</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ef9b8369572c52b35d4e1098ce8be2391193f6df?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-20" class="track">
+</tr><tr id="track-20" class="track" data-preview-index="19">
   <td class="idx">20</td>
   <td><div class="title">Get On The Good Foot, Pt. 1 - Single Version </div><div class="artist">James Brown</div><code>08RCefU3IXnK9cQBYmyFVK</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3fb080456bf4d0a5ef9052a890f1fceb9dbf6fab?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-21" class="track">
+</tr><tr id="track-21" class="track" data-preview-index="20">
   <td class="idx">21</td>
   <td><div class="title">I Got The Feelin&#x27; </div><div class="artist">James Brown</div><code>3UPWHgwMFfpE7dIWubNIXr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/929daca2f2d1f2e1d56d49e641123166123c027e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-22" class="track">
+</tr><tr id="track-22" class="track" data-preview-index="21">
   <td class="idx">22</td>
   <td><div class="title">Super Bad - Pts.1 &amp; 2 </div><div class="artist">James Brown</div><code>1dPCmeOJWzwn0cizpIJBSz</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1106c5bf0144542904c1d3ab8f5ee8d79dc9be27?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-23" class="track seed">
+</tr><tr id="track-23" class="track seed" data-preview-index="22">
   <td class="idx">23</td>
   <td><div class="title">Get Up Offa That Thing <span class="badge">seed</span></div><div class="artist">James Brown</div><code>5XeSAezNDk9tuw3viiCbZ3</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/711da2af248891ce1aad6b3350df54a75c96e398?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-24" class="track">
+</tr><tr id="track-24" class="track" data-preview-index="23">
   <td class="idx">24</td>
   <td><div class="title">Get Up I Feel Like Being A Sex Machine - Pt. 1 / Single Version </div><div class="artist">James Brown</div><code>6Bne501HS96nEeNq8Gn87R</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/126662ba6c4f4a9d02c2eb76d8f83dc12cb8deab?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-25" class="track">
+</tr><tr id="track-25" class="track" data-preview-index="24">
   <td class="idx">25</td>
   <td><div class="title">Give It Up Or Turnit A Loose </div><div class="artist">James Brown</div><code>01MPguc1PHQc7Lu5EvNe5E</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/317aa552d09e411a5ac78decc907817dc4e714cd?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-26" class="track">
+</tr><tr id="track-26" class="track" data-preview-index="25">
   <td class="idx">26</td>
   <td><div class="title">Papa Don&#x27;t Take No Mess - Pt. 1 </div><div class="artist">James Brown</div><code>7KaloDUUkTZ2UjOipBBBGN</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/39ed3166a455088fc8a47c194e28bf9ce68fc800?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-27" class="track">
+</tr><tr id="track-27" class="track" data-preview-index="26">
   <td class="idx">27</td>
   <td><div class="title">Cold Sweat </div><div class="artist">James Brown &amp; The Famous Flames</div><code>3GWM2gYAWWBrrh1h9F8DEc</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/afb3fd65b9acb37516f8e8cbe95ab23c54c53fc0?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-28" class="track">
+</tr><tr id="track-28" class="track" data-preview-index="27">
   <td class="idx">28</td>
   <td><div class="title">Hot Stuff - 12&quot; Version </div><div class="artist">Donna Summer</div><code>2Vnw8zKmjhr1jczUeaqiQg</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/d37019bac60be264611d12e4abae9e540541e361?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-29" class="track">
+</tr><tr id="track-29" class="track" data-preview-index="28">
   <td class="idx">29</td>
   <td><div class="title">He&#x27;s the Greatest Dancer - 2006 Remaster </div><div class="artist">Sister Sledge</div><code>35xPnZxqS9epbCaw8MOxFr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/cdb20291705983686caebee6d63b0ccbe5954ec7?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-30" class="track">
+</tr><tr id="track-30" class="track" data-preview-index="29">
   <td class="idx">30</td>
   <td><div class="title">Good Times - 2018 Remaster </div><div class="artist">CHIC</div><code>2wYKNcoqKW4IEcllj42xz1</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/50cf601802354e9717f21981660e2740bd9059a8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-31" class="track">
+</tr><tr id="track-31" class="track" data-preview-index="30">
   <td class="idx">31</td>
   <td><div class="title">Bad Girls </div><div class="artist">Donna Summer</div><code>1ibRqifchaAfeNdQGpbRVW</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/66ac76055d4bf1e8391def9807b4ea6630ed7950?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-32" class="track">
+</tr><tr id="track-32" class="track" data-preview-index="31">
   <td class="idx">32</td>
   <td><div class="title">You Make Me Feel (Mighty Real) </div><div class="artist">Sylvester</div><code>0RnCUYXa7jhgTXtiMXF2PQ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/fd9a9ab4f76df58b59672c8340f9c8dfb4bb17f2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-33" class="track">
+</tr><tr id="track-33" class="track" data-preview-index="32">
   <td class="idx">33</td>
   <td><div class="title">I Feel Love </div><div class="artist">Donna Summer</div><code>1vCBk33l9HaWp5FOnhSGxk</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c51861e40651d6139329e2d9fb92896a9462764e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-34" class="track seed">
+</tr><tr id="track-34" class="track seed" data-preview-index="33">
   <td class="idx">34</td>
   <td><div class="title">I Feel Love - 12&quot; Version <span class="badge">seed</span></div><div class="artist">Donna Summer</div><code>7B7lf3sIze5VR2WuYttn18</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/40a3f8d9261c4f06228ce7f2dd4e303fdbf5b01d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-35" class="track">
+</tr><tr id="track-35" class="track" data-preview-index="34">
   <td class="idx">35</td>
   <td><div class="title">Last Dance - 12&quot; Version </div><div class="artist">Donna Summer</div><code>4nWrCsWZzxiXX8FYHbydzl</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/473fd3bb431d7cfa0306ca4a9ac0f051ed56065b?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-36" class="track">
+</tr><tr id="track-36" class="track" data-preview-index="35">
   <td class="idx">36</td>
   <td><div class="title">I Feel Love - Rollo &amp; Sister Bliss Monster Mix Radio Edit </div><div class="artist">Donna Summer</div><code>5rLVsTnpz7UiSt9m6HZUaL</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/84965f1eb0c8241d6886f7d871b71a01814cd3da?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-37" class="track">
+</tr><tr id="track-37" class="track" data-preview-index="36">
   <td class="idx">37</td>
   <td><div class="title">You Got The Love - Now Voyager Mix </div><div class="artist">The Source</div><code>1c0fSsJa6SvvFFHK3JfQ0s</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/0f5faa907e66b468d9d0541734588c68e7fdd5bb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-38" class="track">
+</tr><tr id="track-38" class="track" data-preview-index="37">
   <td class="idx">38</td>
   <td><div class="title">I Feel Love - 12&quot; Version/Patrick Cowley Mega Mix </div><div class="artist">Donna Summer</div><code>3zOSLWUpSXLPdBe21gpY37</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/1d654003bc117a2a3f9a6a57d080e3ee67d73c99?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-39" class="track">
+</tr><tr id="track-39" class="track" data-preview-index="38">
   <td class="idx">39</td>
   <td><div class="title">Big Fun </div><div class="artist">Inner City</div><code>4PyhlL1vrSvPlhYLdphszr</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/49ee5a9cdb3cf582bf87415ced79df3992700704?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-40" class="track">
+</tr><tr id="track-40" class="track" data-preview-index="39">
   <td class="idx">40</td>
   <td><div class="title">Big Fun - Original 12&#x27;&#x27; Mix </div><div class="artist">Inner City</div><code>5dbJwqmEzubeVZqikU8YgB</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/46036f9c39c0abd72027d1e826b516825ac43f63?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-41" class="track">
+</tr><tr id="track-41" class="track" data-preview-index="40">
   <td class="idx">41</td>
   <td><div class="title">Someday </div><div class="artist">CeCe Rogers</div><code>5bGlU4BXhMRMMHWZnHuKhj</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/47a8b7afb5526e8d3815c4b2ce846226beb1ddef?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-42" class="track">
+</tr><tr id="track-42" class="track" data-preview-index="41">
   <td class="idx">42</td>
   <td><div class="title">Let Me Love You for Tonight - House Club Version </div><div class="artist">Kariya</div><code>7hoi6QFhdQxyVhpExhDVbY</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/7c12541c2d3abc3222c618027ce6cf2bc9e6edee?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-43" class="track">
+</tr><tr id="track-43" class="track" data-preview-index="42">
   <td class="idx">43</td>
   <td><div class="title">Good Beat </div><div class="artist">Deee-Lite</div><code>3537ctBVaCefYh0r3DpNkC</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e7d5c98917d87fc31fa6fea83c8e66c20d584a3d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-44" class="track">
+</tr><tr id="track-44" class="track" data-preview-index="43">
   <td class="idx">44</td>
   <td><div class="title">Two Can Play That Game - Radio Edit </div><div class="artist">Bobby Brown</div><code>1gsnWXeNlbfoHpaGRi4oQ0</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ebc23e4b9c93caab854cbd02759243c58e98a780?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-45" class="track seed">
+</tr><tr id="track-45" class="track seed" data-preview-index="44">
   <td class="idx">45</td>
   <td><div class="title">Good Life <span class="badge">seed</span></div><div class="artist">Inner City</div><code>5sJiLlgQKBL81QCTOkoLB5</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5a918efb51710313c2a28608c7e77299997dcf98?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-46" class="track">
+</tr><tr id="track-46" class="track" data-preview-index="45">
   <td class="idx">46</td>
   <td><div class="title">Where Love Lives (Come On In) - Classic Mix </div><div class="artist">Alison Limerick</div><code>23MsPptq24Z9wVgLnjcP86</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/e04a5dee989d8e32ea3458501d61e93fd34f286f?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-47" class="track">
+</tr><tr id="track-47" class="track" data-preview-index="46">
   <td class="idx">47</td>
   <td><div class="title">Killer - Edit </div><div class="artist">Adamski</div><code>4nyavNSChSesMT7ycEindW</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/aa8a9a04c677e68a959fe89dbc1b19c6c8286e70?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-48" class="track">
+</tr><tr id="track-48" class="track" data-preview-index="47">
   <td class="idx">48</td>
   <td><div class="title">(I Wanna Give You) Devotion - Original Radio Version </div><div class="artist">Nomad</div><code>06tqLw4yZclERCmX3AbeDd</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/ee927c4b524b614b0c82f97e9773079121a6193a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-49" class="track">
+</tr><tr id="track-49" class="track" data-preview-index="48">
   <td class="idx">49</td>
   <td><div class="title">Don&#x27;t Go - Original Mix </div><div class="artist">Awesome 3</div><code>7DOgJIDxCOsPYHXQZIuseF</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/0ba9f6cb52ef1d237bc8bd600886c02a17e4d8fb?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-50" class="track">
+</tr><tr id="track-50" class="track" data-preview-index="49">
   <td class="idx">50</td>
   <td><div class="title">Set You Free - 1994 Edit </div><div class="artist">N-Trance</div><code>0JxdP3ctbORCiQUMo7Xmyi</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/24d22e794919522ead45bb337b2f856cd4bfed21?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-51" class="track">
+</tr><tr id="track-51" class="track" data-preview-index="50">
   <td class="idx">51</td>
   <td><div class="title">Cowgirl - Remastered </div><div class="artist">Underworld</div><code>5nDndZX9lrYjAS4d1aWFxM</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/f6562300eee234bd4af33bca56d5da4df7e01247?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-52" class="track">
+</tr><tr id="track-52" class="track" data-preview-index="51">
   <td class="idx">52</td>
   <td><div class="title">Dark And Long - Dark Train </div><div class="artist">Underworld</div><code>5u67VJ8GAhnkFA1FolVhD0</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/16e58b047f1fb914217fcff7c958aa28edd5d9dc?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-53" class="track">
+</tr><tr id="track-53" class="track" data-preview-index="52">
   <td class="idx">53</td>
   <td><div class="title">Born Slippy (Nuxx) - Radio Edit </div><div class="artist">Underworld</div><code>3bUNyRrTFJDd4mqvUcb1Aa</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a582abd12896f536372fbcb4d2de0ceff0614ab8?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-54" class="track">
+</tr><tr id="track-54" class="track" data-preview-index="53">
   <td class="idx">54</td>
   <td><div class="title">Rez </div><div class="artist">Underworld</div><code>19tWn3jmeDlZTKMHJLMs2S</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/8ad117d93b4aeabbb983dab88b0da68e5ffefdc0?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-55" class="track">
+</tr><tr id="track-55" class="track" data-preview-index="54">
   <td class="idx">55</td>
   <td><div class="title">The Rockafeller Skank - Remastered Version </div><div class="artist">Fatboy Slim</div><code>2EiYIBGH83p6ORjs14Rdgy</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/219b1672203cf59001c71030f413e5e97e1c0e07?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-56" class="track seed">
+</tr><tr id="track-56" class="track seed" data-preview-index="55">
   <td class="idx">56</td>
   <td><div class="title">Born Slippy (Nuxx) <span class="badge">seed</span></div><div class="artist">Underworld</div><code>7xQYVjs4wZNdCwO0EeAWMC</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/3673b2bf43df7aa886027804db42255f0d999078?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -387,12 +336,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/a1e2ebe01e858457e9025b8ab5300d23d2122cf1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/e64ae1b6e789c754036bfd2db6630fe93250b688?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/c065db61a85833b7767b8b17424132c0df2b881f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/773010f67e416485d38d32696654ea2f26fedb48?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/1898d691b0162e775513a9ca0ac1a8a55d487702?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/979b8b7b7ba09d29e57133db93da91fbb668ab2d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/c4114e23f7f1ea9ed4321113006c9c2599e5d355?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/9cedbd49d385ca7b8e22d7ba1d000a294dd8754e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/dd246b276b12372b4e678376e3ec41a7ab99f2d4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/c5ee55ea873356bbc0afaead6ef819976bdc8ad6?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/7ac7e22a838da835e0ca6abe61f5b646b90f14b7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/d1a1a7b585e7bcf9becc2ab44938f6399fe90659?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/562d59575894b94b47e702c9f8870c8b77609d96?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/f3c9a4b259a34039cf30d26745b89f2a83fda33b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/0182f30c954ce91a2e792f34537bbfe6c27d83a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/05eba2024f734955141b525fbce773da11b50461?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/b014322bd5e5a9dcf38aa11b8d9fde439f27965e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/f52bd89a924dfd4fdf6c4ef7c1313921e7a1933c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/ef9b8369572c52b35d4e1098ce8be2391193f6df?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/3fb080456bf4d0a5ef9052a890f1fceb9dbf6fab?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}, {"url": "https://p.scdn.co/mp3-preview/929daca2f2d1f2e1d56d49e641123166123c027e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-21"}, {"url": "https://p.scdn.co/mp3-preview/1106c5bf0144542904c1d3ab8f5ee8d79dc9be27?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-22"}, {"url": "https://p.scdn.co/mp3-preview/711da2af248891ce1aad6b3350df54a75c96e398?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-23"}, {"url": "https://p.scdn.co/mp3-preview/126662ba6c4f4a9d02c2eb76d8f83dc12cb8deab?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-24"}, {"url": "https://p.scdn.co/mp3-preview/317aa552d09e411a5ac78decc907817dc4e714cd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-25"}, {"url": "https://p.scdn.co/mp3-preview/39ed3166a455088fc8a47c194e28bf9ce68fc800?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-26"}, {"url": "https://p.scdn.co/mp3-preview/afb3fd65b9acb37516f8e8cbe95ab23c54c53fc0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-27"}, {"url": "https://p.scdn.co/mp3-preview/d37019bac60be264611d12e4abae9e540541e361?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-28"}, {"url": "https://p.scdn.co/mp3-preview/cdb20291705983686caebee6d63b0ccbe5954ec7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-29"}, {"url": "https://p.scdn.co/mp3-preview/50cf601802354e9717f21981660e2740bd9059a8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-30"}, {"url": "https://p.scdn.co/mp3-preview/66ac76055d4bf1e8391def9807b4ea6630ed7950?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-31"}, {"url": "https://p.scdn.co/mp3-preview/fd9a9ab4f76df58b59672c8340f9c8dfb4bb17f2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-32"}, {"url": "https://p.scdn.co/mp3-preview/c51861e40651d6139329e2d9fb92896a9462764e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-33"}, {"url": "https://p.scdn.co/mp3-preview/40a3f8d9261c4f06228ce7f2dd4e303fdbf5b01d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-34"}, {"url": "https://p.scdn.co/mp3-preview/473fd3bb431d7cfa0306ca4a9ac0f051ed56065b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-35"}, {"url": "https://p.scdn.co/mp3-preview/84965f1eb0c8241d6886f7d871b71a01814cd3da?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-36"}, {"url": "https://p.scdn.co/mp3-preview/0f5faa907e66b468d9d0541734588c68e7fdd5bb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-37"}, {"url": "https://p.scdn.co/mp3-preview/1d654003bc117a2a3f9a6a57d080e3ee67d73c99?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-38"}, {"url": "https://p.scdn.co/mp3-preview/49ee5a9cdb3cf582bf87415ced79df3992700704?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-39"}, {"url": "https://p.scdn.co/mp3-preview/46036f9c39c0abd72027d1e826b516825ac43f63?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-40"}, {"url": "https://p.scdn.co/mp3-preview/47a8b7afb5526e8d3815c4b2ce846226beb1ddef?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-41"}, {"url": "https://p.scdn.co/mp3-preview/7c12541c2d3abc3222c618027ce6cf2bc9e6edee?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-42"}, {"url": "https://p.scdn.co/mp3-preview/e7d5c98917d87fc31fa6fea83c8e66c20d584a3d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-43"}, {"url": "https://p.scdn.co/mp3-preview/ebc23e4b9c93caab854cbd02759243c58e98a780?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-44"}, {"url": "https://p.scdn.co/mp3-preview/5a918efb51710313c2a28608c7e77299997dcf98?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-45"}, {"url": "https://p.scdn.co/mp3-preview/e04a5dee989d8e32ea3458501d61e93fd34f286f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-46"}, {"url": "https://p.scdn.co/mp3-preview/aa8a9a04c677e68a959fe89dbc1b19c6c8286e70?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-47"}, {"url": "https://p.scdn.co/mp3-preview/ee927c4b524b614b0c82f97e9773079121a6193a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-48"}, {"url": "https://p.scdn.co/mp3-preview/0ba9f6cb52ef1d237bc8bd600886c02a17e4d8fb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-49"}, {"url": "https://p.scdn.co/mp3-preview/24d22e794919522ead45bb337b2f856cd4bfed21?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-50"}, {"url": "https://p.scdn.co/mp3-preview/f6562300eee234bd4af33bca56d5da4df7e01247?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-51"}, {"url": "https://p.scdn.co/mp3-preview/16e58b047f1fb914217fcff7c958aa28edd5d9dc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-52"}, {"url": "https://p.scdn.co/mp3-preview/a582abd12896f536372fbcb4d2de0ceff0614ab8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-53"}, {"url": "https://p.scdn.co/mp3-preview/8ad117d93b4aeabbb983dab88b0da68e5ffefdc0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-54"}, {"url": "https://p.scdn.co/mp3-preview/219b1672203cf59001c71030f413e5e97e1c0e07?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-55"}, {"url": "https://p.scdn.co/mp3-preview/3673b2bf43df7aa886027804db42255f0d999078?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-56"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -404,90 +353,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>

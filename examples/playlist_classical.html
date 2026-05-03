@@ -80,6 +80,12 @@
     tr.seed {
       background: #20281f;
     }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
     tr.playing {
       background: #263449;
       box-shadow: inset 4px 0 0 #8fb3ff;
@@ -107,10 +113,6 @@
       color: #8fb3ff;
       font-size: 12px;
     }
-    audio {
-      width: 260px;
-      max-width: 100%;
-    }
     @media (max-width: 720px) {
       body {
         padding: 18px;
@@ -135,6 +137,8 @@
       vertical-align: 1px;
     }
     .missing {
+      display: inline-block;
+      margin-top: 8px;
       color: #8f96a3;
       font-size: 13px;
     }
@@ -146,6 +150,7 @@
       <h1>Playlist: Classical (head)</h1>
       <div class="toolbar">
         <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
         <button id="next-preview" type="button" disabled>Next</button>
         <button id="stop-all" type="button" disabled>Stop</button>
         <span class="status" id="play-status">20 previews available</span>
@@ -153,89 +158,69 @@
     </div>
     <table>
       <thead>
-        <tr><th>#</th><th>Track</th><th>Preview</th></tr>
+        <tr><th>#</th><th>Track</th></tr>
       </thead>
       <tbody>
-        <tr id="track-1" class="track seed">
+        <tr id="track-1" class="track seed" data-preview-index="0">
   <td class="idx">01</td>
   <td><div class="title">Requiem, K. 626: Lacrimosa <span class="badge">seed</span></div><div class="artist">Wolfgang Amadeus Mozart</div><code>3oHSL6pt9LpNrQZuQGu9wL</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/bd646927434759cc08ba71a106b2571d65b3015e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-2" class="track">
+</tr><tr id="track-2" class="track" data-preview-index="1">
   <td class="idx">02</td>
   <td><div class="title">Requiem in D minor, K.626: 3. Sequentia: Rex tremendae majestatis </div><div class="artist">Wolfgang Amadeus Mozart</div><code>6tPgLZuBacSNWLmEcB87IJ</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/c303d48156ca8016f3083fd1206f67220dfc4613?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-3" class="track">
+</tr><tr id="track-3" class="track" data-preview-index="2">
   <td class="idx">03</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: I. Introitus </div><div class="artist">Nikolaus Harnoncourt</div><code>25NKS4Vv5pIxfBPye964QD</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/aa4cde79b13990f2ede11cdeb34e057aaa72ba31?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-4" class="track">
+</tr><tr id="track-4" class="track" data-preview-index="3">
   <td class="idx">04</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: XIV. Communio </div><div class="artist">Rachel Yakar, Ortrun Wenkel, Kurt Equiluz, Robert Holl, Nikolaus Harnoncourt &amp; Concentus musicus Wien</div><code>3eywZExSFH4eK4BfmADkMH</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/acb3ecf907c21a791e40d664dd012ccb5814c525?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-5" class="track">
+</tr><tr id="track-5" class="track" data-preview-index="4">
   <td class="idx">05</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: V. Rex tremendae </div><div class="artist">Rachel Yakar, Ortrun Wenkel, Kurt Equiluz, Robert Holl, Nikolaus Harnoncourt &amp; Concentus musicus Wien</div><code>7nQq7DlCxzklp9GIS1kqFW</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/acca846dba978788bbb1d248af878bc62e9285e6?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-6" class="track">
+</tr><tr id="track-6" class="track" data-preview-index="5">
   <td class="idx">06</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: XI. Sanctus </div><div class="artist">Rachel Yakar, Ortrun Wenkel, Kurt Equiluz, Robert Holl, Nikolaus Harnoncourt &amp; Concentus musicus Wien</div><code>3R9MFGLOuJw0TAnxpBUMw8</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/361bc0a1a97e1368a2cf28343104adf7d961e0a6?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-7" class="track">
+</tr><tr id="track-7" class="track" data-preview-index="6">
   <td class="idx">07</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: X. Hostias </div><div class="artist">Rachel Yakar, Ortrun Wenkel, Kurt Equiluz, Robert Holl, Nikolaus Harnoncourt &amp; Concentus musicus Wien</div><code>4ONpTGmIm4z2uO4K1VotQe</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/5ac567fb1c43485e8821a47b94a8ac04371c03ac?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-8" class="track">
+</tr><tr id="track-8" class="track" data-preview-index="7">
   <td class="idx">08</td>
   <td><div class="title">Requiem in D minor, K.626: 3. Sequentia: Dies irae </div><div class="artist">Wolfgang Amadeus Mozart</div><code>6qEf2T1w22YHHuq4WA2u8i</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/6a8939bb42d1f4f8d414aa5d32b15be469349306?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-9" class="track">
+</tr><tr id="track-9" class="track" data-preview-index="8">
   <td class="idx">09</td>
   <td><div class="title">Mozart: Requiem in D Minor, K. 626: XII. Benedictus </div><div class="artist">Nikolaus Harnoncourt</div><code>0cpulxwj7BJgVMkKnhV3bj</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/19f85e9e569448e6a378a7dca48a8f3e79e350c6?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-10" class="track">
+</tr><tr id="track-10" class="track" data-preview-index="9">
   <td class="idx">10</td>
   <td><div class="title">3.Sequentia: Rex trmendae: Requiem in D Minor, K 626 </div><div class="artist">Wolfgang Amadeus Mozart</div><code>6NeeJ4xtaagsRPDwUqEmCi</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/dcec41f4e2b830507f4c1b54876271a2d3878105?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-11" class="track">
+</tr><tr id="track-11" class="track" data-preview-index="10">
   <td class="idx">11</td>
   <td><div class="title">Jenkins: Requiem - VII. Lacrimosa </div><div class="artist">West Kazakhstan Philharmonic Orchestra/Marat Bisengaliev/Karl Jenkins</div><code>3Bw44lWmGB2HNk4UF85vxk</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/77e5b8e1efaa363ce8a1cc3050edd92d3c11820e?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-12" class="track">
+</tr><tr id="track-12" class="track" data-preview-index="11">
   <td class="idx">12</td>
   <td><div class="title">XII. for unto us a child a child is born </div><div class="artist">George Frideric Handel</div><code>7pMNeo0yYLIcqbITcObDRy</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/7e12e2db02d156ac772aeb7a5b8e37464ab51ab2?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-13" class="track">
+</tr><tr id="track-13" class="track" data-preview-index="12">
   <td class="idx">13</td>
   <td><div class="title">Andrea Chenier, Act III: La mamma morta </div><div class="artist">Maria Callas</div><code>4zmEq7fopbJaqptzSdThWt</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b3e378fbb296706589c3be840539d14946c29926?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-14" class="track">
+</tr><tr id="track-14" class="track" data-preview-index="13">
   <td class="idx">14</td>
   <td><div class="title">Andrea Chenier (1997 Digital Remaster): La mamma morta </div><div class="artist">Maria Callas</div><code>2rnCae7ZO9bIfQFscasS3q</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b9c0efc068a80a8bff9fea97fb659d5ab0a2844d?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-15" class="track">
+</tr><tr id="track-15" class="track" data-preview-index="14">
   <td class="idx">15</td>
   <td><div class="title">Samson et Dalila (1997 Digital Remaster): Mon coeur s&#x27;ouvre à ta voix. </div><div class="artist">Maria Callas</div><code>4TyIrhkM8BhVTSaokH40Sx</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/b507e5ca6d974873474fd5a16f0a174fa41f62c9?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-16" class="track">
+</tr><tr id="track-16" class="track" data-preview-index="15">
   <td class="idx">16</td>
   <td><div class="title">Puccini: Tosca, Act 2 Scene 5: &quot;Vissi d&#x27;arte, vissi d&#x27;amore&quot; (Tosca) </div><div class="artist">Maria Callas</div><code>7yCqpSVzLU3vjV62pO7sAc</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/fac7ed2807b20167cbb8cd149b5a7a5447ac837a?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-17" class="track">
+</tr><tr id="track-17" class="track" data-preview-index="16">
   <td class="idx">17</td>
   <td><div class="title">Saint-Saëns: Samson et Dalila, Op. 47, Act 2: &quot;Mon cœur s&#x27;ouvre à ta voix&quot; (Dalila) </div><div class="artist">Camille Saint-Saëns</div><code>1JxRW4L2oknF5lRTUC2t9e</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/9650fdafce3e35abeed32e04639b58300f8dd7fe?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-18" class="track">
+</tr><tr id="track-18" class="track" data-preview-index="17">
   <td class="idx">18</td>
   <td><div class="title">Don Giovanni, K. 527, Act I: &quot;Ah fuggi il traditor&quot; </div><div class="artist">Wolfgang Amadeus Mozart</div><code>2FeQf78r6EFrt5a6nWDqNN</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/a7f5ca2f58fc3b83f13e69ed7bdf15dfeb205866?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-19" class="track">
+</tr><tr id="track-19" class="track" data-preview-index="18">
   <td class="idx">19</td>
   <td><div class="title">Un bel di vedremo </div><div class="artist">Giacomo Puccini</div><code>26YBquxPjDz4GRp2VrgnIq</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/714d6d4f23e15bfc4171d846a1ceccafda3594a9?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
-</tr><tr id="track-20" class="track">
+</tr><tr id="track-20" class="track" data-preview-index="19">
   <td class="idx">20</td>
   <td><div class="title">Sabbath Incantation </div><div class="artist">Thom Yorke</div><code>2VDMM4kDx6iqyFWesPCFgF</code></td>
-  <td><audio controls preload="none" src="https://p.scdn.co/mp3-preview/fdb85cb4060f2d371f5f693147c1f704a6669d24?cid=d8a5ed958d274c2e8ee717e6a4b0971d"></audio></td>
 </tr>
       </tbody>
     </table>
@@ -243,12 +228,12 @@
   <script>
     const previewItems = [{"url": "https://p.scdn.co/mp3-preview/bd646927434759cc08ba71a106b2571d65b3015e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/c303d48156ca8016f3083fd1206f67220dfc4613?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/aa4cde79b13990f2ede11cdeb34e057aaa72ba31?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/acb3ecf907c21a791e40d664dd012ccb5814c525?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/acca846dba978788bbb1d248af878bc62e9285e6?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/361bc0a1a97e1368a2cf28343104adf7d961e0a6?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/5ac567fb1c43485e8821a47b94a8ac04371c03ac?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/6a8939bb42d1f4f8d414aa5d32b15be469349306?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/19f85e9e569448e6a378a7dca48a8f3e79e350c6?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/dcec41f4e2b830507f4c1b54876271a2d3878105?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/77e5b8e1efaa363ce8a1cc3050edd92d3c11820e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/7e12e2db02d156ac772aeb7a5b8e37464ab51ab2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/b3e378fbb296706589c3be840539d14946c29926?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/b9c0efc068a80a8bff9fea97fb659d5ab0a2844d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/b507e5ca6d974873474fd5a16f0a174fa41f62c9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/fac7ed2807b20167cbb8cd149b5a7a5447ac837a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/9650fdafce3e35abeed32e04639b58300f8dd7fe?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/a7f5ca2f58fc3b83f13e69ed7bdf15dfeb205866?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/714d6d4f23e15bfc4171d846a1ceccafda3594a9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/fdb85cb4060f2d371f5f693147c1f704a6669d24?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
     const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
     const nextButton = document.getElementById('next-preview');
     const stopButton = document.getElementById('stop-all');
     const statusEl = document.getElementById('play-status');
     let currentAudio = null;
-    let currentResolve = null;
-    let stopRequested = false;
+    let currentIndex = -1;
 
     function setStatus(text) {
       statusEl.textContent = text;
@@ -260,90 +245,98 @@
       });
     }
 
-    function setPlaying(rowId) {
+    function setPlaying(index) {
       clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
       const row = document.getElementById(rowId);
       if (!row) return;
       row.classList.add('playing');
       row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function stopCurrent() {
-      stopRequested = true;
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
+      currentIndex = -1;
       clearPlaying();
-      setStatus(`${previewItems.length} previews available`);
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
     }
 
     function nextPreview() {
-      if (!currentAudio) return;
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-      currentAudio = null;
-      if (currentResolve) {
-        currentResolve();
-        currentResolve = null;
-      }
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
     }
 
-    async function playAll() {
-      if (!previewItems.length) return;
-      stopRequested = false;
-      playButton.disabled = true;
-      nextButton.disabled = false;
-      stopButton.disabled = false;
-      document.querySelectorAll('audio').forEach((audio) => audio.pause());
-      for (let i = 0; i < previewItems.length; i += 1) {
-        if (stopRequested) break;
-        setStatus(`Playing preview ${i + 1} of ${previewItems.length}`);
-        setPlaying(previewItems[i].rowId);
-        currentAudio = new Audio(previewItems[i].url);
-        await new Promise((resolve) => {
-          currentResolve = resolve;
-          currentAudio.addEventListener('ended', resolve, { once: true });
-          currentAudio.addEventListener('error', resolve, { once: true });
-          currentAudio.play().catch(resolve);
-        });
-        currentResolve = null;
-      }
-      currentAudio = null;
-      playButton.disabled = false;
-      nextButton.disabled = true;
-      stopButton.disabled = true;
-      clearPlaying();
-      if (!stopRequested) setStatus('Finished');
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
     }
 
-    document.querySelectorAll('audio').forEach((audio) => {
-      audio.addEventListener('play', () => {
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
         }
-        setPlaying(audio.closest('tr').id);
-      });
-      audio.addEventListener('pause', () => {
-        if (audio.ended) return;
-        audio.closest('tr').classList.remove('playing');
-      });
-      audio.addEventListener('ended', () => {
-        audio.closest('tr').classList.remove('playing');
       });
     });
     playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
     nextButton.addEventListener('click', nextPreview);
     stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
   </script>
 </body>
 </html>
