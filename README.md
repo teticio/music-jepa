@@ -154,6 +154,9 @@ make search QUERY="daft punk"
 
 # Interactive embedding explorer
 make viz
+
+# Streamlit playlist generator (search, add waypoints, generate, preview)
+make app
 ```
 
 **Success criterion:** nearest neighbours should be musically coherent (e.g. Nirvana
