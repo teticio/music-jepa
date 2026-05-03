@@ -2,7 +2,7 @@
 
 A self-supervised music representation model using Joint Embedding Predictive Architecture (JEPA).
 
-## Live outputs
+## Demo
 
 - [Embedding explorer](https://teticio.github.io/music-jepa/explore.html)
 - [Generated playlist examples](https://teticio.github.io/music-jepa/examples/)
