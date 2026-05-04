@@ -65,15 +65,21 @@ def main():
         f"{train_loader.dataset.available_track_count:,} tracks with spectrograms"
     )
 
-    ckpt_hours = cfg.get("checkpointing", {}).get("every_n_hours", 2)
+    ckpt_cfg = cfg.get("checkpointing", {})
+    ckpt_hours = ckpt_cfg.get("every_n_hours", 2)
+    save_top_k = ckpt_cfg.get("save_top_k", 3)
     callbacks = [
         ModelCheckpoint(
             dirpath=args.checkpoint_dir,
             filename="jepa-{epoch:03d}-{val/loss:.4f}",
             monitor="val/loss",
             mode="min",
+            save_top_k=save_top_k,
+        ),
+        ModelCheckpoint(
+            dirpath=args.checkpoint_dir,
             save_last=True,
-            save_top_k=3,
+            save_top_k=0,
             train_time_interval=timedelta(hours=ckpt_hours) if ckpt_hours else None,
         ),
         LearningRateMonitor(logging_interval="step"),
