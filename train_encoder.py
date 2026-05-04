@@ -77,15 +77,18 @@ def main():
             mode="min",
             save_top_k=save_top_k,
         ),
-        ModelCheckpoint(
-            dirpath=args.checkpoint_dir,
-            filename="jepa-recent-{epoch:03d}-{step}",
-            save_last=True,
-            save_top_k=save_last_n,
-            train_time_interval=timedelta(hours=ckpt_hours) if ckpt_hours else None,
-        ),
         LearningRateMonitor(logging_interval="step"),
     ]
+    if ckpt_hours:
+        callbacks.append(
+            ModelCheckpoint(
+                dirpath=args.checkpoint_dir,
+                filename="jepa-recent-{epoch:03d}-{step}",
+                save_last=True,
+                save_top_k=save_last_n,
+                train_time_interval=timedelta(hours=ckpt_hours),
+            )
+        )
 
     trainer_cfg = cfg.get("trainer", {})
     if "NPROC_PER_NODE" in os.environ:
