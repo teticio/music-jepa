@@ -32,6 +32,11 @@ training:
   cov_coef: 1.0
   vicreg_target: predicted
 
+checkpointing:
+  every_n_hours: 2              # write rolling checkpoint mid-epoch (epochs are long)
+  save_top_k: 3                 # keep N best by val/loss
+  save_last_n: 3                # keep N most recent mid-epoch checkpoints
+
 # Lightning Trainer kwargs (passed directly)
 trainer:
   accelerator: cpu

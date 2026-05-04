@@ -68,6 +68,7 @@ def main():
     ckpt_cfg = cfg.get("checkpointing", {})
     ckpt_hours = ckpt_cfg.get("every_n_hours", 2)
     save_top_k = ckpt_cfg.get("save_top_k", 3)
+    save_last_n = ckpt_cfg.get("save_last_n", 3)
     callbacks = [
         ModelCheckpoint(
             dirpath=args.checkpoint_dir,
@@ -78,8 +79,9 @@ def main():
         ),
         ModelCheckpoint(
             dirpath=args.checkpoint_dir,
+            filename="jepa-recent-{epoch:03d}-{step}",
             save_last=True,
-            save_top_k=0,
+            save_top_k=save_last_n,
             train_time_interval=timedelta(hours=ckpt_hours) if ckpt_hours else None,
         ),
         LearningRateMonitor(logging_interval="step"),
