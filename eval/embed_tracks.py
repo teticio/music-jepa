@@ -16,6 +16,7 @@ import numpy as np
 import torch
 import yaml
 from PIL import Image
+from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 import torchvision.transforms as T
 
@@ -23,46 +24,70 @@ from jepa.model import build_model
 from jepa.module import JEPAModule
 
 
+class SpectrogramDataset(Dataset):
+    def __init__(self, spectrograms_dir, png_files, img_size):
+        self.spectrograms_dir = spectrograms_dir
+        self.png_files = png_files
+        self.transform = T.Compose([
+            T.Resize(img_size),
+            T.ToTensor(),
+            T.Normalize(mean=[0.5], std=[0.5]),
+        ])
+
+    def __len__(self):
+        return len(self.png_files)
+
+    def __getitem__(self, idx):
+        fn = self.png_files[idx]
+        try:
+            img = Image.open(os.path.join(self.spectrograms_dir, fn)).convert("L")
+            return self.transform(img), fn[:-4]
+        except Exception as e:
+            print(f"  Skipping {fn}: {e}")
+            return None
+
+
+def _collate(batch):
+    batch = [b for b in batch if b is not None]
+    if not batch:
+        return None
+    imgs = torch.stack([b[0] for b in batch])
+    ids = [b[1] for b in batch]
+    return imgs, ids
+
+
 @torch.no_grad()
 def embed_all(
     encoder,
     spectrograms_dir: str,
     img_size=(96, 216),
-    batch_size: int = 128,
+    batch_size: int = 512,
+    num_workers: int = 8,
     device="cuda",
 ):
-    transform = T.Compose([
-        T.Grayscale(),
-        T.Resize(img_size),
-        T.ToTensor(),
-        T.Normalize(mean=[0.5], std=[0.5]),
-    ])
-
     png_files = [f for f in os.listdir(spectrograms_dir) if f.endswith(".png")]
     print(f"Spectrograms to embed: {len(png_files):,}")
+
+    dataset = SpectrogramDataset(spectrograms_dir, png_files, img_size)
+    loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        pin_memory=(device == "cuda"),
+        collate_fn=_collate,
+        persistent_workers=num_workers > 0,
+    )
 
     encoder = encoder.to(device).eval()
     embeddings = {}
 
-    for i in tqdm(range(0, len(png_files), batch_size), desc="Embedding"):
-        batch_files = png_files[i : i + batch_size]
-        imgs = []
-        ids = []
-        for fn in batch_files:
-            try:
-                img = Image.open(os.path.join(spectrograms_dir, fn)).convert("RGB")
-                imgs.append(transform(img))
-                ids.append(fn[:-4])  # strip .png
-            except Exception as e:
-                print(f"  Skipping {fn}: {e}")
-
-        if not imgs:
+    for batch in tqdm(loader, desc="Embedding"):
+        if batch is None:
             continue
-
-        batch = torch.stack(imgs).to(device)         # (B, 1, H, W)
-        patch_tokens = encoder(batch)                 # (B, N, D)
-        vecs = patch_tokens.mean(dim=1).cpu().numpy() # (B, D)
-
+        imgs, ids = batch
+        imgs = imgs.to(device, non_blocking=True)
+        patch_tokens = encoder(imgs)
+        vecs = patch_tokens.mean(dim=1).cpu().numpy()
         for track_id, vec in zip(ids, vecs):
             embeddings[track_id] = vec
 
@@ -75,7 +100,8 @@ def main():
     parser.add_argument("--config", default="configs/encoder.yaml")
     parser.add_argument("--spectrograms_dir", default="data/spectrograms")
     parser.add_argument("--out", default="embeddings/embeddings.npy", help="Output .npy file")
-    parser.add_argument("--batch_size", type=int, default=128)
+    parser.add_argument("--batch_size", type=int, default=512)
+    parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
@@ -94,6 +120,7 @@ def main():
         args.spectrograms_dir,
         img_size=tuple(cfg["data"]["img_size"]),
         batch_size=args.batch_size,
+        num_workers=args.num_workers,
         device=args.device,
     )
 
