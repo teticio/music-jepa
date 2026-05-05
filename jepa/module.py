@@ -16,8 +16,7 @@ class JEPAModule(L.LightningModule):
         model: MusicJEPA,
         lr: float = 1.5e-4,
         weight_decay: float = 0.05,
-        warmup_epochs: int = 10,
-        max_epochs: int = 100,
+        warmup_steps: int = 10000,
         std_coef: float = 25.0,
         cov_coef: float = 1.0,
         vicreg_target: str = "predicted",
@@ -26,8 +25,7 @@ class JEPAModule(L.LightningModule):
         self.model = model
         self.lr = lr
         self.weight_decay = weight_decay
-        self.warmup_epochs = warmup_epochs
-        self.max_epochs = max_epochs
+        self.warmup_steps = warmup_steps
         self.std_coef = std_coef
         self.cov_coef = cov_coef
         self.vicreg_target = vicreg_target
@@ -43,6 +41,9 @@ class JEPAModule(L.LightningModule):
             prog_bar=True,
             sync_dist=True,
         )
+        # Monotonic counter so a rolling ModelCheckpoint can monitor=mode=max
+        # to keep the N most recent saves without a real "best" metric.
+        self.log("ckpt_step", float(self.global_step), on_step=True, on_epoch=False, sync_dist=False)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -66,12 +67,13 @@ class JEPAModule(L.LightningModule):
         opt = torch.optim.AdamW(params, lr=self.lr, weight_decay=self.weight_decay)
 
         total_steps = self.trainer.estimated_stepping_batches
-        warmup_steps = self.warmup_epochs * total_steps // max(self.max_epochs, 1)
 
-        def lr_lambda(step):
-            if step < warmup_steps:
-                return (step + 1) / max(warmup_steps, 1)
-            progress = (step - warmup_steps) / max(total_steps - warmup_steps, 1)
+        def lr_lambda(_):
+            step = self.trainer.global_step
+            warmup = self.warmup_steps
+            if step < warmup:
+                return (step + 1) / max(warmup, 1)
+            progress = (step - warmup) / max(total_steps - warmup, 1)
             return 0.5 * (1 + math.cos(math.pi * progress))
 
         scheduler = torch.optim.lr_scheduler.LambdaLR(opt, lr_lambda)

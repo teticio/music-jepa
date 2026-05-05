@@ -41,9 +41,11 @@ def main():
     L.seed_everything(cfg.get("seed", 42), workers=True)
 
     model = build_model(cfg)
+    training_cfg = dict(cfg["training"])
+    max_epochs = training_cfg.pop("max_epochs")
     module = JEPAModule(
         model=model,
-        **cfg["training"],
+        **training_cfg,
     )
 
     train_loader, val_loader = build_dataloaders(cfg)
@@ -84,6 +86,8 @@ def main():
             ModelCheckpoint(
                 dirpath=args.checkpoint_dir,
                 filename="jepa-recent-{epoch:03d}-{step}",
+                monitor="ckpt_step",
+                mode="max",
                 save_last=True,
                 save_top_k=save_last_n,
                 train_time_interval=timedelta(hours=ckpt_hours),
@@ -94,7 +98,7 @@ def main():
     if "NPROC_PER_NODE" in os.environ:
         trainer_cfg["devices"] = int(os.environ["NPROC_PER_NODE"])
     trainer = L.Trainer(
-        max_epochs=cfg["training"]["max_epochs"],
+        max_epochs=max_epochs,
         callbacks=callbacks,
         logger=TensorBoardLogger("logs", name="music_jepa"),
         log_every_n_steps=10,

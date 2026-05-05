@@ -26,7 +26,7 @@ model:
 training:
   lr: 1.5e-4
   weight_decay: 0.05
-  warmup_epochs: 10
+  warmup_steps: 10000
   max_epochs: 100
   std_coef: 25.0              # VICReg variance coefficient
   cov_coef: 1.0               # VICReg covariance coefficient
