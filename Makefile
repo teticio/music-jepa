@@ -117,6 +117,7 @@ viz:
 publish-pages:
 	@if [ ! -d "$(OUTPUT_DIR)" ]; then echo "Missing OUTPUT_DIR=$(OUTPUT_DIR). Generate outputs first."; exit 1; fi
 	@if [ ! -e "$(PAGES_WORKTREE)/.git" ]; then \
+		git worktree prune; \
 		if git show-ref --verify --quiet refs/heads/$(PAGES_BRANCH) || git ls-remote --exit-code --heads origin $(PAGES_BRANCH) >/dev/null 2>&1; then \
 			git worktree add "$(PAGES_WORKTREE)" "$(PAGES_BRANCH)"; \
 		else \
