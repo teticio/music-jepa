@@ -4,6 +4,7 @@ NPROC_PER_NODE ?= 2
 
 # Per-mode knobs (override in .env to swap between full/sample/elsewhere) ----
 CHECKPOINT_DIR ?= checkpoints
+CHECKPOINT_NAME ?= last.ckpt
 EMBEDDINGS_DIR ?= embeddings
 TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
@@ -29,8 +30,8 @@ help:
 	@echo "  make app               Launch Streamlit playlist generator"
 	@echo "  make data              Download previews + spectrograms for TRACKS_FILE"
 	@echo "  make data-sample       Bootstrap a 2000-playlist sample subset"
-	@echo "  make train-encoder     Train encoder, resume CHECKPOINT_DIR/last.ckpt if present"
-	@echo "  make embed             Extract embeddings from last checkpoint"
+	@echo "  make train-encoder     Train encoder, resume CHECKPOINT_DIR/CHECKPOINT_NAME if present"
+	@echo "  make embed             Extract embeddings from CHECKPOINT_DIR/CHECKPOINT_NAME"
 	@echo "  make train-head-infil  Train infill head on missing playlist tracks"
 	@echo "  make train-head-cont   Train continuation head for next-track prediction"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
@@ -44,6 +45,7 @@ help:
 	@echo ""
 	@echo "Override defaults via .env (see .env.example) or env vars:"
 	@echo "  CHECKPOINT_DIR=$(CHECKPOINT_DIR)"
+	@echo "  CHECKPOINT_NAME=$(CHECKPOINT_NAME)"
 	@echo "  EMBEDDINGS_DIR=$(EMBEDDINGS_DIR)"
 	@echo "  TRAIN_CONFIG=$(TRAIN_CONFIG)"
 	@echo "  HEAD_CONT_CONFIG=$(HEAD_CONT_CONFIG)"
@@ -83,7 +85,7 @@ data-sample: sample previews-sample spectrograms
 
 train-encoder:
 	@RESUME=""; \
-	if [ -f $(CHECKPOINT_DIR)/last.ckpt ]; then RESUME="--ckpt $(CHECKPOINT_DIR)/last.ckpt"; fi; \
+	if [ -f $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) ]; then RESUME="--ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME)"; fi; \
 	if [ "$(NPROC_PER_NODE)" -gt 1 ]; then \
 		NPROC_PER_NODE=$(NPROC_PER_NODE) $(UV) run torchrun --nproc_per_node=$(NPROC_PER_NODE) train_encoder.py --config $(TRAIN_CONFIG) --checkpoint_dir $(CHECKPOINT_DIR) $$RESUME; \
 	else \
@@ -91,7 +93,7 @@ train-encoder:
 	fi
 
 embed:
-	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/last.ckpt --out $(EMBEDDINGS_DIR)/embeddings.npy
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --out $(EMBEDDINGS_DIR)/embeddings.npy
 
 train-head-infil:
 	$(UV) run python train_head.py --config $(HEAD_INFIL_CONFIG) --out $(CHECKPOINT_DIR)/infill_head.pt

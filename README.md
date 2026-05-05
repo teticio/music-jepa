@@ -71,6 +71,7 @@ the sample block in `.env`.
 | Variable           | Full default                     | Sample preset                         | Purpose                                     |
 |--------------------|----------------------------------|---------------------------------------|---------------------------------------------|
 | `CHECKPOINT_DIR`   | `checkpoints`                    | `checkpoints-sample`                  | Where checkpoints are read/written          |
+| `CHECKPOINT_NAME`  | `last.ckpt`                      | `last.ckpt`                           | Encoder ckpt filename for resume / `embed`  |
 | `EMBEDDINGS_DIR`   | `embeddings`                     | `embeddings-sample`                   | Where `embeddings.npy` is read/written      |
 | `TRAIN_CONFIG`     | `configs/encoder.yaml`           | `configs/encoder_sample.yaml`         | Encoder training + embedding extraction     |
 | `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml` | `configs/head_continuation_sample.yaml` | Continuation-head training                |
