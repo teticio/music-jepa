@@ -15,6 +15,7 @@ PAGES_WORKTREE ?= /tmp/music-jepa-pages
 PAGES_MESSAGE ?= Publish $(OUTPUT_DIR)
 
 LIMIT ?= 20
+N_POINTS ?= 5000
 HEAD_WEIGHT ?= 1.0
 OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
 JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
@@ -112,7 +113,7 @@ search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
 
 viz:
-	$(UV) run python eval/explore.py --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --export
+	$(UV) run python eval/explore.py --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --n_points $(N_POINTS) --export
 
 publish-pages:
 	@if [ ! -d "$(OUTPUT_DIR)" ]; then echo "Missing OUTPUT_DIR=$(OUTPUT_DIR). Generate outputs first."; exit 1; fi
