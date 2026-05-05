@@ -12,6 +12,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import numpy as np
+import pandas as pd
 import streamlit as st
 
 from jepa.playlist_head import load_embeddings, load_head, load_tracks
@@ -47,7 +49,19 @@ def _load_data(emb_path: str, csv_path: str):
     ids, vecs = load_embeddings(emb_path)
     emb = dict(zip(ids, vecs))
     tracks_df = load_tracks(csv_path)
-    return ids, vecs, emb, set(ids), tracks_df
+    embedded_ids = set(ids)
+    sub = tracks_df[tracks_df.index.isin(embedded_ids)]
+    artist = sub["artist"].fillna("").astype(str)
+    title = sub["title"].fillna("").astype(str)
+    tids = sub.index.astype(str)
+    search_index = pd.DataFrame(
+        {
+            "haystack": (artist + " " + title + " " + tids).str.lower(),
+            "label": artist + " — " + title,
+        },
+        index=sub.index,
+    )
+    return ids, vecs, emb, embedded_ids, tracks_df, search_index
 
 
 @st.cache_resource
@@ -68,7 +82,9 @@ def _load_infil_head(path: str):
 
 # --- Load data ---
 try:
-    ids, vecs, emb, embedded_ids, tracks_df = _load_data(args.embeddings, args.tracks_file)
+    ids, vecs, emb, embedded_ids, tracks_df, search_index = _load_data(
+        args.embeddings, args.tracks_file
+    )
 except Exception as exc:
     st.error(f"Could not load embeddings / tracks: {exc}")
     st.stop()
@@ -100,17 +116,17 @@ with st.sidebar:
 
 
 # --- Helpers ---
+@st.cache_data(show_spinner=False)
 def _search(query: str, limit: int = 50):
     terms = query.strip().lower().split()
-    results = []
-    for tid, row in tracks_df.iterrows():
-        if tid not in embedded_ids:
-            continue
-        if all(t in f"{row['artist']} {row['title']} {tid}".lower() for t in terms):
-            results.append((tid, f"{row['artist']} — {row['title']}"))
-        if len(results) >= limit:
-            break
-    return results
+    if not terms:
+        return []
+    haystack = search_index["haystack"]
+    mask = np.ones(len(haystack), dtype=bool)
+    for t in terms:
+        mask &= haystack.str.contains(t, regex=False, na=False).to_numpy()
+    matched = search_index.index[mask][:limit]
+    return [(tid, search_index.at[tid, "label"]) for tid in matched]
 
 
 # --- Session state ---
