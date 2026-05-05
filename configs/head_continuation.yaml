@@ -1,7 +1,7 @@
 seed: 42
 
 data:
-  embeddings_file: embeddings.npy
+  embeddings_file: embeddings/embeddings.npy
   playlists_file: data/playlists_dedup.csv
   # continuation: seed playlist -> next track
   # infill: left/right playlist anchors -> missing middle track

@@ -4,6 +4,7 @@ NPROC_PER_NODE ?= 2
 
 # Per-mode knobs (override in .env to swap between full/sample/elsewhere) ----
 CHECKPOINT_DIR ?= checkpoints
+EMBEDDINGS_DIR ?= embeddings
 TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
 HEAD_INFIL_CONFIG ?= configs/head_infil.yaml
@@ -42,6 +43,7 @@ help:
 	@echo ""
 	@echo "Override defaults via .env (see .env.example) or env vars:"
 	@echo "  CHECKPOINT_DIR=$(CHECKPOINT_DIR)"
+	@echo "  EMBEDDINGS_DIR=$(EMBEDDINGS_DIR)"
 	@echo "  TRAIN_CONFIG=$(TRAIN_CONFIG)"
 	@echo "  HEAD_CONT_CONFIG=$(HEAD_CONT_CONFIG)"
 	@echo "  HEAD_INFIL_CONFIG=$(HEAD_INFIL_CONFIG)"
@@ -54,7 +56,7 @@ setup:
 	$(UV) sync --extra eval --extra app
 
 app:
-	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE)
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE)
 
 # Data pipeline --------------------------------------------------------------
 
@@ -88,7 +90,7 @@ train-encoder:
 	fi
 
 embed:
-	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/last.ckpt
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/last.ckpt --out $(EMBEDDINGS_DIR)/embeddings.npy
 
 train-head-infil:
 	$(UV) run python train_head.py --config $(HEAD_INFIL_CONFIG) --out $(CHECKPOINT_DIR)/infill_head.pt
@@ -97,20 +99,20 @@ train-head-cont:
 	$(UV) run python train_head.py --config $(HEAD_CONT_CONFIG) --out $(CHECKPOINT_DIR)/continuation_head.pt
 
 journey:
-	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
-	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/continuation_head.pt --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/continuation_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
 
 examples:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples
 
 search:
-	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
+	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
 
 viz:
-	$(UV) run python eval/explore.py --embeddings embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --export
+	$(UV) run python eval/explore.py --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --export
 
 publish-pages:
 	@if [ ! -d "$(OUTPUT_DIR)" ]; then echo "Missing OUTPUT_DIR=$(OUTPUT_DIR). Generate outputs first."; exit 1; fi

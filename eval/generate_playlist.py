@@ -634,7 +634,7 @@ def write_html(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--head", default=None)
-    parser.add_argument("--embeddings", default="embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--mp3tovec_model_dir", default=None, help="If set, use Mp3ToVec instead of the head")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--seeds", nargs="*", default=None)

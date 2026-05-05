@@ -4,7 +4,7 @@ Streamlit playlist generator.
 Run via:
     make app
 or:
-    uv run streamlit run eval/app.py -- --checkpoint_dir checkpoints --tracks_file data/tracks_sample.csv
+    uv run streamlit run eval/app.py -- --checkpoint_dir checkpoints --embeddings embeddings/embeddings.npy --tracks_file data/tracks_sample.csv
 """
 import argparse
 import sys
@@ -31,7 +31,7 @@ st.set_page_config(page_title="Music JEPA", layout="wide")
 def _parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint_dir", default="checkpoints")
-    parser.add_argument("--embeddings", default="embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     return parser.parse_args()
 

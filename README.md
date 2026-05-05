@@ -71,6 +71,7 @@ the sample block in `.env`.
 | Variable           | Full default                     | Sample preset                         | Purpose                                     |
 |--------------------|----------------------------------|---------------------------------------|---------------------------------------------|
 | `CHECKPOINT_DIR`   | `checkpoints`                    | `checkpoints-sample`                  | Where checkpoints are read/written          |
+| `EMBEDDINGS_DIR`   | `embeddings`                     | `embeddings-sample`                   | Where `embeddings.npy` is read/written      |
 | `TRAIN_CONFIG`     | `configs/encoder.yaml`           | `configs/encoder_sample.yaml`         | Encoder training + embedding extraction     |
 | `HEAD_CONT_CONFIG` | `configs/head_continuation.yaml` | `configs/head_continuation_sample.yaml` | Continuation-head training                |
 | `HEAD_INFIL_CONFIG`| `configs/head_infil.yaml`        | `configs/head_infil_sample.yaml`      | Infill-head training                        |
@@ -166,8 +167,8 @@ and audio content.
 
 ## Playlist heads
 
-Once the JEPA encoder has produced `embeddings.npy`, train lightweight heads in
-the frozen JEPA space. Head training uses the config files selected in
+Once the JEPA encoder has produced `EMBEDDINGS_DIR/embeddings.npy`, train
+lightweight heads in the frozen JEPA space. Head training uses the config files selected in
 [Configuration](#configuration).
 
 ```bash

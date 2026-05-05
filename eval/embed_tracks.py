@@ -6,6 +6,7 @@ and saves a {track_id: embedding} dict to a .npy file.
 
 Usage:
     python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
+    python eval/embed_tracks.py --ckpt checkpoints/last.ckpt --out embeddings/embeddings.npy
     python eval/embed_tracks.py --ckpt checkpoints/last.ckpt --spectrograms_dir data/spectrograms
 """
 import argparse
@@ -73,7 +74,7 @@ def main():
     parser.add_argument("--ckpt", required=True, help="Path to Lightning checkpoint")
     parser.add_argument("--config", default="configs/encoder.yaml")
     parser.add_argument("--spectrograms_dir", default="data/spectrograms")
-    parser.add_argument("--out", default="embeddings.npy", help="Output .npy file")
+    parser.add_argument("--out", default="embeddings/embeddings.npy", help="Output .npy file")
     parser.add_argument("--batch_size", type=int, default=128)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
@@ -96,6 +97,9 @@ def main():
         device=args.device,
     )
 
+    out_dir = os.path.dirname(args.out)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
     tmp_path = f"{args.out}.tmp"
     with open(tmp_path, "wb") as f:
         np.save(f, embeddings)

@@ -50,6 +50,7 @@ Thumbs.db
 
 # Training outputs
 checkpoints*/
+embeddings*/
 *.log
 logs/
 runs/

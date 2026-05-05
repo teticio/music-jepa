@@ -48,7 +48,7 @@ INFERENCE (embedding extraction)
                 │
         mean pool over 324 patches
                 │
-        track embedding (B, 384)  →  embeddings.npy
+        track embedding (B, 384)  →  embeddings/embeddings.npy
 ```
 
 ---
@@ -426,7 +426,8 @@ def get_embedding(self, x):
     return self.forward(x).mean(dim=1)  # (B, D)
 ```
 
-Results are saved to `embeddings.npy` as a `{track_id: 384-d vector}` dict.
+Results are saved to `EMBEDDINGS_DIR/embeddings.npy` (default
+`embeddings/embeddings.npy`) as a `{track_id: 384-d vector}` dict.
 
 ### Why CLS is discarded rather than used for the embedding
 
@@ -451,7 +452,8 @@ head (as in BERT).
 
 ## 10. The playlist head
 
-Once the JEPA encoder is frozen and embeddings are extracted to `embeddings.npy`,
+Once the JEPA encoder is frozen and embeddings are extracted to
+`EMBEDDINGS_DIR/embeddings.npy`,
 a lightweight **playlist head** can be trained on top to generate playlists
 directly from the embedding space. Code lives in `jepa/playlist_head.py` and
 `train_head.py`.

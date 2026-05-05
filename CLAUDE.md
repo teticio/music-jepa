@@ -38,6 +38,9 @@ the architecture doc move, update the doc in the same change.
 - Track/playlists CSVs have no header. Track CSV columns are
   `artist,title,url,count`.
 - `embeddings.npy` is a pickled dict-like NumPy file mapping track ID to vector.
+  It lives under `EMBEDDINGS_DIR` (default `embeddings/`, sample
+  `embeddings-sample/`); `make embed` writes it there and downstream targets
+  read it from there.
 
 ## Playlist Workflows
 

@@ -3,13 +3,13 @@ Visualise Music JEPA embeddings: t-SNE plot and nearest-neighbour report.
 
 Usage:
     # Nearest-neighbour search for specific tracks
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv
+    python eval/visualize.py --embeddings embeddings/embeddings.npy --tracks_file data/tracks_dedup.csv
 
     # t-SNE plot (saved to tsne.png)
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv --tsne
+    python eval/visualize.py --embeddings embeddings/embeddings.npy --tracks_file data/tracks_dedup.csv --tsne
 
     # Probe specific tracks by Spotify ID
-    python eval/visualize.py --embeddings embeddings.npy --tracks_file data/tracks_dedup.csv \
+    python eval/visualize.py --embeddings embeddings/embeddings.npy --tracks_file data/tracks_dedup.csv \
         --probes 3EYOJ48Et32uATr9ZmLnAo 4CeeEOM32jQcH3eN9Q2dGj
 """
 import argparse
@@ -103,7 +103,7 @@ def tsne_plot(ids, vecs, tracks_df, out_path="tsne.png", n_points=3000):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--embeddings", default="embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--probes", nargs="*", default=None)
     parser.add_argument("--top_k", type=int, default=10)

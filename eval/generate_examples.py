@@ -194,6 +194,7 @@ def main():
     parser.add_argument("--device", default=None)
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--mp3tovec_model_dir", default=None)
     args = parser.parse_args()
@@ -206,7 +207,8 @@ def main():
         return
     clean_generated_examples(out_dir)
 
-    base = ["uv", "run", "python", "eval/generate_playlist.py", "--tracks_file", args.tracks_file]
+    base = ["uv", "run", "python", "eval/generate_playlist.py",
+            "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)

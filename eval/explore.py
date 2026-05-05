@@ -6,8 +6,8 @@ Interactive Music JEPA embedding explorer.
 - Click: plays the 30-second Spotify preview from the CDN
 
 Usage:
-    python eval/explore.py --embeddings embeddings.npy
-    python eval/explore.py --embeddings embeddings.npy --export   # write HTML, don't open browser
+    python eval/explore.py --embeddings embeddings/embeddings.npy
+    python eval/explore.py --embeddings embeddings/embeddings.npy --export   # write HTML, don't open browser
 """
 import argparse
 import os
@@ -43,7 +43,7 @@ def load_embeddings(path: str):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--embeddings", default="embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--out", default="outputs/explore.html")
     parser.add_argument("--n_points", type=int, default=5000)
