@@ -10,6 +10,7 @@ TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
 HEAD_INFIL_CONFIG ?= configs/head_infil.yaml
 TRACKS_FILE ?= data/tracks_dedup.csv
+MP3TOVEC_MODEL_DIR ?= ../deej-ai.online-app/model
 OUTPUT_DIR ?= outputs
 PAGES_BRANCH ?= gh-pages
 PAGES_WORKTREE ?= /tmp/music-jepa-pages
@@ -109,7 +110,7 @@ playlist:
 	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/continuation_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
 
 examples:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
