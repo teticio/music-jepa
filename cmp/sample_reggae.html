@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated playlist</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed, tr.waypoint {
+      background: #20281f;
+    }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      display: inline-block;
+      margin-top: 8px;
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Generated playlist</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed" data-preview-index="0">
+  <td class="idx">01</td>
+  <td><div class="title">Three Little Birds <span class="badge">seed</span></div><div class="artist">Bob Marley &amp; The Wailers</div><code>75FYqcxt1YEAtqDLrOeIJn</code></td>
+</tr><tr id="track-2" class="track" data-preview-index="1">
+  <td class="idx">02</td>
+  <td><div class="title">One Love / People Get Ready - Medley </div><div class="artist">Bob Marley &amp; The Wailers</div><code>6SR0dDuXH2vtgBfMLrivKV</code></td>
+</tr><tr id="track-3" class="track" data-preview-index="2">
+  <td class="idx">03</td>
+  <td><div class="title">Apartheid </div><div class="artist">Peter Tosh</div><code>5PFTHgVvxj3GIS36pF42zc</code></td>
+</tr><tr id="track-4" class="track" data-preview-index="3">
+  <td class="idx">04</td>
+  <td><div class="title">Bush Doctor - 2002 Remaster </div><div class="artist">Peter Tosh</div><code>4dOLVeng6B23GvHeGTuDL5</code></td>
+</tr><tr id="track-5" class="track" data-preview-index="4">
+  <td class="idx">05</td>
+  <td><div class="title">Plush - Acoustic </div><div class="artist">Stone Temple Pilots</div><code>3ftHrCjsTUPLgI48m67byk</code></td>
+</tr><tr id="track-6" class="track" data-preview-index="5">
+  <td class="idx">06</td>
+  <td><div class="title">Bush Doctor - Long Version; 2002 Remaster </div><div class="artist">Peter Tosh</div><code>2oHP1v44mmyxC5llOReER3</code></td>
+</tr><tr id="track-7" class="track" data-preview-index="6">
+  <td class="idx">07</td>
+  <td><div class="title">I Shot The Sheriff - Edited Version </div><div class="artist">The Wailers</div><code>4mdMMqklWB4wJIqaFRb3ah</code></td>
+</tr><tr id="track-8" class="track" data-preview-index="7">
+  <td class="idx">08</td>
+  <td><div class="title">I Shot The Sheriff </div><div class="artist">The Wailers</div><code>60e5PcqGmlVFQ0HHgUagCJ</code></td>
+</tr><tr id="track-9" class="track" data-preview-index="8">
+  <td class="idx">09</td>
+  <td><div class="title">Put It On </div><div class="artist">The Wailers</div><code>7nnxlucFOovCdayN8JcrVZ</code></td>
+</tr><tr id="track-10" class="track" data-preview-index="9">
+  <td class="idx">10</td>
+  <td><div class="title">Stand Firm - 2002 Remaster </div><div class="artist">Peter Tosh</div><code>4pMAuPWNkKFqxRPieeCqI8</code></td>
+</tr><tr id="track-11" class="track" data-preview-index="10">
+  <td class="idx">11</td>
+  <td><div class="title">Ekwa Mwato (Affirmation Of The Spirit) </div><div class="artist">Richard Bona</div><code>1TFR7i1b1QUT6rNEySrIMj</code></td>
+</tr><tr id="track-12" class="track" data-preview-index="11">
+  <td class="idx">12</td>
+  <td><div class="title">Mwendwa </div><div class="artist">The Famous Nyahururu Boys</div><code>5c8t4I1Lx4Ia72meGZZIOp</code></td>
+</tr><tr id="track-13" class="track" data-preview-index="12">
+  <td class="idx">13</td>
+  <td><div class="title">Thoni Na Caki </div><div class="artist">New Gatanga Sound</div><code>7nCYrwle5yNissDNfZGQGv</code></td>
+</tr><tr id="track-14" class="track" data-preview-index="13">
+  <td class="idx">14</td>
+  <td><div class="title">Nzaumi </div><div class="artist">Ndalani 77 Brothers</div><code>36FRl8Vld26wyEE71dBZsz</code></td>
+</tr><tr id="track-15" class="track" data-preview-index="14">
+  <td class="idx">15</td>
+  <td><div class="title">Ndiri Ndanogio Niwe </div><div class="artist">Mbiri Young Stars</div><code>1CpFzZovts9mjebHRXGBap</code></td>
+</tr><tr id="track-16" class="track" data-preview-index="15">
+  <td class="idx">16</td>
+  <td><div class="title">You Can Call Me Al </div><div class="artist">ortoPilot</div><code>74jDUf9zuJzNh3kuZilCm5</code></td>
+</tr><tr id="track-17" class="track" data-preview-index="16">
+  <td class="idx">17</td>
+  <td><div class="title">Teresia </div><div class="artist">Huruma Boys Band</div><code>1xhXDMtDimZsZcdTxBGFdT</code></td>
+</tr><tr id="track-18" class="track" data-preview-index="17">
+  <td class="idx">18</td>
+  <td><div class="title">I&#x27;m the Toughest - 2002 Remaster </div><div class="artist">Peter Tosh</div><code>5TqV8dCIgWV8yET1EejKCR</code></td>
+</tr><tr id="track-19" class="track" data-preview-index="18">
+  <td class="idx">19</td>
+  <td><div class="title">High Tension Zamer </div><div class="artist">Rizan Said</div><code>0QieOzKerZy6cTSU7I1WPh</code></td>
+</tr><tr id="track-20" class="track" data-preview-index="19">
+  <td class="idx">20</td>
+  <td><div class="title">Rockabye (feat. Sean Paul &amp; Anne-Marie) </div><div class="artist">Clean Bandit</div><code>5knuzwU65gJK7IF5yJsuaW</code></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/30af46efcab458c3535755bc384cef034e2519b1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/a5e96c9baef07a93da5ad8f27f6c829531eadcc7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/4ed4aa3c097c82455ec3dc1cd3253c27e0210aa4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/93b2892de5e56f3864cc8a0035243f80feac8657?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/6e26f204af1cdaee6fde21037ec7d126e7cb9930?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/18e1c0b739f2c94242e5992857267f5b2d16d1e9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/522911c93412667343a9ba0c2416250c1cdabad6?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/263c0c9295c512fef75cae5397a04d4059e09f43?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/33b64cb698109e2636855e55c28ca5f74c835322?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/4df6dece337d87f22d9231660e3f38b1d24a33ae?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/d9cf093bc0e5794c1163b0f79ecde70ff8c5dcd3?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/7294d1baf34b58510ea794f68af0a67feb8774c0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/ece436c4d10fe46eefbf40ae0f41454e906dc2a1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/a6dc657666a80daf31940e506fcb7d6ba4525adc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/71dd7617f4fe5fff5685cc0b29aa0d33afb91d36?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/6757d663b108fb53b7b54a16d677d5d5091fe5b2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/c817255b08f2e907797bee07db9230896befb0f8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/5e2c4eb74846318d215955ad564f6ba1ddad7002?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/ea7ff6f3bcc354689b059bef9ff4d201c6f98a8d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/e2ffc646cf90e4e5b71e277394e093c3fbe49357?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(index) {
+      clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      currentIndex = -1;
+      clearPlaying();
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
+    }
+
+    function nextPreview() {
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
+    }
+
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
+    }
+
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
+        }
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
+  </script>
+</body>
+</html>

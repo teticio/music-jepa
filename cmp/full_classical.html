@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated playlist</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed, tr.waypoint {
+      background: #20281f;
+    }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      display: inline-block;
+      margin-top: 8px;
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Generated playlist</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed" data-preview-index="0">
+  <td class="idx">01</td>
+  <td><div class="title">Requiem, K. 626: Lacrimosa <span class="badge">seed</span></div><div class="artist">Wolfgang Amadeus Mozart</div><code>3oHSL6pt9LpNrQZuQGu9wL</code></td>
+</tr><tr id="track-2" class="track" data-preview-index="1">
+  <td class="idx">02</td>
+  <td><div class="title">Whip It </div><div class="artist">Powerman 5000</div><code>3uhBMeBwwVm09tAN1sxNUl</code></td>
+</tr><tr id="track-3" class="track" data-preview-index="2">
+  <td class="idx">03</td>
+  <td><div class="title">Clipper - Live </div><div class="artist">Portico Quartet</div><code>1IhqqhGdJX2B1vkufDPU11</code></td>
+</tr><tr id="track-4" class="track" data-preview-index="3">
+  <td class="idx">04</td>
+  <td><div class="title">Cha Chita </div><div class="artist">El Chicano</div><code>23MGV9z6pydMvIA6Gmfuh1</code></td>
+</tr><tr id="track-5" class="track" data-preview-index="4">
+  <td class="idx">05</td>
+  <td><div class="title">To Be There With You feat. Kicki Halmos - Disco Mix </div><div class="artist">Aksel Friberg</div><code>6LIla4WbJVNZTccxUeQdLM</code></td>
+</tr><tr id="track-6" class="track" data-preview-index="5">
+  <td class="idx">06</td>
+  <td><div class="title">The Return of Tronson (Instrumental Version) </div><div class="artist">RJD2</div><code>4s9YSFe7etcRNis73uSK7A</code></td>
+</tr><tr id="track-7" class="track" data-preview-index="6">
+  <td class="idx">07</td>
+  <td><div class="title">My Potna </div><div class="artist">T.I.</div><code>4buaCFv0tRNPPwY56x9KTK</code></td>
+</tr><tr id="track-8" class="track" data-preview-index="7">
+  <td class="idx">08</td>
+  <td><div class="title">Nao Diga Nada </div><div class="artist">Cal Tjader</div><code>4eCEPY1h1EsVyU9fw2lXCm</code></td>
+</tr><tr id="track-9" class="track" data-preview-index="8">
+  <td class="idx">09</td>
+  <td><div class="title">REQUIRE (with Olamide) </div><div class="artist">DJ Tunez</div><code>7n194jHXt3EXVe2Kd42deD</code></td>
+</tr><tr id="track-10" class="track" data-preview-index="9">
+  <td class="idx">10</td>
+  <td><div class="title">Aqua Jujidsu </div><div class="artist">Drexciya</div><code>55A1oAOjZSYxAAWPKLvWRf</code></td>
+</tr><tr id="track-11" class="track" data-preview-index="10">
+  <td class="idx">11</td>
+  <td><div class="title">Santiago Black - Ptaki Remix </div><div class="artist">Al Dobson Jr.</div><code>0YdBsnA9VUbP0K8TKRLebX</code></td>
+</tr><tr id="track-12" class="track" data-preview-index="11">
+  <td class="idx">12</td>
+  <td><div class="title">Transition </div><div class="artist">Natureboy Flako</div><code>0gaztcxen3ubDLPzgOQ4Mr</code></td>
+</tr><tr id="track-13" class="track" data-preview-index="12">
+  <td class="idx">13</td>
+  <td><div class="title">Bukitlist </div><div class="artist">Bizzey</div><code>0skGaRFzCRfXA9JnLNsX7R</code></td>
+</tr><tr id="track-14" class="track" data-preview-index="13">
+  <td class="idx">14</td>
+  <td><div class="title">i&#x27;m shy when i&#x27;m around you </div><div class="artist">Justin Jay</div><code>0HR1u288zHpDPkGVUOR3l8</code></td>
+</tr><tr id="track-15" class="track" data-preview-index="14">
+  <td class="idx">15</td>
+  <td><div class="title">Rude </div><div class="artist">Lilly Brown</div><code>1uY6UMjGsMz1yEfEWPI4PK</code></td>
+</tr><tr id="track-16" class="track" data-preview-index="15">
+  <td class="idx">16</td>
+  <td><div class="title">Whiskey - Recorded at Spotify Studios NYC </div><div class="artist">Devin Dawson</div><code>7KeNKDufYkAf3VKOumK12r</code></td>
+</tr><tr id="track-17" class="track" data-preview-index="16">
+  <td class="idx">17</td>
+  <td><div class="title">What Are You Doing New Years Eve </div><div class="artist">Johnnyswim</div><code>5HhcXgRU7kYszL7OQZtNlc</code></td>
+</tr><tr id="track-18" class="track" data-preview-index="17">
+  <td class="idx">18</td>
+  <td><div class="title">Owari </div><div class="artist">FLVX</div><code>1nwpdfp8TwPW1WLGVDiRHR</code></td>
+</tr><tr id="track-19" class="track" data-preview-index="18">
+  <td class="idx">19</td>
+  <td><div class="title">Humanity </div><div class="artist">The Royal Rasses</div><code>7jFZBqLOsDPoqZJCDl7pdQ</code></td>
+</tr><tr id="track-20" class="track" data-preview-index="19">
+  <td class="idx">20</td>
+  <td><div class="title">A Plane Scraped Its Belly On A Sooty Yellow </div><div class="artist">Soul Coughing</div><code>1PN8OwPIRY7t3t6XSDR2HG</code></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/bd646927434759cc08ba71a106b2571d65b3015e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/cd7617f3382310a4eebbc26e7737a1ac58de33ba?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/9d5f5a16596906f83b0aa39636b84857d222649a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/04e5bdfb1ca778c140a8d3dbb1076968ffd92a56?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/a7dd2204e8a41dee26d9bdec71c7094bebf5e28f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/655602ed7739bf702a8ce2e9b0007c072af95025?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/024bc5c0520df2f0d5cfd7c2919618fce62afb0f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/565aa7b1280d1e98387b2d941a4b6c264994af11?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/2bfda1844a0c0169ee95cb0132145f9628afeb08?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/bc3105476f6100b0220dddedbf7ca93fe2f1a658?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/79af93119495fb155e8a91b3356f190e02d755fe?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/215ace8845d61dc86ca445a30ad205d4d5ff5844?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/f97bc9e1b882eb34dd254ae5b253a34cceec97b7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/6a4bfed0dff639349b98cf98130929982cf101fa?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/e083b788f17b25c2a870a137bd6eb9f486e76305?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/0ea93187897888c20be9341450212195f9294db2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/0754d4ebcfa0d2027a4cfd57be0350867e7ce8ce?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/22ab11d7e4f15f01e7dced96e5fe349813d4a500?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/c2f8a57de80c3a822472d65b1331915b5e8c9b5f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/0fb9215df66f019d418b9fc3b69ba221cc03465f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(index) {
+      clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      currentIndex = -1;
+      clearPlaying();
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
+    }
+
+    function nextPreview() {
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
+    }
+
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
+    }
+
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
+        }
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated playlist</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed, tr.waypoint {
+      background: #20281f;
+    }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      display: inline-block;
+      margin-top: 8px;
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Generated playlist</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed" data-preview-index="0">
+  <td class="idx">01</td>
+  <td><div class="title">Three Little Birds <span class="badge">seed</span></div><div class="artist">Bob Marley &amp; The Wailers</div><code>75FYqcxt1YEAtqDLrOeIJn</code></td>
+</tr><tr id="track-2" class="track" data-preview-index="1">
+  <td class="idx">02</td>
+  <td><div class="title">Fragment </div><div class="artist">Robert Wyatt</div><code>4HJHiut6Odx330vfmkJ7D9</code></td>
+</tr><tr id="track-3" class="track" data-preview-index="2">
+  <td class="idx">03</td>
+  <td><div class="title">21 </div><div class="artist">AREA21</div><code>1TQTYsynFasqExckACAoWb</code></td>
+</tr><tr id="track-4" class="track" data-preview-index="3">
+  <td class="idx">04</td>
+  <td><div class="title">Joseph </div><div class="artist">Looptroop Rockers</div><code>4vSWXtilXtOdcaKqapPyx1</code></td>
+</tr><tr id="track-5" class="track" data-preview-index="4">
+  <td class="idx">05</td>
+  <td><div class="title">Reunion - Edu Imbernon Remix </div><div class="artist">The xx</div><code>0Vh6ha2dvxgZIy3RGvKkJV</code></td>
+</tr><tr id="track-6" class="track" data-preview-index="5">
+  <td class="idx">06</td>
+  <td><div class="title">Fuck It Up </div><div class="artist">YG</div><code>7IOylPVta0ApSfJVgNksZs</code></td>
+</tr><tr id="track-7" class="track" data-preview-index="6">
+  <td class="idx">07</td>
+  <td><div class="title">Sget It </div><div class="artist">Lester Roy</div><code>37WaU8qD6q7w9wVB2MBrnm</code></td>
+</tr><tr id="track-8" class="track" data-preview-index="7">
+  <td class="idx">08</td>
+  <td><div class="title">Nail Tech </div><div class="artist">Jack Harlow</div><code>62Yo3FDddWY8ydu6PW2wyz</code></td>
+</tr><tr id="track-9" class="track" data-preview-index="8">
+  <td class="idx">09</td>
+  <td><div class="title">Lovers Carvings - WXAXRXP Session </div><div class="artist">Bibio</div><code>6FnqA5BcNf6EMnOIdP4H7W</code></td>
+</tr><tr id="track-10" class="track" data-preview-index="9">
+  <td class="idx">10</td>
+  <td><div class="title">Get The Bag (feat. A$AP Rocky, A$AP Ferg, A$AP Ant, A$AP Nast, A$AP TyY, Playboi Carti &amp; Smooky MarGielaa) </div><div class="artist">A$AP Mob</div><code>2AyyImkxFBEhfPmIe46Ppl</code></td>
+</tr><tr id="track-11" class="track" data-preview-index="10">
+  <td class="idx">11</td>
+  <td><div class="title">Moon Angels </div><div class="artist">RŮDE</div><code>720zu8RUP9Cdm2L8fCyA6a</code></td>
+</tr><tr id="track-12" class="track" data-preview-index="11">
+  <td class="idx">12</td>
+  <td><div class="title">Talk To Me </div><div class="artist">Mark Mendy</div><code>7kOEAYqtX7OjQhNxQT4bPI</code></td>
+</tr><tr id="track-13" class="track" data-preview-index="12">
+  <td class="idx">13</td>
+  <td><div class="title">Only Wanna Know U Cos Ure Famous </div><div class="artist">Oxide &amp; Neutrino</div><code>4I04zgv5gNcsSLivbYewDN</code></td>
+</tr><tr id="track-14" class="track" data-preview-index="13">
+  <td class="idx">14</td>
+  <td><div class="title">Lemurian Promenade </div><div class="artist">Shane Tyler</div><code>1TJbIX80eZSkVCtrcU57Ja</code></td>
+</tr><tr id="track-15" class="track" data-preview-index="14">
+  <td class="idx">15</td>
+  <td><div class="title">I Can&#x27;t Give You Anything but Love </div><div class="artist">Asleep At The Wheel</div><code>3zKFMd142bE3qb51fw10Pt</code></td>
+</tr><tr id="track-16" class="track" data-preview-index="15">
+  <td class="idx">16</td>
+  <td><div class="title">Fail! </div><div class="artist">Rainbow Kitten Surprise</div><code>0zD93qdDeQ7XFAAtyYM8bk</code></td>
+</tr><tr id="track-17" class="track" data-preview-index="16">
+  <td class="idx">17</td>
+  <td><div class="title">Country Cousins (feat. UGK &amp; Raheem DeVaughn) </div><div class="artist">Talib Kweli</div><code>4LPjSILW7ySNYm4MwughiS</code></td>
+</tr><tr id="track-18" class="track" data-preview-index="17">
+  <td class="idx">18</td>
+  <td><div class="title">Girl </div><div class="artist">The Beatles</div><code>3wviriLUfnj7GkRjoN2wD8</code></td>
+</tr><tr id="track-19" class="track" data-preview-index="18">
+  <td class="idx">19</td>
+  <td><div class="title">Take It Back </div><div class="artist">Layton Giordani</div><code>7mPfqIO1h3vL269L8iDrv7</code></td>
+</tr><tr id="track-20" class="track" data-preview-index="19">
+  <td class="idx">20</td>
+  <td><div class="title">Delightfulllll / Waterfall </div><div class="artist">Carlos Niño &amp; Friends</div><code>7sKqBmq7erNq1cCXv5BePC</code></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/30af46efcab458c3535755bc384cef034e2519b1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/d6beffbfdb4bf497e6aee02c1f92bb6429a46c67?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/a09924df7fcb88858233d3756890b66ae23a04de?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/cf3dc4c173aeeca59bc806c6e4be23df3a69a3c3?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/920adf3b71f0c2d298a3eb0c8b15c9e9bcaa1bb8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/3ce2bea39a2ef5f90700ccddb03f450153db05a7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/f46cb1c96da8f26d72bbc5804d4c975cb38957fd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/080cf575e59c6c309003e83eb88cef789ab0e70c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/6f6cec901ec9c98bf0aaae26e6bd5dcb1ed90b30?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/6c37045c1db1c8141025df5ab4f9a55eee2e0ab9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/b20f8205914ea5e6d14c2506488a961c72051d92?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/ef4940837e6d52b258b710a5d40b8c1aab0f59e5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/2a37a27922caddebd98dd2270b986cd92fc33a7f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/9cc34d8113d621574c567571067319f1a90f1f8b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/bd8b2104027ad3852cd5d2dc0ee67440da23e968?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/452a7ba3598dd329ada18cf4cf509858c8f0482e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/aa6764af094c3140abe1da93fbb770969db5a203?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/1e2bfa4f446075bf79bd4bdc82ab0d55da9bc3ac?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/8ead69a3aa5e82590b279247c3d684dec6cad6e5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/773a0ce5069dcaf27374e67449b472246c2980bf?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(index) {
+      clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      currentIndex = -1;
+      clearPlaying();
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
+    }
+
+    function nextPreview() {
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
+    }
+
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
+    }
+
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
+        }
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
+  </script>
+</body>
+</html>

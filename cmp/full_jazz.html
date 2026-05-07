@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generated playlist</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed, tr.waypoint {
+      background: #20281f;
+    }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      display: inline-block;
+      margin-top: 8px;
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Generated playlist</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">20 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track seed" data-preview-index="0">
+  <td class="idx">01</td>
+  <td><div class="title">My Favorite Things <span class="badge">seed</span></div><div class="artist">John Coltrane</div><code>6oVY50pmdXqLNVeK8bzomn</code></td>
+</tr><tr id="track-2" class="track" data-preview-index="1">
+  <td class="idx">02</td>
+  <td><div class="title">Fall, Fall, Fall </div><div class="artist">Caamp</div><code>4MEhUxj35YRT7mqMaJgcWB</code></td>
+</tr><tr id="track-3" class="track" data-preview-index="2">
+  <td class="idx">03</td>
+  <td><div class="title">Tijd Voor Mij </div><div class="artist">Madina</div><code>178nxsmxqHjiP3LB5uZu0t</code></td>
+</tr><tr id="track-4" class="track" data-preview-index="3">
+  <td class="idx">04</td>
+  <td><div class="title">Behind the Scenes: Award Tour (Interlude) </div><div class="artist">J.PERIOD</div><code>4hv4Q8Ro5EvHbiwBEcLiLm</code></td>
+</tr><tr id="track-5" class="track" data-preview-index="4">
+  <td class="idx">05</td>
+  <td><div class="title">Terrapin </div><div class="artist">Ben Beal</div><code>0t89zjm5vxQCuW4jkOfT93</code></td>
+</tr><tr id="track-6" class="track" data-preview-index="5">
+  <td class="idx">06</td>
+  <td><div class="title">You and I </div><div class="artist">shiv</div><code>7j9DRB3AzXxQNRHAY3RfAx</code></td>
+</tr><tr id="track-7" class="track" data-preview-index="6">
+  <td class="idx">07</td>
+  <td><div class="title">Tracksmart (feat. Mr. Gene Poole) </div><div class="artist">Atmosphere</div><code>0DBtpmV5CgKgEkuEVciw7P</code></td>
+</tr><tr id="track-8" class="track" data-preview-index="7">
+  <td class="idx">08</td>
+  <td><div class="title">Lilac Wine </div><div class="artist">Eartha Kitt</div><code>0kJ3enCNnfnsHXzAbfbYKY</code></td>
+</tr><tr id="track-9" class="track" data-preview-index="8">
+  <td class="idx">09</td>
+  <td><div class="title">Pretty Fly for a Rabbi (Parody of &quot;Pretty Fly (For a White Guy)&quot; by Offspring) </div><div class="artist">&quot;Weird Al&quot; Yankovic</div><code>5vLh40xCE0Hl0LJk5Sad1A</code></td>
+</tr><tr id="track-10" class="track" data-preview-index="9">
+  <td class="idx">10</td>
+  <td><div class="title">Let Me Try - Ripping Mix </div><div class="artist">Lady White</div><code>5G0WaqafTnC493ZS9JJ16C</code></td>
+</tr><tr id="track-11" class="track" data-preview-index="10">
+  <td class="idx">11</td>
+  <td><div class="title">The Ride </div><div class="artist">Steve Pad</div><code>1hG5EKbySvTq4Y4a6gVAJU</code></td>
+</tr><tr id="track-12" class="track" data-preview-index="11">
+  <td class="idx">12</td>
+  <td><div class="title">Cherokee </div><div class="artist">Charlie Barnet &amp; His Orchestra</div><code>3kvKuW8SD7e0wsoXcLubFZ</code></td>
+</tr><tr id="track-13" class="track" data-preview-index="12">
+  <td class="idx">13</td>
+  <td><div class="title">Mon Cheri (feat. Sfera Ebbasta) </div><div class="artist">Rkomi</div><code>66UkKyxN5YbJl9z7YamQOR</code></td>
+</tr><tr id="track-14" class="track" data-preview-index="13">
+  <td class="idx">14</td>
+  <td><div class="title">Happy </div><div class="artist">P!nk</div><code>6xG7t7blddozpBf3S5we1O</code></td>
+</tr><tr id="track-15" class="track" data-preview-index="14">
+  <td class="idx">15</td>
+  <td><div class="title">I Can Show You (Better Than I Can Tell You) - Phonk D Edit </div><div class="artist">First Choice</div><code>4xWPKcZ2NapYmwh2Wgpqzt</code></td>
+</tr><tr id="track-16" class="track" data-preview-index="15">
+  <td class="idx">16</td>
+  <td><div class="title">Stupid Love - Vitaclub Warehouse Mix </div><div class="artist">Lady Gaga</div><code>2uWYOq36wrjC3UstoI1lRV</code></td>
+</tr><tr id="track-17" class="track" data-preview-index="16">
+  <td class="idx">17</td>
+  <td><div class="title">Silent Song (EarthRise SoundSystem Remix) </div><div class="artist">Eccodek</div><code>09ZEZl62WNwbG3y8qcUPAg</code></td>
+</tr><tr id="track-18" class="track" data-preview-index="17">
+  <td class="idx">18</td>
+  <td><div class="title">Helpings </div><div class="artist">Chill Select</div><code>6IsbN5YgVxxkKrtHUZ1jnH</code></td>
+</tr><tr id="track-19" class="track" data-preview-index="18">
+  <td class="idx">19</td>
+  <td><div class="title">It Is What It Is (feat. Elise LeGrow) - Club Mix </div><div class="artist">Vintage Culture</div><code>74NEpDDRmuJDgIj9ziPm1W</code></td>
+</tr><tr id="track-20" class="track" data-preview-index="19">
+  <td class="idx">20</td>
+  <td><div class="title">The Three Bells </div><div class="artist">The Browns</div><code>4s1RJFAKferfgn2bTi05SH</code></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/0182f30c954ce91a2e792f34537bbfe6c27d83a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/052bd20af7cb9cff403558719cbcf4e0bdd1236d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/65b3401b04ed4dd107a459d6001aaeffa4c7a065?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/b7960d6b91b78d1d5c63a5dfe3c0d6007802eae9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/fc023d5dd18430feaba7fe0106ec98df4f35bedc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/42b28d7981e155b88ed05e93bee6125351ee518f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/36c3f4bcdd1b4132d911932e840aefd977ec4cce?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/c19fcd168a37ed4428bb62d098fc3491101360f7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/27fe110e9434d9952fd2bd6074ab9337edb7fc9d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/b1b12fe5df55960a4d081d4708fd1496ac291ef5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/8075881c5ec56c3c32b106d273c78038017e80cd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/4e1cc067d3c6200a3d25bad6e908fd8130b113e7?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/9ecc513d4392b7a69034fd6fd4412827de6ded86?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/9a77b8f154c10bfc5429532fded245feaf69fa8c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/e5cd531b4e4d9603bdd6ae3d94af0f4ed51085ce?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/5b64807d1c7f8f96360199b1af55dab61e737c77?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/5708dc16f18ff15cfbed1f1110d2c45949a16b9b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/50d5c7acc5ab9c32cbdf3d98ccf4b0285b8696ca?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/188ade61a756ab7d3011976c9055189975d65864?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/536f16707a943a5eaae8b34b9971823d381f3c23?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}];
+    const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(index) {
+      clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      currentIndex = -1;
+      clearPlaying();
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
+    }
+
+    function nextPreview() {
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
+    }
+
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
+    }
+
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
+        }
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
+  </script>
+</body>
+</html>
