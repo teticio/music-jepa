@@ -197,6 +197,8 @@ def main():
     parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--mp3tovec_model_dir", default=None)
+    parser.add_argument("--head", default=None,
+                        help="Continuation head ckpt. Defaults to <checkpoint_dir>/continuation_head.pt")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -212,7 +214,7 @@ def main():
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)
-    cont_head = checkpoint_dir / "continuation_head.pt"
+    cont_head = Path(args.head) if args.head else checkpoint_dir / "continuation_head.pt"
 
     def run_playlist(name, seeds, hw_label, extra):
         run(base + extra + [

@@ -212,6 +212,46 @@ For quick comparisons, `make examples` writes head-based examples at
 baselines when `--mp3tovec_model_dir` is supplied. The generated index links
 to all example pages.
 
+### Patch-level head (alternative)
+
+`make train-head-cont` / `make train-head-infil` train a small MLP on top of
+the encoder's mean-pooled track embeddings. An alternative is to learn the
+pooling itself: a patch-level head includes an attention-pool over the 324
+patch tokens and is trained jointly with that pool through a frozen encoder.
+The MLP aggregator is unchanged, so once the catalog is regenerated with the
+learned pool the rest of the pipeline works unchanged. See
+`docs/jepa-architecture.md` §10.1 for the architecture.
+
+The continuation and infill patch heads have **separate learned pools**, so
+each needs its own regenerated `embeddings.npy`. Patch-flavoured Make targets
+mirror their track-head counterparts:
+
+```bash
+# Train (uses HEAD_CONT_PATCH_CONFIG / HEAD_INFIL_PATCH_CONFIG)
+make train-head-patch-cont
+make train-head-patch-infil
+
+# Re-embed the catalog with each pool. These produce two files:
+#   $(EMBEDDINGS_PATCH_CONT)   default: embeddings/embeddings_patch_cont.npy
+#   $(EMBEDDINGS_PATCH_INFIL)  default: embeddings/embeddings_patch_infil.npy
+make embed-patch-cont
+make embed-patch-infil
+
+# Generate
+make playlist-patch SEEDS="3EYOJ48Et32uATr9ZmLnAo"
+make journey-patch  JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
+make examples-patch
+make app-patch-cont    # Streamlit pinned to the patch continuation head
+make app-patch-infil   # Streamlit pinned to the patch infill head
+```
+
+The track-head and patch-head checkpoints / embeddings coexist by default —
+patch outputs sit at `EMBEDDINGS_DIR/embeddings_patch_*.npy` and
+`OUTPUT_DIR/{playlist,journey}_patch.html` so an A/B comparison against
+the track-head pipeline is just running the unsuffixed targets in turn. The
+generic `make embed-patch PATCH_HEAD=path` lets you re-embed with any patch
+head against an arbitrary `EMBEDDINGS_FILE`.
+
 Publish the configured output dir to GitHub Pages with:
 
 ```bash

@@ -608,6 +608,96 @@ dir, plus matching raw-JEPA baselines with an `_embeddings.html` suffix and
 Deej-AI MP3ToVec baselines with a `_mp3tovec.html` suffix. It also writes an
 index page linking to all generated pages.
 
+### 10.1 Patch-level head — learning the pool
+
+The default head is trained on the encoder's **mean-pooled** track embeddings
+(see [jepa/vit.py:98-100](../jepa/vit.py#L98-L100)). Mean pooling treats every
+patch as equally informative, which is a heavy assumption: the encoder was
+trained to predict patch-level targets, so the patch sequence carries strictly
+more information than its average. A patch-level head replaces the
+hard-coded mean with a **learned attention-pool** trained jointly with the
+aggregator MLP, while leaving the rest of the pipeline unchanged.
+
+```
+TRAINING (one step, encoder frozen)
+
+  history specs           target spec
+  (B, K, 1, 96, 216)     (B, 1, 96, 216)
+        │                       │
+        │  flatten BxK          │
+        ▼                       ▼
+  ┌──────────────┐       ┌──────────────┐
+  │ Frozen JEPA  │       │ Frozen JEPA  │  no_grad on both
+  │   encoder    │       │   encoder    │
+  └──────┬───────┘       └──────┬───────┘
+   (B*K, 324, 384)        (B, 324, 384)
+        │                       │
+        ▼                       ▼
+  ┌──────────────────────────────────┐
+  │   Shared learned attention-pool  │  ← gradients
+  │      (324, 384) → (384)          │
+  └──────┬─────────────────────┬─────┘
+         │                     │
+   (B, K, 384)             (B, 384) target_pooled
+         │                     │
+   build [last|mean|drift]     │ (InfoNCE positive)
+         │                     │
+         ▼                     │
+   ┌─────────────┐              │
+   │  MLP head   │ ← gradients  │
+   │ 1152 → 384  │              │
+   └──────┬──────┘              │
+          │                     │
+          └──── InfoNCE ────────┘
+
+INFERENCE (catalog generation)
+
+  spectrogram → frozen encoder → 324 patches → learned pool → 384-d catalog vec
+
+INFERENCE (retrieval)
+
+  Identical to the default head: build [a|b|c] from looked-up catalog vectors,
+  forward through the MLP, cosine-rank.
+```
+
+**Symmetry.** The same pool is applied to context tracks (whose pooled vectors
+feed the MLP) and to the target track (whose pooled vector is the InfoNCE
+positive). When the catalog is regenerated using that same pool, train and
+retrieval share a single mapping `(spectrogram → 384-d)`.
+
+**Code:** `AttentionPool` and `PatchPlaylistHead` in
+[jepa/playlist_head.py](../jepa/playlist_head.py); training loop in
+[train_patch_head.py](../train_patch_head.py); embedding regeneration via the
+`--patch_head` flag in [eval/embed_tracks.py](../eval/embed_tracks.py).
+
+**Cost.** Each training step now runs the frozen encoder on
+`batch_size × (max_history + 1)` (continuation) or `batch_size × 3` (infill)
+spectrograms instead of doing an `embeddings.npy` lookup, so default
+batch sizes drop from 512 to 64-96. The pool is small (~3M extra params on top
+of the existing MLP head), and it produces a different `embeddings.npy` —
+keep both files around (e.g. `embeddings.npy` vs `embeddings_patch.npy`) and
+switch `EMBEDDINGS_FILE` / `HEAD_CONT_CKPT` to compare.
+
+**Dataset note.** `PatchPlaylistHeadDataset` only samples continuation targets
+where the playlist has at least `max_history` prior tracks (rather than the
+shorter padded-history examples allowed by `PlaylistHeadDataset`). At default
+settings this drops a small fraction of samples and removes the need for
+variable-length history handling.
+
+**Multi-vector extension (late interaction).** The single learned query in
+`AttentionPool` is the `k=1` special case of a more general design: replace it
+with `k > 1` learned queries, so each track is represented by `k` vectors
+rather than one. This is the **late-interaction** trick from
+[ColBERT](https://arxiv.org/abs/2004.12832) — keep a small bag of vectors per
+item, score retrieval as a sum-of-max-similarities (or simply cosine on the
+flattened `k·D`-d concat) instead of a single inner product. At `k=4` the
+catalog grows from ~270MB to ~1.1GB for a 700k-track set: still tiny next to
+the ~350GB of spectrograms and a strict superset of `k=1`. The natural sweep
+is `k=1` first to test whether learning the pool helps at all over mean
+pooling; if it does, raise `k` until retrieval quality plateaus. V-JEPA's
+"reading head" and ColBERT's late-interaction MaxSim are the canonical
+references for this style of multi-vector retrieval.
+
 ### Journey generation (`eval/generate_playlist.py`)
 
 Given two or more waypoint track IDs, the infill head fills the gaps using

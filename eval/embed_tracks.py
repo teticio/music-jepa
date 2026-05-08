@@ -1,13 +1,20 @@
 """
 Extract per-track embeddings from a trained Music JEPA encoder.
 
-Runs all spectrogram PNGs through the context encoder (mean-pools patch tokens)
-and saves a {track_id: embedding} dict to a .npy file.
+By default, runs all spectrogram PNGs through the context encoder and
+mean-pools patch tokens, saving a {track_id: embedding} dict to a .npy file.
+
+Pass --patch_head <ckpt> to use a trained patch-head's learned attention-pool
+instead of the encoder's mean-pool — required to keep retrieval consistent
+with a head trained via train_patch_head.py.
 
 Usage:
     python eval/embed_tracks.py --ckpt checkpoints/last.ckpt
     python eval/embed_tracks.py --ckpt checkpoints/last.ckpt --out embeddings/embeddings.npy
     python eval/embed_tracks.py --ckpt checkpoints/last.ckpt --spectrograms_dir data/spectrograms
+    python eval/embed_tracks.py --ckpt checkpoints/last.ckpt \
+        --patch_head checkpoints/continuation_head_patch.pt \
+        --out embeddings/embeddings_patch.npy
 """
 import argparse
 import os
@@ -22,6 +29,7 @@ import torchvision.transforms as T
 
 from jepa.model import build_model
 from jepa.module import JEPAModule
+from jepa.playlist_head import load_head
 
 
 class SpectrogramDataset(Dataset):
@@ -64,6 +72,7 @@ def embed_all(
     batch_size: int = 512,
     num_workers: int = 8,
     device="cuda",
+    patch_head=None,
 ):
     png_files = [f for f in os.listdir(spectrograms_dir) if f.endswith(".png")]
     print(f"Spectrograms to embed: {len(png_files):,}")
@@ -79,6 +88,8 @@ def embed_all(
     )
 
     encoder = encoder.to(device).eval()
+    if patch_head is not None:
+        patch_head = patch_head.to(device).eval()
     embeddings = {}
 
     for batch in tqdm(loader, desc="Embedding"):
@@ -87,7 +98,10 @@ def embed_all(
         imgs, ids = batch
         imgs = imgs.to(device, non_blocking=True)
         patch_tokens = encoder(imgs)
-        vecs = patch_tokens.mean(dim=1).cpu().numpy()
+        if patch_head is not None:
+            vecs = patch_head.pool_tracks(patch_tokens).cpu().numpy()
+        else:
+            vecs = patch_tokens.mean(dim=1).cpu().numpy()
         for track_id, vec in zip(ids, vecs):
             embeddings[track_id] = vec
 
@@ -100,6 +114,8 @@ def main():
     parser.add_argument("--config", default="configs/encoder.yaml")
     parser.add_argument("--spectrograms_dir", default="data/spectrograms")
     parser.add_argument("--out", default="embeddings/embeddings.npy", help="Output .npy file")
+    parser.add_argument("--patch_head", default=None,
+                        help="If set, pool with this trained patch head instead of mean-pool")
     parser.add_argument("--batch_size", type=int, default=512)
     parser.add_argument("--num_workers", type=int, default=8)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
@@ -115,6 +131,16 @@ def main():
     )
     encoder = module.model.encoder
 
+    patch_head = None
+    if args.patch_head:
+        patch_head, head_cfg = load_head(args.patch_head, device=args.device)
+        if not hasattr(patch_head, "pool_tracks"):
+            raise SystemExit(
+                f"--patch_head expected a PatchPlaylistHead checkpoint, "
+                f"got head_type='track' at {args.patch_head}"
+            )
+        print(f"Pooling with patch head: {args.patch_head}")
+
     embeddings = embed_all(
         encoder,
         args.spectrograms_dir,
@@ -122,6 +148,7 @@ def main():
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         device=args.device,
+        patch_head=patch_head,
     )
 
     out_dir = os.path.dirname(args.out)

@@ -35,12 +35,16 @@ def _parse_args():
     parser.add_argument("--checkpoint_dir", default="checkpoints")
     parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
+    parser.add_argument("--cont_head", default=None,
+                        help="Continuation head ckpt. Defaults to <checkpoint_dir>/continuation_head.pt")
+    parser.add_argument("--infil_head", default=None,
+                        help="Infill head ckpt. Defaults to <checkpoint_dir>/infill_head.pt")
     return parser.parse_args()
 
 
 args = _parse_args()
-_cont_head_path = str(Path(args.checkpoint_dir) / "continuation_head.pt")
-_infil_head_path = str(Path(args.checkpoint_dir) / "infill_head.pt")
+_cont_head_path = args.cont_head or str(Path(args.checkpoint_dir) / "continuation_head.pt")
+_infil_head_path = args.infil_head or str(Path(args.checkpoint_dir) / "infill_head.pt")
 
 
 # --- Cached resource loaders ---
