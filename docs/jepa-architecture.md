@@ -618,6 +618,13 @@ more information than its average. A patch-level head replaces the
 hard-coded mean with a **learned attention-pool** trained jointly with the
 aggregator MLP, while leaving the rest of the pipeline unchanged.
 
+The saved patch-head checkpoint therefore has two useful parts: `pool`, which
+creates the track-level embedding from patch tokens, and the MLP head, which
+does the same playlist prediction step as the default head. For generation,
+first regenerate the catalog with `eval/embed_tracks.py --patch_head ...` so
+the catalog vectors come from `pool`; after that, retrieval only looks up those
+pooled vectors and runs the MLP, just like the non-patch head.
+
 ```
 TRAINING (one step, encoder frozen)
 
@@ -656,8 +663,8 @@ INFERENCE (catalog generation)
 
 INFERENCE (retrieval)
 
-  Identical to the default head: build [a|b|c] from looked-up catalog vectors,
-  forward through the MLP, cosine-rank.
+  Identical to the default head after catalog generation: build [a|b|c] from
+  looked-up pooled vectors, forward through the MLP, cosine-rank.
 ```
 
 **Symmetry.** The same pool is applied to context tracks (whose pooled vectors
