@@ -205,8 +205,6 @@ def main():
                         help="Continuation head ckpt. Defaults to <checkpoint_dir>/continuation_head.pt")
     parser.add_argument("--infil_head", default=None,
                         help="Infill head ckpt. Defaults to <checkpoint_dir>/infill_head.pt")
-    parser.add_argument("--continuations_only", action="store_true",
-                        help="Skip journey examples (use when no compatible infill head/catalog exists)")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -255,9 +253,7 @@ def main():
     else:
         print(f"Skipping continuation examples: missing {cont_head}")
 
-    if args.continuations_only:
-        print("Skipping journey examples: --continuations_only set")
-    elif infil_head.exists():
+    if infil_head.exists():
         for name, waypoints, between_override in JOURNEY_EXAMPLES:
             between = between_override or args.between
             for hw in HEAD_WEIGHTS:
