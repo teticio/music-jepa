@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journey: Classical Jazz Funk Disco House Techno (hw=0.0)</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101114;
+      color: #f2f2f0;
+    }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: #101114;
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: -32px 0 18px;
+      padding: 32px 0 14px;
+      background: #101114;
+      border-bottom: 1px solid #2b2f38;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    button {
+      border: 1px solid #3a4150;
+      background: #eef2ff;
+      color: #111827;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+    .status {
+      color: #b9bec8;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #181a1f;
+      border: 1px solid #2b2f38;
+    }
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2b2f38;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: #b9bec8;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      background: #20232a;
+    }
+    tr.seed, tr.waypoint {
+      background: #20281f;
+    }
+    tr[data-preview-index] {
+      cursor: pointer;
+    }
+    tr[data-preview-index]:hover {
+      background: #222733;
+    }
+    tr.playing {
+      background: #263449;
+      box-shadow: inset 4px 0 0 #8fb3ff;
+    }
+    tr.playing .idx,
+    tr.playing .title {
+      color: #ffffff;
+    }
+    .idx {
+      width: 48px;
+      color: #b9bec8;
+      font-variant-numeric: tabular-nums;
+    }
+    .title {
+      font-weight: 650;
+      line-height: 1.35;
+    }
+    .artist {
+      color: #b9bec8;
+      margin-top: 2px;
+    }
+    code {
+      display: inline-block;
+      margin-top: 6px;
+      color: #8fb3ff;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      body {
+        padding: 18px;
+      }
+      .sticky-header {
+        margin: -18px 0 14px;
+        padding: 18px 0 12px;
+      }
+      .toolbar {
+        flex-wrap: wrap;
+      }
+    }
+    .badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #345c2a;
+      color: #dcffd4;
+      font-size: 11px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+    .missing {
+      display: inline-block;
+      margin-top: 8px;
+      color: #8f96a3;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sticky-header">
+      <h1>Journey: Classical Jazz Funk Disco House Techno (hw=0.0)</h1>
+      <div class="toolbar">
+        <button id="play-all" type="button">Play all previews</button>
+        <button id="previous-preview" type="button" disabled>Previous</button>
+        <button id="next-preview" type="button" disabled>Next</button>
+        <button id="stop-all" type="button" disabled>Stop</button>
+        <span class="status" id="play-status">56 previews available</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Track</th></tr>
+      </thead>
+      <tbody>
+        <tr id="track-1" class="track waypoint" data-preview-index="0">
+  <td class="idx">01</td>
+  <td><div class="title">Vivaldi: The Four Seasons, Violin Concerto in G Minor, Op. 8 No. 2, RV 315 &quot;Summer&quot;: III. Presto <span class="badge">waypoint</span></div><div class="artist">Antonio Vivaldi</div><code>5N82c9RY2k4VeAel1pl5bJ</code></td>
+</tr><tr id="track-2" class="track" data-preview-index="1">
+  <td class="idx">02</td>
+  <td><div class="title">Concerto for Violin and Orchestra in D Major, Op. 35, TH 59: I. Allegro moderato </div><div class="artist">Pyotr Ilyich Tchaikovsky</div><code>5MyXFnaqTLH1STAI4YTmGU</code></td>
+</tr><tr id="track-3" class="track" data-preview-index="2">
+  <td class="idx">03</td>
+  <td><div class="title">Concerto No. 1 in A Minor for Violin and Strings, BWV 1041: I. Allegro </div><div class="artist">Camerata Antonio Lucio</div><code>3cJbybFoFk4D80VfFsNGDI</code></td>
+</tr><tr id="track-4" class="track" data-preview-index="3">
+  <td class="idx">04</td>
+  <td><div class="title">Willoughby </div><div class="artist">Patrick Doyle</div><code>1QhZdnrdCWz2pd9SmbvL7U</code></td>
+</tr><tr id="track-5" class="track" data-preview-index="4">
+  <td class="idx">05</td>
+  <td><div class="title">Symphony No. 92 in G Major, Hob. 1:92 &quot;Oxford Symphony&quot;: I. Adagio - Allegro spiritoso </div><div class="artist">Joseph Haydn</div><code>6su8WsxgKHN7wm93zIZQ7q</code></td>
+</tr><tr id="track-6" class="track" data-preview-index="5">
+  <td class="idx">06</td>
+  <td><div class="title">Bach, JS: Brandenburg Concerto No. 1 in F Major, BWV 1046: III. Allegro </div><div class="artist">Johann Sebastian Bach</div><code>75RMtTAVUDs1EXWPGxIlCb</code></td>
+</tr><tr id="track-7" class="track" data-preview-index="6">
+  <td class="idx">07</td>
+  <td><div class="title">Chopin: Cello Sonata in G Minor, Op. 65: II. Allegro con brio </div><div class="artist">Frédéric Chopin</div><code>6i4jAAs5yldjm0gB8lExou</code></td>
+</tr><tr id="track-8" class="track" data-preview-index="7">
+  <td class="idx">08</td>
+  <td><div class="title">Don&#x27;t Explain </div><div class="artist">Chet Baker</div><code>5ZT1p3Elvxg6yu9qgWnH5r</code></td>
+</tr><tr id="track-9" class="track" data-preview-index="8">
+  <td class="idx">09</td>
+  <td><div class="title">Light Blue - Live At The Five Spot / August 7, 1958 </div><div class="artist">Thelonious Monk</div><code>13u7TYHapclL0B6ynyvBgV</code></td>
+</tr><tr id="track-10" class="track" data-preview-index="9">
+  <td class="idx">10</td>
+  <td><div class="title">Nobody Else But Me </div><div class="artist">Stan Getz</div><code>2QDrvpbDt5WnHIwqGZZSX0</code></td>
+</tr><tr id="track-11" class="track" data-preview-index="10">
+  <td class="idx">11</td>
+  <td><div class="title">Ain&#x27;t Misbehavin&#x27; </div><div class="artist">Sarah Vaughan</div><code>2y0cNizuFEbwK207G4k7GX</code></td>
+</tr><tr id="track-12" class="track waypoint" data-preview-index="11">
+  <td class="idx">12</td>
+  <td><div class="title">So What (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) <span class="badge">waypoint</span></div><div class="artist">Miles Davis</div><code>4vLYewWIvqHfKtJDk8c8tq</code></td>
+</tr><tr id="track-13" class="track" data-preview-index="12">
+  <td class="idx">13</td>
+  <td><div class="title">Fifth House </div><div class="artist">John Coltrane</div><code>6ZzAyD7uS7xdjOwmJrsxT4</code></td>
+</tr><tr id="track-14" class="track" data-preview-index="13">
+  <td class="idx">14</td>
+  <td><div class="title">Waltz For Debby </div><div class="artist">Cannonball Adderley</div><code>3BF3uROPt95X3X7ZixXFRC</code></td>
+</tr><tr id="track-15" class="track" data-preview-index="14">
+  <td class="idx">15</td>
+  <td><div class="title">Know What I Mean? </div><div class="artist">Cannonball Adderley</div><code>4x0kuhUNGqQN8uklA0jVbS</code></td>
+</tr><tr id="track-16" class="track" data-preview-index="15">
+  <td class="idx">16</td>
+  <td><div class="title">Hi-Fly - Live </div><div class="artist">The Cannonball Adderley Quintet</div><code>3dDYPUJn6XeywSnEQAetw0</code></td>
+</tr><tr id="track-17" class="track" data-preview-index="16">
+  <td class="idx">17</td>
+  <td><div class="title">Sassie Lassie </div><div class="artist">Lou Donaldson</div><code>2BrQAVjcBDWGvPXf0V2Nhi</code></td>
+</tr><tr id="track-18" class="track" data-preview-index="17">
+  <td class="idx">18</td>
+  <td><div class="title">Headache - Instrumental </div><div class="artist">James Brown</div><code>2aYqQPzQ5L2sPnGkBjoDFO</code></td>
+</tr><tr id="track-19" class="track" data-preview-index="18">
+  <td class="idx">19</td>
+  <td><div class="title">Mercy, Mercy, Mercy </div><div class="artist">Maceo Parker</div><code>3aERWhd4kA9nz2wQoLwpop</code></td>
+</tr><tr id="track-20" class="track" data-preview-index="19">
+  <td class="idx">20</td>
+  <td><div class="title">Cassanova </div><div class="artist">Rebirth Brass Band</div><code>6ejv6MUEHrh0WetjCuB4K1</code></td>
+</tr><tr id="track-21" class="track" data-preview-index="20">
+  <td class="idx">21</td>
+  <td><div class="title">Stony Island Band </div><div class="artist">Stony Island Band</div><code>0eOYg0dwycFav7Yor6SsuL</code></td>
+</tr><tr id="track-22" class="track" data-preview-index="21">
+  <td class="idx">22</td>
+  <td><div class="title">Get Up Offa That Thing (Release The Pressure) </div><div class="artist">James Brown</div><code>3CNgAQftTCJzrFuxPtt0EG</code></td>
+</tr><tr id="track-23" class="track waypoint" data-preview-index="22">
+  <td class="idx">23</td>
+  <td><div class="title">Get Up Offa That Thing <span class="badge">waypoint</span></div><div class="artist">James Brown</div><code>5XeSAezNDk9tuw3viiCbZ3</code></td>
+</tr><tr id="track-24" class="track" data-preview-index="23">
+  <td class="idx">24</td>
+  <td><div class="title">Too Hot Ta Trot </div><div class="artist">Commodores</div><code>7sP4EhJqFnud6mrG6VbjQx</code></td>
+</tr><tr id="track-25" class="track" data-preview-index="24">
+  <td class="idx">25</td>
+  <td><div class="title">Hot Pants - I&#x27;m Coming, Coming, I&#x27;m Coming - Single Version </div><div class="artist">Bobby Byrd</div><code>7JHptW8NXkfjCIIiBshGel</code></td>
+</tr><tr id="track-26" class="track" data-preview-index="25">
+  <td class="idx">26</td>
+  <td><div class="title">I&#x27;m Satisfied </div><div class="artist">James Brown</div><code>33FGKN2Uj1kilfOsPcwVOx</code></td>
+</tr><tr id="track-27" class="track" data-preview-index="26">
+  <td class="idx">27</td>
+  <td><div class="title">Love and Happiness </div><div class="artist">Rasputin&#x27;s Stash</div><code>0FVbvuABZZVs9L6v0KkR1N</code></td>
+</tr><tr id="track-28" class="track" data-preview-index="27">
+  <td class="idx">28</td>
+  <td><div class="title">Hustle Bus Stop </div><div class="artist">Mastermind</div><code>5HiFvazw7sULUf5bbrWrlY</code></td>
+</tr><tr id="track-29" class="track" data-preview-index="28">
+  <td class="idx">29</td>
+  <td><div class="title">Dance, Dance, Dance </div><div class="artist">Orquesta Novel</div><code>1Pa8gAuhofEQO8SFJjGslQ</code></td>
+</tr><tr id="track-30" class="track" data-preview-index="29">
+  <td class="idx">30</td>
+  <td><div class="title">Episode 1, Giorgio Moroder </div><div class="artist">Daft Punk</div><code>4l2bO887Yauqos4LwkCwBm</code></td>
+</tr><tr id="track-31" class="track" data-preview-index="30">
+  <td class="idx">31</td>
+  <td><div class="title">I Feel Love </div><div class="artist">Donna Summer</div><code>1vCBk33l9HaWp5FOnhSGxk</code></td>
+</tr><tr id="track-32" class="track" data-preview-index="31">
+  <td class="idx">32</td>
+  <td><div class="title">I Feel Love - Summer &#x27;77 Re-Eq &#x27;95 </div><div class="artist">Donna Summer</div><code>7jm055kLDXDgBffRkGGlYb</code></td>
+</tr><tr id="track-33" class="track" data-preview-index="32">
+  <td class="idx">33</td>
+  <td><div class="title">I Feel Love - Edit </div><div class="artist">Donna Summer</div><code>4lvNaO9CiRQN5AgGvBmuKx</code></td>
+</tr><tr id="track-34" class="track waypoint" data-preview-index="33">
+  <td class="idx">34</td>
+  <td><div class="title">I Feel Love - 12&quot; Version <span class="badge">waypoint</span></div><div class="artist">Donna Summer</div><code>7B7lf3sIze5VR2WuYttn18</code></td>
+</tr><tr id="track-35" class="track" data-preview-index="34">
+  <td class="idx">35</td>
+  <td><div class="title">Pablo - Original Mix </div><div class="artist">Fort Romeau</div><code>7n04oWq0HYF1wX5FqJTnlH</code></td>
+</tr><tr id="track-36" class="track" data-preview-index="35">
+  <td class="idx">36</td>
+  <td><div class="title">Twine </div><div class="artist">Museum of Bellas Artes</div><code>7ihIV5Ry6KmGP1diQv8vIj</code></td>
+</tr><tr id="track-37" class="track" data-preview-index="36">
+  <td class="idx">37</td>
+  <td><div class="title">Foehn </div><div class="artist">Lindstrøm</div><code>21stzDG9N1NQtb5wvZUof5</code></td>
+</tr><tr id="track-38" class="track" data-preview-index="37">
+  <td class="idx">38</td>
+  <td><div class="title">You And I </div><div class="artist">Owl Eyes</div><code>3ncW2CJAKpQjMrRvkc2Qgm</code></td>
+</tr><tr id="track-39" class="track" data-preview-index="38">
+  <td class="idx">39</td>
+  <td><div class="title">Like Before </div><div class="artist">Rheinzand</div><code>08dxa01tat82thev4QO2iu</code></td>
+</tr><tr id="track-40" class="track" data-preview-index="39">
+  <td class="idx">40</td>
+  <td><div class="title">Never Felt Like This (feat. Kiiara) </div><div class="artist">Devault</div><code>6H6NYmcW2ZvpIu33vFQOpp</code></td>
+</tr><tr id="track-41" class="track" data-preview-index="40">
+  <td class="idx">41</td>
+  <td><div class="title">Level Up </div><div class="artist">From Disco 2 Disco</div><code>1yJAzOLsnYUMO2prrad2RY</code></td>
+</tr><tr id="track-42" class="track" data-preview-index="41">
+  <td class="idx">42</td>
+  <td><div class="title">Indigo </div><div class="artist">Azari &amp; III</div><code>2j64rtoDz8uPGiaFhc2ij1</code></td>
+</tr><tr id="track-43" class="track" data-preview-index="42">
+  <td class="idx">43</td>
+  <td><div class="title">Unx de nosotrxs (feat. Javiera Mena) </div><div class="artist">Alex Anwandter</div><code>7yVGw6fxhYPOLsD9BPWXnA</code></td>
+</tr><tr id="track-44" class="track" data-preview-index="43">
+  <td class="idx">44</td>
+  <td><div class="title">Automatic - Extended Mix </div><div class="artist">Tensnake</div><code>6g3ZhVZrVWvEmEX1Bg5aMC</code></td>
+</tr><tr id="track-45" class="track waypoint" data-preview-index="44">
+  <td class="idx">45</td>
+  <td><div class="title">Good Life <span class="badge">waypoint</span></div><div class="artist">Inner City</div><code>5sJiLlgQKBL81QCTOkoLB5</code></td>
+</tr><tr id="track-46" class="track" data-preview-index="45">
+  <td class="idx">46</td>
+  <td><div class="title">МЕЛАНХОЛИЯ </div><div class="artist">CREAM SODA</div><code>7coFKUdyR4Auc9mBrZZ9lo</code></td>
+</tr><tr id="track-47" class="track" data-preview-index="46">
+  <td class="idx">47</td>
+  <td><div class="title">Wild Luv </div><div class="artist">Roach Motel</div><code>2PI8UD38B86j0NBh2GbxAF</code></td>
+</tr><tr id="track-48" class="track" data-preview-index="47">
+  <td class="idx">48</td>
+  <td><div class="title">Make U Whole </div><div class="artist">Various Artists</div><code>6J9prLn4BcRr61Y1jWxaCi</code></td>
+</tr><tr id="track-49" class="track" data-preview-index="48">
+  <td class="idx">49</td>
+  <td><div class="title">Make You Whole - 2021 Remaster </div><div class="artist">Andronicus</div><code>2POOwB3KeypKS00SEj4jUd</code></td>
+</tr><tr id="track-50" class="track" data-preview-index="49">
+  <td class="idx">50</td>
+  <td><div class="title">More And More - Underground Mix </div><div class="artist">Captain Hollywood Project</div><code>6hyIIdDTLS4gJ0IOkG6d02</code></td>
+</tr><tr id="track-51" class="track" data-preview-index="50">
+  <td class="idx">51</td>
+  <td><div class="title">Mr. Vain </div><div class="artist">CDM Project</div><code>4E8nXmWQhibgZUHnhvlkIm</code></td>
+</tr><tr id="track-52" class="track" data-preview-index="51">
+  <td class="idx">52</td>
+  <td><div class="title">Go - I Like to Score Version </div><div class="artist">Moby</div><code>3qgHKcGU1MoeJ06x8P7hYy</code></td>
+</tr><tr id="track-53" class="track" data-preview-index="52">
+  <td class="idx">53</td>
+  <td><div class="title">Born Slippy (Nuxx) - Radio Edit </div><div class="artist">Underworld</div><code>3bUNyRrTFJDd4mqvUcb1Aa</code></td>
+</tr><tr id="track-54" class="track" data-preview-index="53">
+  <td class="idx">54</td>
+  <td><div class="title">Think About the Way </div><div class="artist">Ice Mc</div><code>2foOeJLKSvepjHEkb4NR8N</code></td>
+</tr><tr id="track-55" class="track" data-preview-index="54">
+  <td class="idx">55</td>
+  <td><div class="title">When I Give My Love </div><div class="artist">Corona</div><code>6Px6vuUZfc8YzpyZRgDYsi</code></td>
+</tr><tr id="track-56" class="track waypoint" data-preview-index="55">
+  <td class="idx">56</td>
+  <td><div class="title">Born Slippy (Nuxx) <span class="badge">waypoint</span></div><div class="artist">Underworld</div><code>7xQYVjs4wZNdCwO0EeAWMC</code></td>
+</tr>
+      </tbody>
+    </table>
+  </main>
+  <script>
+    const previewItems = [{"url": "https://p.scdn.co/mp3-preview/a1e2ebe01e858457e9025b8ab5300d23d2122cf1?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-1"}, {"url": "https://p.scdn.co/mp3-preview/f22bc9f990839e196bea774bcead832658125a00?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-2"}, {"url": "https://p.scdn.co/mp3-preview/2ae9699f6ad0460598a0594f083986109bc575c2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-3"}, {"url": "https://p.scdn.co/mp3-preview/a48216e59229a941da64373fb8256010feb374a0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-4"}, {"url": "https://p.scdn.co/mp3-preview/d21c0c989d7ae1200bdf5b6f912ec9e3ad67b2aa?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-5"}, {"url": "https://p.scdn.co/mp3-preview/98674dd667a7a83ca3b6a659733b6666831bfae0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-6"}, {"url": "https://p.scdn.co/mp3-preview/01ed91b42cb8dafd638b14ea4f87b291977164f3?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-7"}, {"url": "https://p.scdn.co/mp3-preview/3edbd144b64ca12b1967d302dfc292cd33df2382?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-8"}, {"url": "https://p.scdn.co/mp3-preview/abfc3e0f952e06af2c873ea8270bc3daefe84492?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-9"}, {"url": "https://p.scdn.co/mp3-preview/337b6ecd4342b1607425afd4e0287c1f90167798?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-10"}, {"url": "https://p.scdn.co/mp3-preview/01c22f8c30573d5ce9bafb078b77d3e77c25d7e4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-11"}, {"url": "https://p.scdn.co/mp3-preview/d1a1a7b585e7bcf9becc2ab44938f6399fe90659?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-12"}, {"url": "https://p.scdn.co/mp3-preview/3563896a6a30c796fc8f3299292997ad16118b7c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-13"}, {"url": "https://p.scdn.co/mp3-preview/77eaf57d5c1b2aee28b4dda53dc34fca7773856b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-14"}, {"url": "https://p.scdn.co/mp3-preview/201c99bbd97467c6e0b9f2b555272a4c345cd8eb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-15"}, {"url": "https://p.scdn.co/mp3-preview/0f3a992a7ab0a581f050add02ac43e8d9e83ae3f?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-16"}, {"url": "https://p.scdn.co/mp3-preview/0a6729b64ad8df8a035fab767c61400c7ce73bfe?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-17"}, {"url": "https://p.scdn.co/mp3-preview/98a225bfc226f8ae2a805fb34d709e0da6bcbd55?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-18"}, {"url": "https://p.scdn.co/mp3-preview/d4c303abadcd8ff3b236fb7de67b0e0382114eaf?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-19"}, {"url": "https://p.scdn.co/mp3-preview/db7e2c3dba3718acb7a4842f771169e179f8343a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-20"}, {"url": "https://p.scdn.co/mp3-preview/9d9c9466cc506966ba7d6bad268b898da6209441?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-21"}, {"url": "https://p.scdn.co/mp3-preview/a7041ac3c32ae7ee3832d09271f5171bd3d135ea?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-22"}, {"url": "https://p.scdn.co/mp3-preview/711da2af248891ce1aad6b3350df54a75c96e398?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-23"}, {"url": "https://p.scdn.co/mp3-preview/36ea99c7162d30975e3c1c98f8a449c87eae67a2?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-24"}, {"url": "https://p.scdn.co/mp3-preview/88d9662c78c18472e809556657923e080882b20d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-25"}, {"url": "https://p.scdn.co/mp3-preview/a73e6e2943c4c31a5fa3310747d66ce5bd484457?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-26"}, {"url": "https://p.scdn.co/mp3-preview/9c712c663d5b137caf52a85d90616ca29eb28cfd?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-27"}, {"url": "https://p.scdn.co/mp3-preview/ebf80597d03c1148a0d12262d1a8715f35683892?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-28"}, {"url": "https://p.scdn.co/mp3-preview/1ce6022c30a494a6e497e78344da6163c77f3164?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-29"}, {"url": "https://p.scdn.co/mp3-preview/21dfaaf4bb5dae295f36a4daa62ed836fcbb7b51?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-30"}, {"url": "https://p.scdn.co/mp3-preview/c51861e40651d6139329e2d9fb92896a9462764e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-31"}, {"url": "https://p.scdn.co/mp3-preview/cdf8ea68269d56a225517338d6cd393bf03345a4?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-32"}, {"url": "https://p.scdn.co/mp3-preview/4a9304e4a102a77f5410cb453653f42047389009?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-33"}, {"url": "https://p.scdn.co/mp3-preview/40a3f8d9261c4f06228ce7f2dd4e303fdbf5b01d?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-34"}, {"url": "https://p.scdn.co/mp3-preview/ab86d0efa0fe5162e33e5ad460537934f528b4f8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-35"}, {"url": "https://p.scdn.co/mp3-preview/0e6aea6c66f7aaa92979423c065906b611eeb454?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-36"}, {"url": "https://p.scdn.co/mp3-preview/637a02f6c7491045991f91d27726b1fe1b12e6e0?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-37"}, {"url": "https://p.scdn.co/mp3-preview/1e22c9a30b508f44dc33c5f15f92d919288de8be?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-38"}, {"url": "https://p.scdn.co/mp3-preview/446981ad56daf07ef86a40346debce59f7f8f552?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-39"}, {"url": "https://p.scdn.co/mp3-preview/955fbed4b1830d0dbdefc6cb167b5f3c885e1f4a?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-40"}, {"url": "https://p.scdn.co/mp3-preview/5b48637fcb79d729b5b65d0ae09c57be094d32cc?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-41"}, {"url": "https://p.scdn.co/mp3-preview/39f6d477238ef10e9dc3d3338c9c9be9dd0c53c9?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-42"}, {"url": "https://p.scdn.co/mp3-preview/689b837c4552c5a474a37815dedb1898a4dd13c5?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-43"}, {"url": "https://p.scdn.co/mp3-preview/0e22b2cf7562cfee5a29c60172f3dfd417c1e0c3?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-44"}, {"url": "https://p.scdn.co/mp3-preview/5a918efb51710313c2a28608c7e77299997dcf98?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-45"}, {"url": "https://p.scdn.co/mp3-preview/a61fb0e6b759d2f3d4dc6542c6f3965e954cd324?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-46"}, {"url": "https://p.scdn.co/mp3-preview/a0e0756d370754f607f86ba3fd13b77730e23794?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-47"}, {"url": "https://p.scdn.co/mp3-preview/a1cf3434203441ad01b9c8ae9db997a88b58d53c?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-48"}, {"url": "https://p.scdn.co/mp3-preview/6f3484873f49b41047e60a7872bd677b389c436e?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-49"}, {"url": "https://p.scdn.co/mp3-preview/351e7997409e6e798aa9847d68e7b196724a08cf?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-50"}, {"url": "https://p.scdn.co/mp3-preview/cbdb2cb963c31f9d840e9bade9cbe19bd133afbb?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-51"}, {"url": "https://p.scdn.co/mp3-preview/8ca66859dc84b4fde360c5e1ed1ad38cffa1681b?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-52"}, {"url": "https://p.scdn.co/mp3-preview/a582abd12896f536372fbcb4d2de0ceff0614ab8?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-53"}, {"url": "https://p.scdn.co/mp3-preview/f7d98ae0045885f3e429c4b388478790bca83a41?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-54"}, {"url": "https://p.scdn.co/mp3-preview/a9f2c42a0919598050a8c7659cba90e9b881f214?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-55"}, {"url": "https://p.scdn.co/mp3-preview/3673b2bf43df7aa886027804db42255f0d999078?cid=d8a5ed958d274c2e8ee717e6a4b0971d", "rowId": "track-56"}];
+    const playButton = document.getElementById('play-all');
+    const previousButton = document.getElementById('previous-preview');
+    const nextButton = document.getElementById('next-preview');
+    const stopButton = document.getElementById('stop-all');
+    const statusEl = document.getElementById('play-status');
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function clearPlaying() {
+      document.querySelectorAll('tr.playing').forEach((row) => {
+        row.classList.remove('playing');
+      });
+    }
+
+    function setPlaying(index) {
+      clearPlaying();
+      currentIndex = index;
+      const item = previewItems[index];
+      if (!item) return;
+      const rowId = item.rowId;
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.add('playing');
+      row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function updateButtons() {
+      const hasPreviews = previewItems.length > 0;
+      playButton.disabled = !hasPreviews;
+      previousButton.disabled = currentIndex <= 0;
+      nextButton.disabled = currentIndex < 0 || currentIndex >= previewItems.length - 1;
+      stopButton.disabled = currentIndex < 0;
+    }
+
+    function stopCurrent(resetStatus = true) {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      currentIndex = -1;
+      clearPlaying();
+      updateButtons();
+      if (resetStatus) setStatus(`${previewItems.length} previews available`);
+    }
+
+    function playIndex(index) {
+      const item = previewItems[index];
+      if (!item) return;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      setPlaying(index);
+      updateButtons();
+      setStatus(`Playing preview ${index + 1} of ${previewItems.length}`);
+      currentAudio = new Audio(item.url);
+      currentAudio.addEventListener('ended', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.addEventListener('error', () => {
+        if (currentIndex < previewItems.length - 1) {
+          playIndex(currentIndex + 1);
+        } else {
+          stopCurrent(false);
+          setStatus('Finished');
+        }
+      }, { once: true });
+      currentAudio.play().catch(() => {
+        stopCurrent(false);
+        setStatus('Playback failed');
+      });
+    }
+
+    function nextPreview() {
+      if (currentIndex < previewItems.length - 1) playIndex(currentIndex + 1);
+    }
+
+    function previousPreview() {
+      if (currentIndex > 0) playIndex(currentIndex - 1);
+    }
+
+    function playAll() {
+      if (previewItems.length) playIndex(0);
+    }
+
+    document.querySelectorAll('tr[data-preview-index]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const index = Number(row.dataset.previewIndex);
+        if (index === currentIndex && currentAudio) {
+          stopCurrent();
+        } else {
+          playIndex(index);
+        }
+      });
+    });
+    playButton.addEventListener('click', playAll);
+    previousButton.addEventListener('click', previousPreview);
+    nextButton.addEventListener('click', nextPreview);
+    stopButton.addEventListener('click', stopCurrent);
+    updateButtons();
+  </script>
+</body>
+</html>
