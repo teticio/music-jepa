@@ -1,7 +1,10 @@
 seed: 42
 
 encoder:
-  ckpt: checkpoints/last.ckpt
+  # Snapshot of last.ckpt taken before head training so we don't race against
+  # the running encoder's rolling-checkpoint writes. Re-snapshot when you want
+  # to retrain against a fresher encoder.
+  ckpt: checkpoints/encoder_snapshot.ckpt
   config: configs/encoder.yaml
 
 data:
@@ -15,8 +18,9 @@ data:
   val_fraction: 0.05
   # Each batch runs the encoder on (batch_size * (max_history + 1)) spectrograms,
   # so this is much smaller than the track-head config (which only does lookups).
-  batch_size: 64
-  num_workers: 4
+  # Lowered from 64 -> 32 while sharing GPUs with a live encoder training run.
+  batch_size: 32
+  num_workers: 2
 
 model:
   hidden_dim: 1024
