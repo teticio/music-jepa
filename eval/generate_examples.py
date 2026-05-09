@@ -194,7 +194,11 @@ def main():
     parser.add_argument("--device", default=None)
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
-    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy",
+                        help="Catalog used for continuation examples (and journeys if --journey_embeddings is unset)")
+    parser.add_argument("--journey_embeddings", default=None,
+                        help="Override catalog used for journey examples. Useful when the cont and infill heads "
+                             "have different pools (e.g. patch heads) so each needs its own catalog.")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--mp3tovec_model_dir", default=None)
     parser.add_argument("--head", default=None,
@@ -213,8 +217,11 @@ def main():
         return
     clean_generated_examples(out_dir)
 
-    base = ["uv", "run", "python", "eval/generate_playlist.py",
-            "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
+    journey_embeddings = args.journey_embeddings or args.embeddings
+    playlist_base = ["uv", "run", "python", "eval/generate_playlist.py",
+                     "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
+    journey_base = ["uv", "run", "python", "eval/generate_playlist.py",
+                    "--embeddings", journey_embeddings, "--tracks_file", args.tracks_file]
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)
@@ -222,7 +229,7 @@ def main():
     infil_head = Path(args.infil_head) if args.infil_head else checkpoint_dir / "infill_head.pt"
 
     def run_playlist(name, seeds, hw_label, extra):
-        run(base + extra + [
+        run(playlist_base + extra + [
             "--seeds", *seeds,
             "--size", str(args.size),
             "--noise", str(args.noise),
@@ -231,7 +238,7 @@ def main():
         ] + device_args)
 
     def run_journey(name, waypoints, between, hw_label, extra):
-        run(base + extra + [
+        run(journey_base + extra + [
             "--journey", *waypoints,
             "--between", str(between),
             "--noise", str(args.noise),

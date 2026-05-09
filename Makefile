@@ -174,11 +174,12 @@ playlist-patch:
 examples:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
 
-# Cont and infill patch heads have separate learned pools (and so different
-# catalogs); the cont patch catalog can't be used for infill journeys.
-# Pass --continuations_only to skip journey examples in the gallery.
+# Cont and infill patch heads have separate learned pools, so each needs its
+# own catalog: continuations run against EMBEDDINGS_PATCH_CONT, journeys against
+# EMBEDDINGS_PATCH_INFIL. Both heads + both catalogs need to exist before
+# running this target.
 examples-patch:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch --continuations_only
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --journey_embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
