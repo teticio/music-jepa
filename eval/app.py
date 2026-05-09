@@ -23,7 +23,6 @@ from eval.generate_playlist import (
     generate_embedding_continuation,
     generate_embedding_journey,
     generate_infill_journey,
-    generate_journey,
     get_generated_track_info,
 )
 
@@ -110,7 +109,8 @@ with st.sidebar:
             "0 = pure embedding geometry. "
             "1 = fully trust the head. "
             "Continuation: blends head prediction vs mean of recent tracks. "
-            "Journey: blends head prediction vs linear interpolation between waypoints."
+            "Journey: blends infill head prediction vs linear interpolation "
+            "between local left/right anchors."
         ),
     )
 
@@ -201,13 +201,8 @@ if n >= 1 and st.button("Generate", type="primary"):
             if infil_head is not None:
                 pl = generate_infill_journey(
                     infil_head, wp, emb, ids, vecs,
-                    between=between, noise=noise, device="cpu",
-                )
-            elif cont_head is not None:
-                pl = generate_journey(
-                    cont_head, wp, emb, ids, vecs,
-                    between=between, max_history=max_history,
-                    noise=noise, head_weight=head_weight, device="cpu",
+                    between=between, noise=noise,
+                    head_weight=head_weight, device="cpu",
                 )
             else:
                 pl = generate_embedding_journey(

@@ -103,7 +103,7 @@ train-head-cont:
 	$(UV) run python train_head.py --config $(HEAD_CONT_CONFIG) --out $(CHECKPOINT_DIR)/continuation_head.pt
 
 journey:
-	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(JOURNEY_HTML)
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi

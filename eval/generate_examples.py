@@ -213,6 +213,7 @@ def main():
 
     checkpoint_dir = Path(args.checkpoint_dir)
     cont_head = checkpoint_dir / "continuation_head.pt"
+    infil_head = checkpoint_dir / "infill_head.pt"
 
     def run_playlist(name, seeds, hw_label, extra):
         run(base + extra + [
@@ -238,15 +239,18 @@ def main():
                 hw_label = f"hw{int(hw * 100)}"
                 run_playlist(name, seeds, hw_label,
                              ["--head", str(cont_head), "--head_weight", str(hw)])
+    else:
+        print(f"Skipping continuation examples: missing {cont_head}")
 
+    if infil_head.exists():
         for name, waypoints, between_override in JOURNEY_EXAMPLES:
             between = between_override or args.between
             for hw in HEAD_WEIGHTS:
                 hw_label = f"hw{int(hw * 100)}"
                 run_journey(name, waypoints, between, hw_label,
-                            ["--head", str(cont_head), "--head_weight", str(hw)])
+                            ["--head", str(infil_head), "--head_weight", str(hw)])
     else:
-        print(f"Skipping head examples: missing {cont_head}")
+        print(f"Skipping journey examples: missing {infil_head}")
 
     if args.mp3tovec_model_dir:
         mp3tovec_args = ["--mp3tovec_model_dir", args.mp3tovec_model_dir]

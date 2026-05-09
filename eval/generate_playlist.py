@@ -141,8 +141,10 @@ def fill_segment(
     vecs,
     used,
     noise: float,
+    head_weight: float,
     device: str,
 ) -> List[str]:
+    head_weight = min(max(head_weight, 0.0), 1.0)
     slots: List[Optional[str]] = [None] * (between + 2)
     slots[0] = start
     slots[-1] = end
@@ -156,14 +158,16 @@ def fill_segment(
 
         mid_pos = (left_pos + right_pos) // 2
         alpha = (mid_pos - left_pos) / (right_pos - left_pos)
-        query = predict_infill(
-            head,
-            slots[left_pos],
-            slots[right_pos],
-            alpha,
-            emb,
-            device,
-        )
+        left_id = slots[left_pos]
+        right_id = slots[right_pos]
+        if head_weight >= 1.0:
+            query = predict_infill(head, left_id, right_id, alpha, emb, device)
+        elif head_weight <= 0.0:
+            query = (1 - alpha) * emb[left_id] + alpha * emb[right_id]
+        else:
+            interp = (1 - alpha) * emb[left_id] + alpha * emb[right_id]
+            pred = predict_infill(head, left_id, right_id, alpha, emb, device)
+            query = head_weight * pred + (1 - head_weight) * interp
         candidates = rank_tracks(query, ids, vecs, exclude=used | {end}, top_k=100)
         tid, _ = choose(candidates, noise)
         slots[mid_pos] = tid
@@ -182,6 +186,7 @@ def generate_infill_journey(
     vecs,
     between: int,
     noise: float,
+    head_weight: float,
     device: str,
 ) -> List[str]:
     playlist = []
@@ -197,46 +202,12 @@ def generate_infill_journey(
             vecs,
             used,
             noise,
+            head_weight,
             device,
         )
         if playlist:
             segment = segment[1:]
         playlist.extend(segment)
-    return playlist
-
-
-def generate_journey(
-    head,
-    waypoints: List[str],
-    emb,
-    ids,
-    vecs,
-    between: int,
-    max_history: int,
-    noise: float,
-    head_weight: float,
-    device: str,
-) -> List[str]:
-    playlist = []
-    used = set()
-    for start, end in zip(waypoints, waypoints[1:]):
-        if not playlist:
-            playlist.append(start)
-            used.add(start)
-        start_vec = emb[start]
-        end_vec = emb[end]
-        for i in range(between):
-            alpha = (i + 1) / (between + 1)
-            interp = (1 - alpha) * start_vec + alpha * end_vec
-            pred = predict_next(head, playlist, emb, max_history, device)
-            query = (1 - head_weight) * interp + head_weight * pred
-            candidates = rank_tracks(query, ids, vecs, exclude=used | {end}, top_k=100)
-            tid, _ = choose(candidates, noise)
-            playlist.append(tid)
-            used.add(tid)
-        if end not in used:
-            playlist.append(end)
-            used.add(end)
     return playlist
 
 
@@ -692,13 +663,14 @@ def main():
         elif task == "infill":
             playlist = generate_infill_journey(
                 head, args.journey, emb, ids, vecs,
-                between=args.between, noise=args.noise, device=args.device,
+                between=args.between, noise=args.noise,
+                head_weight=args.head_weight, device=args.device,
             )
         else:
-            playlist = generate_journey(
-                head, args.journey, emb, ids, vecs,
-                between=args.between, max_history=max_history,
-                noise=args.noise, head_weight=args.head_weight, device=args.device,
+            raise SystemExit(
+                "--journey requires an infill head (task=infill in the head config). "
+                "Use a continuation head with --seeds, or train an infill head with "
+                "`make train-head-infil`."
             )
     else:
         if mp3tovec:
