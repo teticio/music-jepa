@@ -621,9 +621,10 @@ aggregator MLP, while leaving the rest of the pipeline unchanged.
 The saved patch-head checkpoint therefore has two useful parts: `pool`, which
 creates the track-level embedding from patch tokens, and the MLP head, which
 does the same playlist prediction step as the default head. For generation,
-first regenerate the catalog with `eval/embed_tracks.py --patch_head ...` so
-the catalog vectors come from `pool`; after that, retrieval only looks up those
-pooled vectors and runs the MLP, just like the non-patch head.
+first regenerate the patch catalog with `eval/embed_tracks.py --patch_head ...`
+so the head-side vectors come from `pool`. The regular `embeddings.npy` remains
+the base encoder catalog used at `HEAD_WEIGHT=0`; increasing `HEAD_WEIGHT`
+blends toward the patch catalog plus MLP prediction.
 
 ```
 TRAINING (one step, encoder frozen)
@@ -663,8 +664,9 @@ INFERENCE (catalog generation)
 
 INFERENCE (retrieval)
 
-  Identical to the default head after catalog generation: build [a|b|c] from
-  looked-up pooled vectors, forward through the MLP, cosine-rank.
+  Build [a|b|c] from looked-up pooled vectors, forward through the MLP, and
+  blend retrieval scores against the base encoder catalog according to
+  HEAD_WEIGHT.
 ```
 
 **Symmetry.** The same pool is applied to context tracks (whose pooled vectors
@@ -681,9 +683,9 @@ retrieval share a single mapping `(spectrogram → 384-d)`.
 `batch_size × (max_history + 1)` (continuation) or `batch_size × 3` (infill)
 spectrograms instead of doing an `embeddings.npy` lookup, so default
 batch sizes drop from 512 to 64-96. The pool is small (~3M extra params on top
-of the existing MLP head), and it produces a different `embeddings.npy` —
-keep both files around (e.g. `embeddings.npy` vs `embeddings_patch.npy`) and
-switch `EMBEDDINGS_FILE` / `HEAD_CONT_CKPT` to compare.
+of the existing MLP head), and each patch head produces its own patch catalog.
+Keep the base `embeddings.npy` plus `embeddings_patch_cont.npy` /
+`embeddings_patch_infil.npy` around for patch generation.
 
 **Dataset note.** `PatchPlaylistHeadDataset` only samples continuation targets
 where the playlist has at least `max_history` prior tracks (rather than the

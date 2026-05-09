@@ -195,10 +195,11 @@ def main():
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
     parser.add_argument("--embeddings", default="embeddings/embeddings.npy",
-                        help="Catalog used for continuation examples (and journeys if --journey_embeddings is unset)")
-    parser.add_argument("--journey_embeddings", default=None,
-                        help="Override catalog used for journey examples. Useful when the cont and infill heads "
-                             "have different pools (e.g. patch heads) so each needs its own catalog.")
+                        help="Base encoder catalog")
+    parser.add_argument("--embeddings_patch_cont", default=None,
+                        help="Patch-head continuation catalog")
+    parser.add_argument("--embeddings_patch_infil", default=None,
+                        help="Patch-head infill catalog")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--mp3tovec_model_dir", default=None)
     parser.add_argument("--head", default=None,
@@ -215,11 +216,10 @@ def main():
         return
     clean_generated_examples(out_dir)
 
-    journey_embeddings = args.journey_embeddings or args.embeddings
     playlist_base = ["uv", "run", "python", "eval/generate_playlist.py",
                      "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
     journey_base = ["uv", "run", "python", "eval/generate_playlist.py",
-                    "--embeddings", journey_embeddings, "--tracks_file", args.tracks_file]
+                    "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)
@@ -248,8 +248,10 @@ def main():
         for name, seeds in CONTINUATION_EXAMPLES:
             for hw in HEAD_WEIGHTS:
                 hw_label = f"hw{int(hw * 100)}"
-                run_playlist(name, seeds, hw_label,
-                             ["--head", str(cont_head), "--head_weight", str(hw)])
+                extra = ["--head", str(cont_head), "--head_weight", str(hw)]
+                if args.embeddings_patch_cont:
+                    extra += ["--embeddings_patch_cont", args.embeddings_patch_cont]
+                run_playlist(name, seeds, hw_label, extra)
     else:
         print(f"Skipping continuation examples: missing {cont_head}")
 
@@ -258,8 +260,10 @@ def main():
             between = between_override or args.between
             for hw in HEAD_WEIGHTS:
                 hw_label = f"hw{int(hw * 100)}"
-                run_journey(name, waypoints, between, hw_label,
-                            ["--head", str(infil_head), "--head_weight", str(hw)])
+                extra = ["--head", str(infil_head), "--head_weight", str(hw)]
+                if args.embeddings_patch_infil:
+                    extra += ["--embeddings_patch_infil", args.embeddings_patch_infil]
+                run_journey(name, waypoints, between, hw_label, extra)
     else:
         print(f"Skipping journey examples: missing {infil_head}")
 

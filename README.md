@@ -223,8 +223,10 @@ learned pool the rest of the pipeline works unchanged. See
 `docs/jepa-architecture.md` §10.1 for the architecture.
 
 The continuation and infill patch heads have **separate learned pools**, so
-each needs its own regenerated `embeddings.npy`. Patch-flavoured Make targets
-mirror their track-head counterparts:
+each needs its own regenerated patch catalog. The normal `EMBEDDINGS_FILE`
+still points at the base encoder catalog and remains the `HEAD_WEIGHT=0`
+geometry endpoint; the patch catalogs are used for the head side of the blend.
+Patch-flavoured Make targets mirror their track-head counterparts:
 
 ```bash
 # Train (uses HEAD_CONT_PATCH_CONFIG / HEAD_INFIL_PATCH_CONFIG)

@@ -50,10 +50,10 @@ help:
 	@echo "  make embed-patch       Re-embed catalog with an arbitrary patch head (PATCH_HEAD=path)"
 	@echo "  make embed-patch-cont  Re-embed using HEAD_CONT_PATCH_CKPT -> EMBEDDINGS_PATCH_CONT"
 	@echo "  make embed-patch-infil Re-embed using HEAD_INFIL_PATCH_CKPT -> EMBEDDINGS_PATCH_INFIL"
-	@echo "  make playlist-patch    Continue with the patch continuation head + EMBEDDINGS_PATCH_CONT"
-	@echo "  make journey-patch     Journey with the patch infill head + EMBEDDINGS_PATCH_INFIL"
-	@echo "  make examples-patch    Generate gallery with patch heads and matching embeddings"
-	@echo "  make app-patch         Streamlit app with patch heads and matching embeddings"
+	@echo "  make playlist-patch    Continue with base + patch continuation catalogs"
+	@echo "  make journey-patch     Journey with base + patch infill catalogs"
+	@echo "  make examples-patch    Generate gallery with base + patch catalogs"
+	@echo "  make app-patch         Streamlit app with base + patch catalogs"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
 	@echo "  make examples          Generate example playlist/journey HTML gallery"
@@ -91,7 +91,7 @@ app:
 	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE)
 
 app-patch:
-	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_PATCH_CONT) --journey_embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT)
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT)
 
 # Data pipeline --------------------------------------------------------------
 
@@ -153,7 +153,7 @@ journey:
 	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_CKPT) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(JOURNEY_HTML)
 
 journey-patch:
-	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/journey_patch.html
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/journey_patch.html
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
@@ -161,17 +161,15 @@ playlist:
 
 playlist-patch:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist-patch SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
-	$(UV) run python eval/generate_playlist.py --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/playlist_patch.html
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/playlist_patch.html
 
 examples:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
 
-# Cont and infill patch heads have separate learned pools, so each needs its
-# own catalog: continuations run against EMBEDDINGS_PATCH_CONT, journeys against
-# EMBEDDINGS_PATCH_INFIL. Both heads + both catalogs need to exist before
-# running this target.
+# Patch examples use the base encoder catalog as the head_weight=0 endpoint,
+# plus one learned-pool catalog per patch head.
 examples-patch:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --journey_embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
