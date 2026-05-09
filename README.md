@@ -241,8 +241,7 @@ make embed-patch-infil
 make playlist-patch SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make journey-patch  JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make examples-patch
-make app-patch-cont    # Streamlit pinned to the patch continuation head
-make app-patch-infil   # Streamlit pinned to the patch infill head
+make app-patch
 ```
 
 The track-head and patch-head checkpoints / embeddings coexist by default —

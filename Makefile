@@ -33,7 +33,7 @@ OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
 JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
 EXPLORE_HTML ?= $(OUTPUT_DIR)/explore.html
 
-.PHONY: setup app app-patch-cont app-patch-infil data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont train-head-patch-cont train-head-patch-infil embed embed-patch embed-patch-cont embed-patch-infil journey journey-patch playlist playlist-patch examples examples-patch search viz publish-pages tensorboard test help
+.PHONY: setup app app-patch data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont train-head-patch-cont train-head-patch-infil embed embed-patch embed-patch-cont embed-patch-infil journey journey-patch playlist playlist-patch examples examples-patch search viz publish-pages tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -52,9 +52,8 @@ help:
 	@echo "  make embed-patch-infil Re-embed using HEAD_INFIL_PATCH_CKPT -> EMBEDDINGS_PATCH_INFIL"
 	@echo "  make playlist-patch    Continue with the patch continuation head + EMBEDDINGS_PATCH_CONT"
 	@echo "  make journey-patch     Journey with the patch infill head + EMBEDDINGS_PATCH_INFIL"
-	@echo "  make examples-patch    Generate gallery with the patch continuation head"
-	@echo "  make app-patch-cont    Streamlit app pinned to the patch continuation head/embeddings"
-	@echo "  make app-patch-infil   Streamlit app pinned to the patch infill head/embeddings"
+	@echo "  make examples-patch    Generate gallery with patch heads and matching embeddings"
+	@echo "  make app-patch         Streamlit app with patch heads and matching embeddings"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
 	@echo "  make examples          Generate example playlist/journey HTML gallery"
@@ -91,15 +90,8 @@ setup:
 app:
 	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE)
 
-# Patch app variants pin all heads to a single patch checkpoint (and its matching
-# embeddings) because the cont and infill patch heads have different learned pools
-# and so are not interchangeable against the same catalog. Use -cont for seed-based
-# generation; -infil for waypoint journeys.
-app-patch-cont:
-	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_CONT_PATCH_CKPT)
-
-app-patch-infil:
-	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_INFIL_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT)
+app-patch:
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_PATCH_CONT) --journey_embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT)
 
 # Data pipeline --------------------------------------------------------------
 
