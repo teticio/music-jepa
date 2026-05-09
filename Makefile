@@ -158,10 +158,10 @@ train-head-patch-infil:
 	$(UV) run python train_patch_head.py --config $(HEAD_INFIL_PATCH_CONFIG)
 
 journey:
-	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_CKPT) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_CKPT) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(JOURNEY_HTML)
 
 journey-patch:
-	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --out_html $(OUTPUT_DIR)/journey_patch.html
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/journey_patch.html
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
@@ -174,8 +174,11 @@ playlist-patch:
 examples:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
 
+# Cont and infill patch heads have separate learned pools (and so different
+# catalogs); the cont patch catalog can't be used for infill journeys.
+# Pass --continuations_only to skip journey examples in the gallery.
 examples-patch:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch --continuations_only
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
