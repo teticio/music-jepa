@@ -125,18 +125,14 @@ def render_html(rows, out_html: Path) -> None:
             f"""
     <article class="track-card">
       <header>
-        <h2>{escape(row["label"])}</h2>
+        <div>
+          <h2>{escape(row["label"])}</h2>
+        </div>
         <code>{escape(row["track_id"])}</code>
       </header>
-      <div class="track-layout">
-        <section class="spectrogram-block">
-          <h3>Original spectrogram</h3>
-          <img src="{row["image"]}" alt="Spectrogram for {escape(row["label"])}">
-          <p class="metric">time runs left to right; lower mel bands are lower in the image.</p>
-        </section>
-        <div class="maps">
+      <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
+      <div class="maps">
 {''.join(head_sections)}
-        </div>
       </div>
     </article>
 """
@@ -158,27 +154,26 @@ def render_html(rows, out_html: Path) -> None:
     body {{ margin: 0; padding: 28px; background: #101114; }}
     main {{ max-width: 1180px; margin: 0 auto; }}
     h1 {{ margin: 0 0 8px; font-size: 28px; }}
-    .note {{ margin: 0 0 24px; color: #b9bec8; max-width: 900px; line-height: 1.5; }}
+    .note {{ margin: 0 0 24px; color: #b9bec8; max-width: 1180px; line-height: 1.5; }}
     .track-card {{ border: 1px solid #2b2f38; background: #181a1f; margin: 0 0 22px; padding: 16px; }}
-    header {{ display: flex; gap: 12px; align-items: baseline; justify-content: space-between; }}
-    h2 {{ margin: 0 0 14px; font-size: 18px; }}
+    header {{ display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start; }}
+    h2 {{ margin: 0; font-size: 18px; line-height: 1.3; }}
     h3 {{ margin: 0 0 8px; font-size: 14px; color: #d7dbe4; }}
-    code {{ color: #aeb7c8; font-size: 12px; }}
-    .track-layout {{ display: grid; grid-template-columns: minmax(260px, 390px) 1fr; gap: 18px; align-items: start; }}
+    code {{ color: #aeb7c8; font-size: 12px; padding-top: 5px; white-space: nowrap; }}
     img {{ width: 100%; display: block; image-rendering: auto; border: 1px solid #30343d; background: #0d0e11; box-sizing: border-box; }}
-    .maps {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }}
+    .maps {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }}
     .heatmap {{ display: grid; grid-template-columns: repeat(27, 1fr); aspect-ratio: 27 / 12; border: 1px solid #30343d; background: #15171c; }}
     .cell {{ min-width: 0; min-height: 0; border-right: 1px solid rgba(0, 0, 0, 0.18); border-bottom: 1px solid rgba(0, 0, 0, 0.18); }}
     .overlay {{ position: relative; aspect-ratio: 27 / 12; border: 1px solid #30343d; background: #0d0e11; overflow: hidden; }}
     .overlay img {{ position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: fill; filter: saturate(0.85) contrast(1.08) brightness(0.82); }}
     .overlay-heatmap {{ position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; mix-blend-mode: screen; }}
     .overlay-heatmap .cell {{ border-right-color: rgba(255, 255, 255, 0.18); border-bottom-color: rgba(255, 255, 255, 0.18); }}
-    .spectrogram-block {{ margin: 0; }}
-    .metric {{ margin: 8px 0 0; color: #aeb7c8; font-size: 12px; }}
+    .metric {{ margin: 8px 0 0; color: #aeb7c8; font-size: 12px; line-height: 1.4; }}
+    .track-note {{ margin: 6px 0 14px; }}
     @media (max-width: 760px) {{
       body {{ padding: 16px; }}
-      .track-layout {{ grid-template-columns: 1fr; }}
       header {{ display: block; }}
+      code {{ display: block; padding-top: 6px; white-space: normal; }}
     }}
   </style>
 </head>

@@ -26,7 +26,7 @@ from bokeh.models import (
     LogColorMapper,
     TapTool,
 )
-from bokeh.palettes import Viridis256
+from bokeh.palettes import Turbo256
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import file_html
@@ -92,7 +92,7 @@ def main():
 
     color_values = np.maximum(np.array(counts), 1)
     color_mapper = LogColorMapper(
-        palette=Viridis256,
+        palette=Turbo256,
         low=float(color_values.min()),
         high=float(color_values.max()),
     )
@@ -110,30 +110,39 @@ def main():
 
     p = figure(
         width=1200,
-        height=800,
+        height=780,
+        sizing_mode="stretch_both",
         title="music-jepa embedding space (click to play)",
         tools="pan,wheel_zoom,box_zoom,reset,tap",
         toolbar_location="above",
     )
     p.title.text_font_size = "16px"
-    p.background_fill_color = "#f7f4ef"
-    p.border_fill_color = "#f7f4ef"
-    p.grid.grid_line_color = "#ded8ce"
+    p.title.text_color = "#f2f2f0"
+    p.background_fill_color = "#101114"
+    p.border_fill_color = "#101114"
+    p.outline_line_color = "#2b2f38"
+    p.grid.grid_line_color = "#2b2f38"
+    p.grid.grid_line_alpha = 0.35
     p.axis.visible = False
     p.toolbar.logo = None
+    p.toolbar.autohide = True
 
     circles = p.scatter(
         "x", "y",
         source=source,
-        size=6,
+        size=7,
         color={"field": "color_value", "transform": color_mapper},
-        alpha=0.72,
-        line_color=None,
-        nonselection_fill_alpha=0.28,
-        nonselection_line_color=None,
-        selection_fill_color="#f45b69",
+        alpha=0.88,
+        line_color="#f2f2f0",
+        line_alpha=0.22,
+        line_width=0.7,
+        nonselection_fill_alpha=0.2,
+        nonselection_line_alpha=0.08,
+        selection_fill_color="#ff5c30",
         selection_fill_alpha=1.0,
-        selection_line_color=None,
+        selection_line_color="#ffffff",
+        selection_line_alpha=0.9,
+        selection_line_width=1.3,
     )
     color_bar = ColorBar(
         color_mapper=color_mapper,
@@ -142,6 +151,12 @@ def main():
         label_standoff=8,
         width=12,
         padding=8,
+        background_fill_color="#101114",
+        border_line_color="#2b2f38",
+        major_label_text_color="#b9bec8",
+        title_text_color="#d7dbe4",
+        major_tick_line_color="#b9bec8",
+        bar_line_color="#2b2f38",
     )
     p.add_layout(color_bar, "right")
 
@@ -177,6 +192,46 @@ def main():
     p.add_tools(TapTool())
 
     html = file_html(p, CDN, "music-jepa Explorer")
+    html = html.replace(
+        """      html, body {
+        box-sizing: border-box;
+        display: flow-root;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }""",
+        """      html, body {
+        box-sizing: border-box;
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #101114;
+        color: #f2f2f0;
+      }
+      body {
+        min-height: 100dvh;
+      }
+      body > div {
+        width: 100vw;
+        height: 100dvh;
+      }
+      .bk-root, .bk-Figure {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .bk-tooltip {
+        background: #181a1f !important;
+        border-color: #2b2f38 !important;
+        color: #f2f2f0 !important;
+      }
+      @media (max-width: 760px) {
+        .bk-toolbar {
+          font-size: 12px;
+        }
+      }""",
+    )
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as f:
         f.write(html)
