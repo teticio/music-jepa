@@ -243,8 +243,14 @@ make embed-patch-infil
 make playlist-patch SEEDS="3EYOJ48Et32uATr9ZmLnAo"
 make journey-patch  JOURNEY="3EYOJ48Et32uATr9ZmLnAo 69kOkLUCkxIZYexIgSG8rq"
 make examples-patch
+make explain-patch
 make app-patch
 ```
+
+`make explain-patch` writes `outputs/patch_head_maps.html`, showing the
+learned attention-pool weight map for each example seed/waypoint track under
+the continuation and infill patch heads. These maps explain the pooling step,
+not the ViT encoder's internal self-attention.
 
 The track-head and patch-head checkpoints / embeddings coexist by default —
 patch outputs sit at `EMBEDDINGS_DIR/embeddings_patch_*.npy` and

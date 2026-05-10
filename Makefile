@@ -19,6 +19,7 @@ HEAD_INFIL_PATCH_CKPT ?= $(CHECKPOINT_DIR)/infill_head_patch.pt
 EMBEDDINGS_PATCH_CONT ?= $(EMBEDDINGS_DIR)/embeddings_patch_cont.npy
 EMBEDDINGS_PATCH_INFIL ?= $(EMBEDDINGS_DIR)/embeddings_patch_infil.npy
 PATCH_HEAD ?=
+SPECTROGRAMS_DIR ?= data/spectrograms
 TRACKS_FILE ?= data/tracks_dedup.csv
 MP3TOVEC_MODEL_DIR ?= ../deej-ai.online-app/model
 OUTPUT_DIR ?= outputs
@@ -32,8 +33,9 @@ HEAD_WEIGHT ?= 1.0
 OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
 JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
 EXPLORE_HTML ?= $(OUTPUT_DIR)/explore.html
+PATCH_HEAD_MAP_HTML ?= $(OUTPUT_DIR)/patch_head_maps.html
 
-.PHONY: setup app app-patch data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont train-head-patch-cont train-head-patch-infil embed embed-patch embed-patch-cont embed-patch-infil journey journey-patch playlist playlist-patch examples examples-patch search viz publish-pages tensorboard test help
+.PHONY: setup app app-patch data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont train-head-patch-cont train-head-patch-infil embed embed-patch embed-patch-cont embed-patch-infil journey journey-patch playlist playlist-patch examples examples-patch explain-patch search viz publish-pages tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -53,6 +55,7 @@ help:
 	@echo "  make playlist-patch    Continue with base + patch continuation catalogs"
 	@echo "  make journey-patch     Journey with base + patch infill catalogs"
 	@echo "  make examples-patch    Generate gallery with base + patch catalogs"
+	@echo "  make explain-patch     Render patch-head attention-pool maps"
 	@echo "  make app-patch         Streamlit app with base + patch catalogs"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
@@ -79,6 +82,7 @@ help:
 	@echo "  HEAD_INFIL_PATCH_CKPT=$(HEAD_INFIL_PATCH_CKPT)"
 	@echo "  EMBEDDINGS_PATCH_CONT=$(EMBEDDINGS_PATCH_CONT)"
 	@echo "  EMBEDDINGS_PATCH_INFIL=$(EMBEDDINGS_PATCH_INFIL)"
+	@echo "  SPECTROGRAMS_DIR=$(SPECTROGRAMS_DIR)"
 	@echo "  TRACKS_FILE=$(TRACKS_FILE)"
 	@echo "  OUTPUT_DIR=$(OUTPUT_DIR)"
 	@echo "  PAGES_BRANCH=$(PAGES_BRANCH)"
@@ -170,6 +174,9 @@ examples:
 # plus one learned-pool catalog per patch head.
 examples-patch:
 	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
+
+explain-patch:
+	$(UV) run python eval/explain_patch_heads.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --spectrograms_dir $(SPECTROGRAMS_DIR) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --out_html $(PATCH_HEAD_MAP_HTML)
 
 search:
 	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
