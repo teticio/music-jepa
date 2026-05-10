@@ -110,8 +110,7 @@ def main():
 
     p = figure(
         width=1200,
-        height=780,
-        sizing_mode="stretch_both",
+        height=800,
         title="music-jepa embedding space (click to play)",
         tools="pan,wheel_zoom,box_zoom,reset,tap",
         toolbar_location="above",
@@ -202,34 +201,17 @@ def main():
       }""",
         """      html, body {
         box-sizing: border-box;
+        display: flow-root;
         height: 100%;
-        width: 100%;
         margin: 0;
         padding: 0;
-        overflow: hidden;
         background: #101114;
         color: #f2f2f0;
-      }
-      body {
-        min-height: 100dvh;
-      }
-      body > div {
-        width: 100vw;
-        height: 100dvh;
-      }
-      .bk-root, .bk-Figure {
-        width: 100% !important;
-        height: 100% !important;
       }
       .bk-tooltip {
         background: #181a1f !important;
         border-color: #2b2f38 !important;
         color: #f2f2f0 !important;
-      }
-      @media (max-width: 760px) {
-        .bk-toolbar {
-          font-size: 12px;
-        }
       }""",
     )
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
