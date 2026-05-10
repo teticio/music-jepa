@@ -16,10 +16,10 @@
     h1 { margin: 0 0 8px; font-size: 28px; }
     .note { margin: 0 0 24px; color: #b9bec8; max-width: 900px; line-height: 1.5; }
     .track-card { border: 1px solid #2b2f38; background: #181a1f; margin: 0 0 22px; padding: 16px; }
-    header { display: flex; gap: 12px; align-items: baseline; justify-content: space-between; }
-    h2 { margin: 0 0 14px; font-size: 18px; }
+    header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start; }
+    h2 { margin: 0; font-size: 18px; line-height: 1.3; }
     h3 { margin: 0 0 8px; font-size: 14px; color: #d7dbe4; }
-    code { color: #aeb7c8; font-size: 12px; }
+    code { color: #aeb7c8; font-size: 12px; padding-top: 5px; white-space: nowrap; }
     img { width: 100%; display: block; image-rendering: auto; border: 1px solid #30343d; background: #0d0e11; box-sizing: border-box; }
     .maps { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
     .heatmap { display: grid; grid-template-columns: repeat(27, 1fr); aspect-ratio: 27 / 12; border: 1px solid #30343d; background: #15171c; }
@@ -28,11 +28,12 @@
     .overlay img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: fill; filter: saturate(0.85) contrast(1.08) brightness(0.82); }
     .overlay-heatmap { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; mix-blend-mode: screen; }
     .overlay-heatmap .cell { border-right-color: rgba(255, 255, 255, 0.18); border-bottom-color: rgba(255, 255, 255, 0.18); }
-    .metric { margin: 8px 0 0; color: #aeb7c8; font-size: 12px; }
-    .track-note { margin: -6px 0 14px; }
+    .metric { margin: 8px 0 0; color: #aeb7c8; font-size: 12px; line-height: 1.4; }
+    .track-note { margin: 6px 0 14px; }
     @media (max-width: 760px) {
       body { padding: 16px; }
       header { display: block; }
+      code { display: block; padding-top: 6px; white-space: normal; }
     }
   </style>
 </head>
@@ -48,7 +49,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Daft Punk - Get Lucky (feat. Pharrell Williams and Nile Rodgers) [69kOkLUCkxIZYexIgSG8rq]</h2>
+        <div>
+          <h2>Daft Punk - Get Lucky (feat. Pharrell Williams and Nile Rodgers) [69kOkLUCkxIZYexIgSG8rq]</h2>
+        </div>
         <code>69kOkLUCkxIZYexIgSG8rq</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -1373,7 +1376,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Nirvana - Smells Like Teen Spirit [4CeeEOM32jQcH3eN9Q2dGj]</h2>
+        <div>
+          <h2>Nirvana - Smells Like Teen Spirit [4CeeEOM32jQcH3eN9Q2dGj]</h2>
+        </div>
         <code>4CeeEOM32jQcH3eN9Q2dGj</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -2698,7 +2703,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Bob Marley &amp; The Wailers - Three Little Birds [75FYqcxt1YEAtqDLrOeIJn]</h2>
+        <div>
+          <h2>Bob Marley &amp; The Wailers - Three Little Birds [75FYqcxt1YEAtqDLrOeIJn]</h2>
+        </div>
         <code>75FYqcxt1YEAtqDLrOeIJn</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -4023,7 +4030,9 @@
 
     <article class="track-card">
       <header>
-        <h2>John Coltrane - My Favorite Things [6oVY50pmdXqLNVeK8bzomn]</h2>
+        <div>
+          <h2>John Coltrane - My Favorite Things [6oVY50pmdXqLNVeK8bzomn]</h2>
+        </div>
         <code>6oVY50pmdXqLNVeK8bzomn</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -5348,7 +5357,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Wolfgang Amadeus Mozart - Requiem, K. 626: Lacrimosa [3oHSL6pt9LpNrQZuQGu9wL]</h2>
+        <div>
+          <h2>Wolfgang Amadeus Mozart - Requiem, K. 626: Lacrimosa [3oHSL6pt9LpNrQZuQGu9wL]</h2>
+        </div>
         <code>3oHSL6pt9LpNrQZuQGu9wL</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -6673,7 +6684,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Ludwig van Beethoven - Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio [3E14w5yvAuK1YHnfi2zpdl]</h2>
+        <div>
+          <h2>Ludwig van Beethoven - Symphony No. 5 in C Minor, Op. 67: I. Allegro con brio [3E14w5yvAuK1YHnfi2zpdl]</h2>
+        </div>
         <code>3E14w5yvAuK1YHnfi2zpdl</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -7998,7 +8011,9 @@
 
     <article class="track-card">
       <header>
-        <h2>deadmau5 - Ghosts &#x27;n&#x27; Stuff [4ua0IepBEISCWwF8dTJvcU]</h2>
+        <div>
+          <h2>deadmau5 - Ghosts &#x27;n&#x27; Stuff [4ua0IepBEISCWwF8dTJvcU]</h2>
+        </div>
         <code>4ua0IepBEISCWwF8dTJvcU</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -9323,7 +9338,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Daft Punk - One More Time [0DiWol3AO6WpXZgp0goxAV]</h2>
+        <div>
+          <h2>Daft Punk - One More Time [0DiWol3AO6WpXZgp0goxAV]</h2>
+        </div>
         <code>0DiWol3AO6WpXZgp0goxAV</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -10648,7 +10665,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Antonio Vivaldi - Vivaldi: The Four Seasons, Violin Concerto in G Minor, Op. 8 No. 2, RV 315 &quot;Summer&quot;: III. Presto [5N82c9RY2k4VeAel1pl5bJ]</h2>
+        <div>
+          <h2>Antonio Vivaldi - Vivaldi: The Four Seasons, Violin Concerto in G Minor, Op. 8 No. 2, RV 315 &quot;Summer&quot;: III. Presto [5N82c9RY2k4VeAel1pl5bJ]</h2>
+        </div>
         <code>5N82c9RY2k4VeAel1pl5bJ</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -11973,7 +11992,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Miles Davis - So What (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) [4vLYewWIvqHfKtJDk8c8tq]</h2>
+        <div>
+          <h2>Miles Davis - So What (feat. John Coltrane, Cannonball Adderley &amp; Bill Evans) [4vLYewWIvqHfKtJDk8c8tq]</h2>
+        </div>
         <code>4vLYewWIvqHfKtJDk8c8tq</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -13298,7 +13319,9 @@
 
     <article class="track-card">
       <header>
-        <h2>James Brown - Get Up Offa That Thing [5XeSAezNDk9tuw3viiCbZ3]</h2>
+        <div>
+          <h2>James Brown - Get Up Offa That Thing [5XeSAezNDk9tuw3viiCbZ3]</h2>
+        </div>
         <code>5XeSAezNDk9tuw3viiCbZ3</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -14623,7 +14646,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Donna Summer - I Feel Love - 12&quot; Version [7B7lf3sIze5VR2WuYttn18]</h2>
+        <div>
+          <h2>Donna Summer - I Feel Love - 12&quot; Version [7B7lf3sIze5VR2WuYttn18]</h2>
+        </div>
         <code>7B7lf3sIze5VR2WuYttn18</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -15948,7 +15973,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Inner City - Good Life [5sJiLlgQKBL81QCTOkoLB5]</h2>
+        <div>
+          <h2>Inner City - Good Life [5sJiLlgQKBL81QCTOkoLB5]</h2>
+        </div>
         <code>5sJiLlgQKBL81QCTOkoLB5</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
@@ -17273,7 +17300,9 @@
 
     <article class="track-card">
       <header>
-        <h2>Underworld - Born Slippy (Nuxx) [7xQYVjs4wZNdCwO0EeAWMC]</h2>
+        <div>
+          <h2>Underworld - Born Slippy (Nuxx) [7xQYVjs4wZNdCwO0EeAWMC]</h2>
+        </div>
         <code>7xQYVjs4wZNdCwO0EeAWMC</code>
       </header>
       <p class="metric track-note">time runs left to right; lower mel bands are lower in each overlay.</p>
