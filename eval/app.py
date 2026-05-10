@@ -61,9 +61,19 @@ def _load_embeddings_data(emb_path: str):
 
 
 @st.cache_resource
-def _load_tracks_search(csv_path: str, searchable_ids: tuple[str, ...]):
+def _load_aligned_catalog(base_path: str, patch_path: str | None):
+    ids, vecs, emb, embedded_ids = _load_embeddings_data(base_path)
+    if patch_path is None:
+        return ids, vecs, emb, embedded_ids
+    patch_ids, patch_vecs, patch_emb, patch_embedded_ids = _load_embeddings_data(patch_path)
+    patch_vecs = np.stack([patch_emb[tid] for tid in ids]).astype("float32")
+    return ids, patch_vecs, patch_emb, patch_embedded_ids
+
+
+@st.cache_resource
+def _load_tracks_search(csv_path: str, cache_key: tuple[str, ...], _searchable_ids: set[str]):
     tracks_df = load_tracks(csv_path)
-    sub = tracks_df[tracks_df.index.isin(searchable_ids)]
+    sub = tracks_df[tracks_df.index.isin(_searchable_ids)]
     artist = sub["artist"].fillna("").astype(str)
     title = sub["title"].fillna("").astype(str)
     tids = sub.index.astype(str)
@@ -96,20 +106,18 @@ def _load_infil_head(path: str):
 # --- Load data ---
 try:
     ids, vecs, emb, embedded_ids = _load_embeddings_data(args.embeddings)
-    cont_ids, cont_vecs, cont_emb, cont_embedded_ids = _load_embeddings_data(
-        args.embeddings_patch_cont or args.embeddings
+    cont_ids, cont_vecs, cont_emb, cont_embedded_ids = _load_aligned_catalog(
+        args.embeddings, args.embeddings_patch_cont
     )
-    infil_ids, infil_vecs, infil_emb, infil_embedded_ids = _load_embeddings_data(
-        args.embeddings_patch_infil or args.embeddings
+    infil_ids, infil_vecs, infil_emb, infil_embedded_ids = _load_aligned_catalog(
+        args.embeddings, args.embeddings_patch_infil
     )
-    if args.embeddings_patch_cont:
-        cont_vecs = np.stack([cont_emb[tid] for tid in ids]).astype("float32")
-        cont_ids = ids
-    if args.embeddings_patch_infil:
-        infil_vecs = np.stack([infil_emb[tid] for tid in ids]).astype("float32")
-        infil_ids = ids
-    searchable_ids = tuple(sorted(embedded_ids & cont_embedded_ids & infil_embedded_ids))
-    tracks_df, search_index = _load_tracks_search(args.tracks_file, searchable_ids)
+    searchable_ids = embedded_ids & cont_embedded_ids & infil_embedded_ids
+    tracks_df, search_index = _load_tracks_search(
+        args.tracks_file,
+        (args.embeddings, args.embeddings_patch_cont or "", args.embeddings_patch_infil or ""),
+        searchable_ids,
+    )
 except Exception as exc:
     st.error(f"Could not load embeddings / tracks: {exc}")
     st.stop()
@@ -178,7 +186,6 @@ if query:
             if tid not in st.session_state.waypoints:
                 st.session_state.waypoints.append(tid)
                 st.session_state.playlist = None
-                st.rerun()
     else:
         st.caption("No results.")
 

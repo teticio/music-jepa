@@ -6,6 +6,8 @@ A self-supervised music representation model using Joint Embedding Predictive Ar
 
 - [Embedding explorer](https://teticio.github.io/music-jepa/explore.html)
 - [Generated playlist examples](https://teticio.github.io/music-jepa/examples/)
+- [Patch-head playlist examples](https://teticio.github.io/music-jepa/examples-patch/)
+- [Patch-head pool maps](https://teticio.github.io/music-jepa/patch_head_maps.html)
 
 ## Concept
 
