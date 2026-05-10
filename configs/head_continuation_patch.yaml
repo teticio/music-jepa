@@ -1,0 +1,40 @@
+seed: 42
+
+encoder:
+  # Snapshot of last.ckpt taken before head training so we don't race against
+  # the running encoder's rolling-checkpoint writes. Re-snapshot when you want
+  # to retrain against a fresher encoder.
+  ckpt: checkpoints/encoder_snapshot.ckpt
+  config: configs/encoder.yaml
+
+data:
+  spectrograms_dir: data/spectrograms
+  playlists_file: data/playlists_dedup.csv
+  task: continuation
+  max_history: 3
+  max_span: 32
+  min_playlist_len: 10
+  max_playlist_len: 30
+  val_fraction: 0.05
+  # Each batch runs the encoder on (batch_size * (max_history + 1)) spectrograms,
+  # so this is much smaller than the track-head config (which only does lookups).
+  # Lowered from 64 -> 32 while sharing GPUs with a live encoder training run.
+  batch_size: 32
+  num_workers: 2
+
+model:
+  hidden_dim: 1024
+  dropout: 0.1
+  pool_num_heads: 4
+  pool_dropout: 0.0
+  residual_source: first
+
+training:
+  epochs: 100
+  lr: 0.0003
+  weight_decay: 0.01
+  temperature: 0.07
+  grad_clip: 1.0
+  early_stopping_patience: 8
+  early_stopping_min_delta: 0.001
+  out: checkpoints/continuation_head_patch.pt

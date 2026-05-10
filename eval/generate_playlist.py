@@ -104,6 +104,39 @@ def predict_infill(head, left_id, right_id, alpha, emb, device):
     return head(context_t).squeeze(0).cpu().numpy()
 
 
+def rank_blended(
+    base_query: np.ndarray,
+    ids,
+    base_vecs,
+    exclude,
+    head_weight: float,
+    head_query: Optional[np.ndarray] = None,
+    head_vecs=None,
+    top_k: int = 100,
+):
+    if head_query is None or head_vecs is None or head_weight <= 0.0:
+        return rank_tracks(base_query, ids, base_vecs, exclude=exclude, top_k=top_k)
+    if head_weight >= 1.0:
+        return rank_tracks(head_query, ids, head_vecs, exclude=exclude, top_k=top_k)
+
+    base_query = base_query.astype("float32")
+    base_query = base_query / max(float(np.linalg.norm(base_query)), 1e-8)
+    head_query = head_query.astype("float32")
+    head_query = head_query / max(float(np.linalg.norm(head_query)), 1e-8)
+    sims = (1 - head_weight) * (base_vecs @ base_query) + head_weight * (head_vecs @ head_query)
+    order = np.argsort(sims)[::-1]
+    excluded = set(exclude or [])
+    results = []
+    for idx in order:
+        tid = ids[int(idx)]
+        if tid in excluded:
+            continue
+        results.append((tid, float(sims[idx])))
+        if len(results) >= top_k:
+            break
+    return results
+
+
 def generate_continuation(
     head,
     seeds: List[str],
@@ -115,18 +148,32 @@ def generate_continuation(
     noise: float,
     head_weight: float,
     device: str,
+    base_emb=None,
+    base_vecs=None,
 ) -> List[str]:
     playlist = list(seeds)
     head_weight = min(max(head_weight, 0.0), 1.0)
+    score_blend = base_emb is not None or base_vecs is not None
+    base_emb = base_emb or emb
+    base_vecs = base_vecs if base_vecs is not None else vecs
     while len(playlist) < size:
         pred = predict_next(head, playlist, emb, max_history, device)
-        if head_weight < 1.0:
-            recent = playlist[-max_history:]
-            anchor = np.stack([emb[tid] for tid in recent]).mean(axis=0)
-            query = head_weight * pred + (1 - head_weight) * anchor
+        recent = playlist[-max_history:]
+        base_query = np.stack([base_emb[tid] for tid in recent]).mean(axis=0)
+        if score_blend:
+            candidates = rank_blended(
+                base_query,
+                ids,
+                base_vecs,
+                exclude=playlist,
+                head_weight=head_weight,
+                head_query=pred,
+                head_vecs=vecs,
+                top_k=100,
+            )
         else:
-            query = pred
-        candidates = rank_tracks(query, ids, vecs, exclude=playlist, top_k=100)
+            query = pred if head_weight >= 1.0 else head_weight * pred + (1 - head_weight) * base_query
+            candidates = rank_tracks(query, ids, vecs, exclude=playlist, top_k=100)
         playlist.append(choose(candidates, noise)[0])
     return playlist
 
@@ -143,8 +190,13 @@ def fill_segment(
     noise: float,
     head_weight: float,
     device: str,
+    base_emb=None,
+    base_vecs=None,
 ) -> List[str]:
     head_weight = min(max(head_weight, 0.0), 1.0)
+    score_blend = base_emb is not None or base_vecs is not None
+    base_emb = base_emb or emb
+    base_vecs = base_vecs if base_vecs is not None else vecs
     slots: List[Optional[str]] = [None] * (between + 2)
     slots[0] = start
     slots[-1] = end
@@ -160,15 +212,28 @@ def fill_segment(
         alpha = (mid_pos - left_pos) / (right_pos - left_pos)
         left_id = slots[left_pos]
         right_id = slots[right_pos]
-        if head_weight >= 1.0:
-            query = predict_infill(head, left_id, right_id, alpha, emb, device)
-        elif head_weight <= 0.0:
-            query = (1 - alpha) * emb[left_id] + alpha * emb[right_id]
-        else:
-            interp = (1 - alpha) * emb[left_id] + alpha * emb[right_id]
+        base_query = (1 - alpha) * base_emb[left_id] + alpha * base_emb[right_id]
+        if score_blend:
             pred = predict_infill(head, left_id, right_id, alpha, emb, device)
-            query = head_weight * pred + (1 - head_weight) * interp
-        candidates = rank_tracks(query, ids, vecs, exclude=used | {end}, top_k=100)
+            candidates = rank_blended(
+                base_query,
+                ids,
+                base_vecs,
+                exclude=used | {end},
+                head_weight=head_weight,
+                head_query=pred,
+                head_vecs=vecs,
+                top_k=100,
+            )
+        else:
+            if head_weight >= 1.0:
+                query = predict_infill(head, left_id, right_id, alpha, emb, device)
+            elif head_weight <= 0.0:
+                query = base_query
+            else:
+                pred = predict_infill(head, left_id, right_id, alpha, emb, device)
+                query = head_weight * pred + (1 - head_weight) * base_query
+            candidates = rank_tracks(query, ids, vecs, exclude=used | {end}, top_k=100)
         tid, _ = choose(candidates, noise)
         slots[mid_pos] = tid
         used.add(tid)
@@ -188,6 +253,8 @@ def generate_infill_journey(
     noise: float,
     head_weight: float,
     device: str,
+    base_emb=None,
+    base_vecs=None,
 ) -> List[str]:
     playlist = []
     used = set(waypoints)
@@ -204,6 +271,8 @@ def generate_infill_journey(
             noise,
             head_weight,
             device,
+            base_emb,
+            base_vecs,
         )
         if playlist:
             segment = segment[1:]
@@ -605,7 +674,12 @@ def write_html(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--head", default=None)
-    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy",
+                        help="Base encoder catalog. Patch generation blends away from this as head_weight increases.")
+    parser.add_argument("--embeddings_patch_cont", default=None,
+                        help="Patch-head continuation catalog. Used only with --seeds.")
+    parser.add_argument("--embeddings_patch_infil", default=None,
+                        help="Patch-head infill catalog. Used only with --journey.")
     parser.add_argument("--mp3tovec_model_dir", default=None, help="If set, use Mp3ToVec instead of the head")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--seeds", nargs="*", default=None)
@@ -636,11 +710,22 @@ def main():
     mp3tovec = args.mp3tovec_model_dir is not None
     if mp3tovec:
         ids, vecs, metadata = load_mp3tovec(args.mp3tovec_model_dir)
+        emb = {tid: vec for tid, vec in zip(ids, vecs)}
+        head_vecs = vecs
+        head_emb = emb
     else:
         if not args.head:
             raise SystemExit("Pass --head (or --mp3tovec_model_dir for Mp3ToVec mode)")
         ids, vecs = load_embeddings(args.embeddings)
-    emb = {tid: vec for tid, vec in zip(ids, vecs)}
+        emb = {tid: vec for tid, vec in zip(ids, vecs)}
+        patch_embeddings = args.embeddings_patch_infil if args.journey else args.embeddings_patch_cont
+        if patch_embeddings:
+            patch_ids, raw_head_vecs = load_embeddings(patch_embeddings)
+            head_emb = dict(zip(patch_ids, raw_head_vecs))
+            head_vecs = np.stack([head_emb[tid] for tid in ids]).astype("float32")
+        else:
+            head_vecs = vecs
+            head_emb = emb
     head = None
     task = "continuation"
     max_history = 3
@@ -653,6 +738,9 @@ def main():
     missing = [tid for tid in requested if tid not in emb]
     if missing:
         raise SystemExit(f"Missing embeddings for: {', '.join(missing)}")
+    missing = [tid for tid in requested if tid not in head_emb]
+    if missing:
+        raise SystemExit(f"Missing head embeddings for: {', '.join(missing)}")
 
     if args.journey:
         if mp3tovec:
@@ -662,9 +750,11 @@ def main():
             )
         elif task == "infill":
             playlist = generate_infill_journey(
-                head, args.journey, emb, ids, vecs,
+                head, args.journey, head_emb, ids, head_vecs,
                 between=args.between, noise=args.noise,
                 head_weight=args.head_weight, device=args.device,
+                base_emb=emb if args.embeddings_patch_infil else None,
+                base_vecs=vecs if args.embeddings_patch_infil else None,
             )
         else:
             raise SystemExit(
@@ -682,9 +772,11 @@ def main():
             raise SystemExit("This checkpoint is trained for --journey infilling. Use a continuation head for --seeds.")
         else:
             playlist = generate_continuation(
-                head, args.seeds, emb, ids, vecs,
+                head, args.seeds, head_emb, ids, head_vecs,
                 size=args.size, max_history=max_history,
                 noise=args.noise, head_weight=args.head_weight, device=args.device,
+                base_emb=emb if args.embeddings_patch_cont else None,
+                base_vecs=vecs if args.embeddings_patch_cont else None,
             )
 
     urls = []

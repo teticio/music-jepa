@@ -6,9 +6,20 @@ NPROC_PER_NODE ?= 2
 CHECKPOINT_DIR ?= checkpoints
 CHECKPOINT_NAME ?= last.ckpt
 EMBEDDINGS_DIR ?= embeddings
+EMBEDDINGS_FILE ?= $(EMBEDDINGS_DIR)/embeddings.npy
 TRAIN_CONFIG ?= configs/encoder.yaml
 HEAD_CONT_CONFIG ?= configs/head_continuation.yaml
 HEAD_INFIL_CONFIG ?= configs/head_infil.yaml
+HEAD_CONT_CKPT ?= $(CHECKPOINT_DIR)/continuation_head.pt
+HEAD_INFIL_CKPT ?= $(CHECKPOINT_DIR)/infill_head.pt
+HEAD_CONT_PATCH_CONFIG ?= configs/head_continuation_patch.yaml
+HEAD_INFIL_PATCH_CONFIG ?= configs/head_infil_patch.yaml
+HEAD_CONT_PATCH_CKPT ?= $(CHECKPOINT_DIR)/continuation_head_patch.pt
+HEAD_INFIL_PATCH_CKPT ?= $(CHECKPOINT_DIR)/infill_head_patch.pt
+EMBEDDINGS_PATCH_CONT ?= $(EMBEDDINGS_DIR)/embeddings_patch_cont.npy
+EMBEDDINGS_PATCH_INFIL ?= $(EMBEDDINGS_DIR)/embeddings_patch_infil.npy
+PATCH_HEAD ?=
+SPECTROGRAMS_DIR ?= data/spectrograms
 TRACKS_FILE ?= data/tracks_dedup.csv
 MP3TOVEC_MODEL_DIR ?= ../deej-ai.online-app/model
 OUTPUT_DIR ?= outputs
@@ -22,8 +33,9 @@ HEAD_WEIGHT ?= 1.0
 OUT_HTML ?= $(OUTPUT_DIR)/playlist.html
 JOURNEY_HTML ?= $(OUTPUT_DIR)/journey.html
 EXPLORE_HTML ?= $(OUTPUT_DIR)/explore.html
+PATCH_HEAD_MAP_HTML ?= $(OUTPUT_DIR)/patch_head_maps.html
 
-.PHONY: setup app data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont embed journey playlist examples search viz publish-pages tensorboard test help
+.PHONY: setup app app-patch data data-sample sample previews previews-sample spectrograms train-encoder train-head-infil train-head-cont train-head-patch-cont train-head-patch-infil embed embed-patch embed-patch-cont embed-patch-infil journey journey-patch playlist playlist-patch examples examples-patch explain-patch search viz publish-pages tensorboard test help
 
 help:
 	@echo "Music JEPA - step by step:"
@@ -35,6 +47,16 @@ help:
 	@echo "  make embed             Extract embeddings from CHECKPOINT_DIR/CHECKPOINT_NAME"
 	@echo "  make train-head-infil  Train infill head on missing playlist tracks"
 	@echo "  make train-head-cont   Train continuation head for next-track prediction"
+	@echo "  make train-head-patch-cont   Train patch-level continuation head (alt approach)"
+	@echo "  make train-head-patch-infil  Train patch-level infill head (alt approach)"
+	@echo "  make embed-patch       Re-embed catalog with an arbitrary patch head (PATCH_HEAD=path)"
+	@echo "  make embed-patch-cont  Re-embed using HEAD_CONT_PATCH_CKPT -> EMBEDDINGS_PATCH_CONT"
+	@echo "  make embed-patch-infil Re-embed using HEAD_INFIL_PATCH_CKPT -> EMBEDDINGS_PATCH_INFIL"
+	@echo "  make playlist-patch    Continue with base + patch continuation catalogs"
+	@echo "  make journey-patch     Journey with base + patch infill catalogs"
+	@echo "  make examples-patch    Generate gallery with base + patch catalogs"
+	@echo "  make explain-patch     Render patch-head attention-pool maps"
+	@echo "  make app-patch         Streamlit app with base + patch catalogs"
 	@echo "  make journey           Fill between waypoint track IDs with infill head"
 	@echo "  make playlist          Continue from seed track IDs with continuation head"
 	@echo "  make examples          Generate example playlist/journey HTML gallery"
@@ -48,9 +70,19 @@ help:
 	@echo "  CHECKPOINT_DIR=$(CHECKPOINT_DIR)"
 	@echo "  CHECKPOINT_NAME=$(CHECKPOINT_NAME)"
 	@echo "  EMBEDDINGS_DIR=$(EMBEDDINGS_DIR)"
+	@echo "  EMBEDDINGS_FILE=$(EMBEDDINGS_FILE)"
 	@echo "  TRAIN_CONFIG=$(TRAIN_CONFIG)"
 	@echo "  HEAD_CONT_CONFIG=$(HEAD_CONT_CONFIG)"
 	@echo "  HEAD_INFIL_CONFIG=$(HEAD_INFIL_CONFIG)"
+	@echo "  HEAD_CONT_CKPT=$(HEAD_CONT_CKPT)"
+	@echo "  HEAD_INFIL_CKPT=$(HEAD_INFIL_CKPT)"
+	@echo "  HEAD_CONT_PATCH_CONFIG=$(HEAD_CONT_PATCH_CONFIG)"
+	@echo "  HEAD_INFIL_PATCH_CONFIG=$(HEAD_INFIL_PATCH_CONFIG)"
+	@echo "  HEAD_CONT_PATCH_CKPT=$(HEAD_CONT_PATCH_CKPT)"
+	@echo "  HEAD_INFIL_PATCH_CKPT=$(HEAD_INFIL_PATCH_CKPT)"
+	@echo "  EMBEDDINGS_PATCH_CONT=$(EMBEDDINGS_PATCH_CONT)"
+	@echo "  EMBEDDINGS_PATCH_INFIL=$(EMBEDDINGS_PATCH_INFIL)"
+	@echo "  SPECTROGRAMS_DIR=$(SPECTROGRAMS_DIR)"
 	@echo "  TRACKS_FILE=$(TRACKS_FILE)"
 	@echo "  OUTPUT_DIR=$(OUTPUT_DIR)"
 	@echo "  PAGES_BRANCH=$(PAGES_BRANCH)"
@@ -60,7 +92,10 @@ setup:
 	$(UV) sync --extra eval --extra app
 
 app:
-	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE)
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE)
+
+app-patch:
+	$(UV) run streamlit run eval/app.py -- --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT)
 
 # Data pipeline --------------------------------------------------------------
 
@@ -94,29 +129,60 @@ train-encoder:
 	fi
 
 embed:
-	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --out $(EMBEDDINGS_DIR)/embeddings.npy
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --out $(EMBEDDINGS_FILE)
+
+embed-patch:
+	@if [ -z "$(PATCH_HEAD)" ]; then echo "Usage: make embed-patch PATCH_HEAD=path/to/head_patch.pt [EMBEDDINGS_FILE=path]"; exit 1; fi
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --patch_head $(PATCH_HEAD) --out $(EMBEDDINGS_FILE)
+
+embed-patch-cont:
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --patch_head $(HEAD_CONT_PATCH_CKPT) --out $(EMBEDDINGS_PATCH_CONT)
+
+embed-patch-infil:
+	$(UV) run python eval/embed_tracks.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --patch_head $(HEAD_INFIL_PATCH_CKPT) --out $(EMBEDDINGS_PATCH_INFIL)
 
 train-head-infil:
-	$(UV) run python train_head.py --config $(HEAD_INFIL_CONFIG) --out $(CHECKPOINT_DIR)/infill_head.pt
+	$(UV) run python train_head.py --config $(HEAD_INFIL_CONFIG) --out $(HEAD_INFIL_CKPT)
 
 train-head-cont:
-	$(UV) run python train_head.py --config $(HEAD_CONT_CONFIG) --out $(CHECKPOINT_DIR)/continuation_head.pt
+	$(UV) run python train_head.py --config $(HEAD_CONT_CONFIG) --out $(HEAD_CONT_CKPT)
+
+train-head-patch-cont:
+	$(UV) run python train_patch_head.py --config $(HEAD_CONT_PATCH_CONFIG)
+
+train-head-patch-infil:
+	$(UV) run python train_patch_head.py --config $(HEAD_INFIL_PATCH_CONFIG)
 
 journey:
-	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/infill_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(JOURNEY_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_CKPT) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(JOURNEY_HTML)
+
+journey-patch:
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --journey $(JOURNEY) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/journey_patch.html
 
 playlist:
 	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
-	$(UV) run python eval/generate_playlist.py --head $(CHECKPOINT_DIR)/continuation_head.pt --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_CONT_CKPT) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUT_HTML)
+
+playlist-patch:
+	@if [ -z "$(SEEDS)" ]; then echo "Usage: make playlist-patch SEEDS=\"TRACK_ID [TRACK_ID ...]\""; exit 1; fi
+	$(UV) run python eval/generate_playlist.py --head $(HEAD_CONT_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --tracks_file $(TRACKS_FILE) --seeds $(SEEDS) --head_weight $(HEAD_WEIGHT) --out_html $(OUTPUT_DIR)/playlist_patch.html
 
 examples:
-	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples --mp3tovec_model_dir $(MP3TOVEC_MODEL_DIR)
+
+# Patch examples use the base encoder catalog as the head_weight=0 endpoint,
+# plus one learned-pool catalog per patch head.
+examples-patch:
+	$(UV) run python eval/generate_examples.py --checkpoint_dir $(CHECKPOINT_DIR) --head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --embeddings $(EMBEDDINGS_FILE) --embeddings_patch_cont $(EMBEDDINGS_PATCH_CONT) --embeddings_patch_infil $(EMBEDDINGS_PATCH_INFIL) --tracks_file $(TRACKS_FILE) --out_dir $(OUTPUT_DIR)/examples-patch
+
+explain-patch:
+	$(UV) run python eval/explain_patch_heads.py --config $(TRAIN_CONFIG) --ckpt $(CHECKPOINT_DIR)/$(CHECKPOINT_NAME) --spectrograms_dir $(SPECTROGRAMS_DIR) --tracks_file $(TRACKS_FILE) --cont_head $(HEAD_CONT_PATCH_CKPT) --infil_head $(HEAD_INFIL_PATCH_CKPT) --out_html $(PATCH_HEAD_MAP_HTML)
 
 search:
-	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
+	$(UV) run python eval/search_tracks.py --query "$(QUERY)" --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --limit $(LIMIT)
 
 viz:
-	$(UV) run python eval/explore.py --embeddings $(EMBEDDINGS_DIR)/embeddings.npy --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --n_points $(N_POINTS) --export
+	$(UV) run python eval/explore.py --embeddings $(EMBEDDINGS_FILE) --tracks_file $(TRACKS_FILE) --out $(EXPLORE_HTML) --n_points $(N_POINTS) --export
 
 publish-pages:
 	@if [ ! -d "$(OUTPUT_DIR)" ]; then echo "Missing OUTPUT_DIR=$(OUTPUT_DIR). Generate outputs first."; exit 1; fi

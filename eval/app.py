@@ -32,24 +32,48 @@ st.set_page_config(page_title="Music JEPA", layout="wide")
 def _parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint_dir", default="checkpoints")
-    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy",
+                        help="Base encoder catalog")
+    parser.add_argument("--embeddings_patch_cont", default=None,
+                        help="Patch-head continuation catalog")
+    parser.add_argument("--embeddings_patch_infil", default=None,
+                        help="Patch-head infill catalog")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
+    parser.add_argument("--cont_head", default=None,
+                        help="Continuation head ckpt. Defaults to <checkpoint_dir>/continuation_head.pt")
+    parser.add_argument("--infil_head", default=None,
+                        help="Infill head ckpt. Defaults to <checkpoint_dir>/infill_head.pt")
     return parser.parse_args()
 
 
 args = _parse_args()
-_cont_head_path = str(Path(args.checkpoint_dir) / "continuation_head.pt")
-_infil_head_path = str(Path(args.checkpoint_dir) / "infill_head.pt")
+_cont_head_path = args.cont_head or str(Path(args.checkpoint_dir) / "continuation_head.pt")
+_infil_head_path = args.infil_head or str(Path(args.checkpoint_dir) / "infill_head.pt")
 
 
 # --- Cached resource loaders ---
 @st.cache_resource
-def _load_data(emb_path: str, csv_path: str):
+def _load_embeddings_data(emb_path: str):
     ids, vecs = load_embeddings(emb_path)
     emb = dict(zip(ids, vecs))
-    tracks_df = load_tracks(csv_path)
     embedded_ids = set(ids)
-    sub = tracks_df[tracks_df.index.isin(embedded_ids)]
+    return ids, vecs, emb, embedded_ids
+
+
+@st.cache_resource
+def _load_aligned_catalog(base_path: str, patch_path: str | None):
+    ids, vecs, emb, embedded_ids = _load_embeddings_data(base_path)
+    if patch_path is None:
+        return ids, vecs, emb, embedded_ids
+    patch_ids, patch_vecs, patch_emb, patch_embedded_ids = _load_embeddings_data(patch_path)
+    patch_vecs = np.stack([patch_emb[tid] for tid in ids]).astype("float32")
+    return ids, patch_vecs, patch_emb, patch_embedded_ids
+
+
+@st.cache_resource
+def _load_tracks_search(csv_path: str, cache_key: tuple[str, ...], _searchable_ids: set[str]):
+    tracks_df = load_tracks(csv_path)
+    sub = tracks_df[tracks_df.index.isin(_searchable_ids)]
     artist = sub["artist"].fillna("").astype(str)
     title = sub["title"].fillna("").astype(str)
     tids = sub.index.astype(str)
@@ -60,7 +84,7 @@ def _load_data(emb_path: str, csv_path: str):
         },
         index=sub.index,
     )
-    return ids, vecs, emb, embedded_ids, tracks_df, search_index
+    return tracks_df, search_index
 
 
 @st.cache_resource
@@ -81,8 +105,18 @@ def _load_infil_head(path: str):
 
 # --- Load data ---
 try:
-    ids, vecs, emb, embedded_ids, tracks_df, search_index = _load_data(
-        args.embeddings, args.tracks_file
+    ids, vecs, emb, embedded_ids = _load_embeddings_data(args.embeddings)
+    cont_ids, cont_vecs, cont_emb, cont_embedded_ids = _load_aligned_catalog(
+        args.embeddings, args.embeddings_patch_cont
+    )
+    infil_ids, infil_vecs, infil_emb, infil_embedded_ids = _load_aligned_catalog(
+        args.embeddings, args.embeddings_patch_infil
+    )
+    searchable_ids = embedded_ids & cont_embedded_ids & infil_embedded_ids
+    tracks_df, search_index = _load_tracks_search(
+        args.tracks_file,
+        (args.embeddings, args.embeddings_patch_cont or "", args.embeddings_patch_infil or ""),
+        searchable_ids,
     )
 except Exception as exc:
     st.error(f"Could not load embeddings / tracks: {exc}")
@@ -152,7 +186,6 @@ if query:
             if tid not in st.session_state.waypoints:
                 st.session_state.waypoints.append(tid)
                 st.session_state.playlist = None
-                st.rerun()
     else:
         st.caption("No results.")
 
@@ -188,9 +221,11 @@ if n >= 1 and st.button("Generate", type="primary"):
         if n == 1:
             if cont_head is not None:
                 pl = generate_continuation(
-                    cont_head, wp, emb, ids, vecs,
+                    cont_head, wp, cont_emb, cont_ids, cont_vecs,
                     size=size, max_history=max_history,
                     noise=noise, head_weight=head_weight, device="cpu",
+                    base_emb=emb if args.embeddings_patch_cont else None,
+                    base_vecs=vecs if args.embeddings_patch_cont else None,
                 )
             else:
                 pl = generate_embedding_continuation(
@@ -200,13 +235,16 @@ if n >= 1 and st.button("Generate", type="primary"):
         else:
             if infil_head is not None:
                 pl = generate_infill_journey(
-                    infil_head, wp, emb, ids, vecs,
+                    infil_head, wp, infil_emb, infil_ids, infil_vecs,
                     between=between, noise=noise,
                     head_weight=head_weight, device="cpu",
+                    base_emb=emb if args.embeddings_patch_infil else None,
+                    base_vecs=vecs if args.embeddings_patch_infil else None,
                 )
             else:
                 pl = generate_embedding_journey(
-                    wp, emb, ids, vecs, between=between, noise=noise,
+                    wp, emb, ids, vecs,
+                    between=between, noise=noise,
                 )
         st.session_state.playlist = pl
         st.session_state.highlighted = set(wp)

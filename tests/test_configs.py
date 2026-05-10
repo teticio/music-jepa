@@ -34,7 +34,9 @@ def test_encoder_config_buildable(path):
 def test_head_config_required_keys(path):
     with open(path) as f:
         cfg = yaml.safe_load(f)
-    for k in ("embeddings_file", "playlists_file", "task"):
+    data_keys = ["playlists_file", "task"]
+    data_keys.append("spectrograms_dir" if "_patch" in path else "embeddings_file")
+    for k in data_keys:
         assert k in cfg["data"], f"{path} missing data.{k}"
     for k in ("hidden_dim", "residual_source"):
         assert k in cfg["model"], f"{path} missing model.{k}"

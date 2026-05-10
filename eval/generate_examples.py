@@ -194,9 +194,18 @@ def main():
     parser.add_argument("--device", default=None)
     parser.add_argument("--index_only", action="store_true")
     parser.add_argument("--checkpoint_dir", default="checkpoints")
-    parser.add_argument("--embeddings", default="embeddings/embeddings.npy")
+    parser.add_argument("--embeddings", default="embeddings/embeddings.npy",
+                        help="Base encoder catalog")
+    parser.add_argument("--embeddings_patch_cont", default=None,
+                        help="Patch-head continuation catalog")
+    parser.add_argument("--embeddings_patch_infil", default=None,
+                        help="Patch-head infill catalog")
     parser.add_argument("--tracks_file", default="data/tracks_dedup.csv")
     parser.add_argument("--mp3tovec_model_dir", default=None)
+    parser.add_argument("--head", default=None,
+                        help="Continuation head ckpt. Defaults to <checkpoint_dir>/continuation_head.pt")
+    parser.add_argument("--infil_head", default=None,
+                        help="Infill head ckpt. Defaults to <checkpoint_dir>/infill_head.pt")
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -207,16 +216,18 @@ def main():
         return
     clean_generated_examples(out_dir)
 
-    base = ["uv", "run", "python", "eval/generate_playlist.py",
-            "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
+    playlist_base = ["uv", "run", "python", "eval/generate_playlist.py",
+                     "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
+    journey_base = ["uv", "run", "python", "eval/generate_playlist.py",
+                    "--embeddings", args.embeddings, "--tracks_file", args.tracks_file]
     device_args = ["--device", args.device] if args.device else []
 
     checkpoint_dir = Path(args.checkpoint_dir)
-    cont_head = checkpoint_dir / "continuation_head.pt"
-    infil_head = checkpoint_dir / "infill_head.pt"
+    cont_head = Path(args.head) if args.head else checkpoint_dir / "continuation_head.pt"
+    infil_head = Path(args.infil_head) if args.infil_head else checkpoint_dir / "infill_head.pt"
 
     def run_playlist(name, seeds, hw_label, extra):
-        run(base + extra + [
+        run(playlist_base + extra + [
             "--seeds", *seeds,
             "--size", str(args.size),
             "--noise", str(args.noise),
@@ -225,7 +236,7 @@ def main():
         ] + device_args)
 
     def run_journey(name, waypoints, between, hw_label, extra):
-        run(base + extra + [
+        run(journey_base + extra + [
             "--journey", *waypoints,
             "--between", str(between),
             "--noise", str(args.noise),
@@ -237,8 +248,10 @@ def main():
         for name, seeds in CONTINUATION_EXAMPLES:
             for hw in HEAD_WEIGHTS:
                 hw_label = f"hw{int(hw * 100)}"
-                run_playlist(name, seeds, hw_label,
-                             ["--head", str(cont_head), "--head_weight", str(hw)])
+                extra = ["--head", str(cont_head), "--head_weight", str(hw)]
+                if args.embeddings_patch_cont:
+                    extra += ["--embeddings_patch_cont", args.embeddings_patch_cont]
+                run_playlist(name, seeds, hw_label, extra)
     else:
         print(f"Skipping continuation examples: missing {cont_head}")
 
@@ -247,8 +260,10 @@ def main():
             between = between_override or args.between
             for hw in HEAD_WEIGHTS:
                 hw_label = f"hw{int(hw * 100)}"
-                run_journey(name, waypoints, between, hw_label,
-                            ["--head", str(infil_head), "--head_weight", str(hw)])
+                extra = ["--head", str(infil_head), "--head_weight", str(hw)]
+                if args.embeddings_patch_infil:
+                    extra += ["--embeddings_patch_infil", args.embeddings_patch_infil]
+                run_journey(name, waypoints, between, hw_label, extra)
     else:
         print(f"Skipping journey examples: missing {infil_head}")
 
