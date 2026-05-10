@@ -111,6 +111,7 @@ def main():
     p = figure(
         width=1200,
         height=800,
+        sizing_mode="stretch_both",
         title="music-jepa embedding space (click to play)",
         tools="pan,wheel_zoom,box_zoom,reset,tap",
         toolbar_location="above",
@@ -201,12 +202,15 @@ def main():
       }""",
         """      html, body {
         box-sizing: border-box;
-        display: flow-root;
         height: 100%;
         margin: 0;
         padding: 0;
         background: #101114;
         color: #f2f2f0;
+      }
+      .bk-root {
+        width: 100vw;
+        height: 100vh;
       }
       .bk-tooltip {
         background: #181a1f !important;
