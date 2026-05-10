@@ -1,0 +1,15 @@
+[server]
+folderWatchBlacklist = [
+  ".venv",
+  ".git",
+  ".pytest_cache",
+  "__pycache__",
+  "data",
+  "checkpoints",
+  "checkpoints-sample",
+  "embeddings",
+  "embeddings-sample",
+  "logs",
+  "outputs",
+  "outputs-sample",
+]
