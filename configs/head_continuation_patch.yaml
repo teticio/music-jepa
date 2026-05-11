@@ -18,9 +18,10 @@ data:
   val_fraction: 0.05
   # Each batch runs the encoder on (batch_size * (max_history + 1)) spectrograms,
   # so this is much smaller than the track-head config (which only does lookups).
-  # Lowered from 64 -> 32 while sharing GPUs with a live encoder training run.
-  batch_size: 32
-  num_workers: 2
+  # 192 fits comfortably on a single 24 GB 4090 with the encoder frozen (no_grad);
+  # drop to 32 if you're sharing the GPU with a live encoder training run.
+  batch_size: 192
+  num_workers: 8
 
 model:
   hidden_dim: 1024

@@ -17,9 +17,10 @@ data:
   max_playlist_len: 30
   val_fraction: 0.05
   # Three encoder forwards per item (left, right, target).
-  # Lowered from 96 -> 48 while sharing GPUs with a live encoder + cont head training.
-  batch_size: 48
-  num_workers: 2
+  # 256 fits comfortably on a single 24 GB 4090 with the encoder frozen (no_grad);
+  # drop to 48 if you're sharing the GPU with a live encoder + cont head training.
+  batch_size: 256
+  num_workers: 8
 
 model:
   hidden_dim: 1024
